@@ -1,7 +1,12 @@
 package com.tma.demo;
 
+import com.tma.demo.entity.Setting;
+import com.tma.demo.repository.SettingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * Application
@@ -14,9 +19,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 04/10/2024        NGUYEN             create
  */
 @SpringBootApplication
-public class Application {
+@EnableJpaAuditing
+public class Application implements CommandLineRunner {
+    @Autowired
+    private SettingRepository rp;
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
+    @Override
+    public void run(String... args) throws Exception {
+        rp.findAll().forEach(System.out::println);
+    }
 }
