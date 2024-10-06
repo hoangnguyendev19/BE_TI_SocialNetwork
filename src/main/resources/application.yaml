@@ -8,17 +8,21 @@ spring:
   #    database
   datasource:
     driver-class-name: org.postgresql.Driver
-    username:
-    url:
-    password:
+    username: admin
+    url: jdbc:postgresql://localhost:5432/ti_social_network
+    password: password
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format-sql: 'true'
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: 'true'
+  flyway:
+    locations: classpath:/db/migration
 logging:
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+
+
