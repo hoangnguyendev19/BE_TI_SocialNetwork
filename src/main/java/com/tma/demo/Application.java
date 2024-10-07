@@ -31,10 +31,10 @@ import java.util.Calendar;
 public class Application
 //        implements CommandLineRunner
 {
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private UserRepository userRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
