@@ -4,7 +4,7 @@ CREATE TABLE "token" (
                                   "access_token" varchar,
                                   "refresh_token" varchar,
                                   "is_revoked" bool,
-                                  "create_at" timestamp,
+                                  "created_at" timestamp,
                                   "last_modified" timestamp
 );
-ALTER TABLE "token" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "token" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");

@@ -33,7 +33,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails {
     @Id
@@ -44,7 +44,7 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     @Enumerated(EnumType.STRING)
-    private UserStatus Status;
+    private UserStatus status;
     private Date dateOfBirth;
     private String presentAddress;
     private String permanentAddress;
@@ -60,6 +60,8 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime lastModified;
+
+
 
 
     @Override
