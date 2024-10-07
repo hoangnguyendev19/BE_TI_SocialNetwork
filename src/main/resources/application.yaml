@@ -25,6 +25,12 @@ logging:
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
-
+application:
+  security:
+    jwt:
+      secret-key: bb49931b1b6e4cd6529c2f21bcbce342c46d5dfe6b8b829237dceff8afb4d1cf
+      expiration: 86400000 # 1 day
+      refresh-token:
+        expiration: 604800000 # 7 days
 
 

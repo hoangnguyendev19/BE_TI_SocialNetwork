@@ -31,10 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
     @PostMapping(value = "/change-password")
     public ResponseEntity<ApiResponse<Object>> changePassword(
-            @RequestBody @Valid ChangePasswordRequest changePasswordRequest){
+            @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
             throw new BaseException(HttpStatus.UNAUTHORIZED, "unauthenticated");
@@ -44,5 +43,4 @@ public class UserController {
         userService.changePassword(email, changePasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "change password successfully", null));
     }
-
 }
