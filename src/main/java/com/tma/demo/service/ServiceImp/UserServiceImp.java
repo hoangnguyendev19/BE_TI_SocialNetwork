@@ -35,10 +35,10 @@ public class UserServiceImp implements UserService {
     public void changePassword(String email, ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(HttpStatus.UNAUTHORIZED, "Invalid email"));
-        if(BCrypt.checkpw(changePasswordRequest.getCurrentPassword(), user.getPassword())){
+        if(passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())){
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
         }
-        else throw new BaseException(HttpStatus.BAD_REQUEST, "password is incorrect");
+        else throw new BaseException(HttpStatus.BAD_REQUEST, "wrong password");
     }
 }
