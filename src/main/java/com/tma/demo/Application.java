@@ -28,13 +28,39 @@ import java.util.Calendar;
  */
 @SpringBootApplication
 @EnableJpaAuditing
-public class Application  {
+public class Application
+//        implements CommandLineRunner
+{
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
 
-
-
+//    @Override
+//    public void run(String... args) throws Exception {
+//        User user = User.builder()
+//                .email("john.doe@example.com")
+//                .password(passwordEncoder.encode("securePassword123@"))
+//                .firstName("John")
+//                .lastName("Doe")
+//                .status(UserStatus.ACTIVE)
+//                .dateOfBirth(Date.valueOf(LocalDate.now()))
+//                .presentAddress("123 Present St, New York")
+//                .permanentAddress("456 Permanent St, New York")
+//                .phoneNumber("+1234567890")
+//                .city("New York")
+//                .country("USA")
+//                .state("NY")
+//                .profilePictureUrl("https://example.com/profile.jpg")
+//                .coverPictureUrl("https://example.com/cover.jpg")
+//                .isDelete(false)
+//                .lastLogin(LocalDateTime.now())
+//                .build();
+//        userRepository.save(user);
+//    }
 }
