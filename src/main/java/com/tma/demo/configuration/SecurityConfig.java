@@ -25,8 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {"/api/v1/home"};
-    private final PasswordEncoder passwordEncoder;
+    private final String[] PUBLIC_ENDPOINTS = {"/api/v1/auth/*"};
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthFilter;
 

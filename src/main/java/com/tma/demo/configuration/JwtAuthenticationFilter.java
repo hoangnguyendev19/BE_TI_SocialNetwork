@@ -1,5 +1,6 @@
 package com.tma.demo.configuration;
 
+import com.tma.demo.entity.Token;
 import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * JwtAuthFilter
@@ -52,10 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            var isTokenValid = tokenRepository.findByAccessToken(jwt)
-                    .map(t -> !t.isAccessExpired())
-                    .orElse(false);
-            if (jwtService.isTokenValid(jwt, userDetails.getUsername()) && isTokenValid) {
+            Optional<Token> token = tokenRepository.findByAccessToken(jwt);
+
+            if (token.isPresent() && jwtService.isTokenValid(jwt, userDetails.getUsername()) && !jwtService.isExpired(jwt) && !token.get().isRevoked()) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

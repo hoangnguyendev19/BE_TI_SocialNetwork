@@ -39,9 +39,6 @@ public class Token {
     private User user;
     private String accessToken;
     private String refreshToken;
-
-    private boolean isAccessExpired;
-    private boolean isRefreshExpired;
     private boolean isRevoked;
 
     @CreatedDate
