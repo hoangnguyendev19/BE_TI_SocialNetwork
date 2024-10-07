@@ -7,4 +7,4 @@ CREATE TABLE "token" (
                                   "create_at" timestamp,
                                   "last_modified" timestamp
 );
-ALTER TABLE "token" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "token" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");

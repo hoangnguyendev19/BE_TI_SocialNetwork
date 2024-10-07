@@ -1,9 +1,20 @@
 package com.tma.demo;
 
 
+import com.tma.demo.common.UserStatus;
+import com.tma.demo.entity.User;
+import com.tma.demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 
 /**
  * Application
@@ -18,9 +29,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 public class Application  {
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
+
 
 
 }
