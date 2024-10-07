@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
     @PostMapping(value = "/change-password")
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
@@ -44,5 +43,4 @@ public class UserController {
         userService.changePassword(email, changePasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "change password successfully", null));
     }
-
 }
