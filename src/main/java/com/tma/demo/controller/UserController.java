@@ -2,15 +2,14 @@ package com.tma.demo.controller;
 
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ChangePasswordRequest;
-import com.tma.demo.exception.BaseException;
+import com.tma.demo.dto.request.UpdateProfileRequest;
+import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,20 +25,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/api/v1/users")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
     @PostMapping(value = "/change-password")
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new BaseException(HttpStatus.UNAUTHORIZED, "unauthenticated");
-        }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-        userService.changePassword(email, changePasswordRequest);
+        userService.changePassword(changePasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "change password successfully", null));
     }
+    @PutMapping(value = "/update-profile")
+    public ResponseEntity<ApiResponse<UserDto>> updateProfile(@RequestBody UpdateProfileRequest request){
+        UserDto userDto =  userService.updateProfile(request);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK,
+                "update profile successfully",
+                userDto
+        )) ;
+    }
+
+
 
     @GetMapping("/test-secured")
     public ResponseEntity<String> get(){

@@ -1,7 +1,12 @@
 package com.tma.demo.service;
 
 import com.tma.demo.dto.request.ChangePasswordRequest;
+import com.tma.demo.dto.request.UpdateProfileRequest;
+import com.tma.demo.dto.response.UserDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.SQLException;
 
 /**
  * UserServiceImp
@@ -17,5 +22,10 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 
-    void changePassword(String username, ChangePasswordRequest changePasswordRequest);
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    void changePassword(ChangePasswordRequest changePasswordRequest);
+
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    UserDto updateProfile(UpdateProfileRequest request);
 }

@@ -70,10 +70,7 @@ public class JwtServiceImp implements JwtService {
         return extractClaims(token, Claims::getSubject);
     }
 
-    @Override
-    public boolean isTokenValid(String jwt, String email) {
-        return extractEmail(jwt).equals(email);
-    }
+
 
     public Date extractExpired(String token) {
         return extractClaims(token, Claims::getExpiration);
