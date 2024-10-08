@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * AuthServiceImp
  * Version 1.0
@@ -49,6 +52,8 @@ public class AuthServiceImp implements AuthService {
                 .isRevoked(false)
                 .build();
         tokenRepository.save(token);
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
         return modelMapper.map(token, TokenDto.class);
     }
 }
