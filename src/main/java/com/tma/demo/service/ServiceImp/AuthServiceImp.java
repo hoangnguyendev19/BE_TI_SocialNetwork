@@ -53,6 +53,7 @@ public class AuthServiceImp implements AuthService {
                 .build();
         tokenRepository.save(token);
         user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
         return modelMapper.map(token, TokenDto.class);
     }
 }
