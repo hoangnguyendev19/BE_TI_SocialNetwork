@@ -1,6 +1,7 @@
 package com.tma.demo.configuration;
 
 import com.tma.demo.entity.Token;
+import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -8,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,7 +58,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             Optional<Token> token = tokenRepository.findByAccessToken(jwt);
 
-            if (token.isPresent() && !jwtService.isExpired(jwt) && !token.get().isRevoked()) {
+            if (token.isPresent() &&  !token.get().isRevoked()) {
+                if(jwtService.isExpired(jwt)){
+                    throw new BaseException(HttpStatus.UNAUTHORIZED, "jwt expired");
+                }
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
