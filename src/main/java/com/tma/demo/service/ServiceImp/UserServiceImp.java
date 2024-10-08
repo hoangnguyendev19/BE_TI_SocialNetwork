@@ -35,6 +35,9 @@ public class UserServiceImp implements UserService {
     public void changePassword(String email, ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(HttpStatus.UNAUTHORIZED, "Invalid email"));
+        if(!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())){
+            throw new BaseException(HttpStatus.BAD_REQUEST,"password and confirm password does not match");
+        }
         if(BCrypt.checkpw(changePasswordRequest.getCurrentPassword(), user.getPassword())){
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
