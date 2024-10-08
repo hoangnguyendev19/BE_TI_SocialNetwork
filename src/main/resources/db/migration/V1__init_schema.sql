@@ -4,7 +4,7 @@ CREATE TABLE "setting" (
                            "value" varchar,
                            "last_modified" timestamp
 );
-CREATE TABLE "user" (
+CREATE TABLE "users" (
                         "id" uuid PRIMARY KEY,
                         "email" varchar,
                         "password" varchar,
@@ -152,15 +152,15 @@ CREATE TABLE "comment" (
                            "last_modified" timestamp
 );
 
-ALTER TABLE "post" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "post" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "media" ADD FOREIGN KEY ("post_id") REFERENCES "post" ("id");
 
-ALTER TABLE "like" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "like" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "like" ADD FOREIGN KEY ("post_id") REFERENCES "post" ("id");
 
-ALTER TABLE "comment" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "comment" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "comment" ADD FOREIGN KEY ("post_id") REFERENCES "post" ("id");
 
@@ -168,13 +168,13 @@ ALTER TABLE "room" ADD FOREIGN KEY ("boarding_house_id") REFERENCES "boarding_ho
 
 ALTER TABLE "history_room" ADD FOREIGN KEY ("room_id") REFERENCES "room" ("id");
 
-ALTER TABLE "boarding_house" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "boarding_house" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "like_comment" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "like_comment" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "like_comment" ADD FOREIGN KEY ("comment_id") REFERENCES "comment" ("id");
 
-ALTER TABLE "room_user" ADD FOREIGN KEY ("room_id") REFERENCES "user" ("id");
+ALTER TABLE "room_user" ADD FOREIGN KEY ("room_id") REFERENCES "users" ("id");
 
 ALTER TABLE "room_user" ADD FOREIGN KEY ("room_id") REFERENCES "room" ("id");
 
@@ -182,7 +182,7 @@ ALTER TABLE "room_setting" ADD FOREIGN KEY ("boarding_house_id") REFERENCES "boa
 
 ALTER TABLE "payment" ADD FOREIGN KEY ("room_id") REFERENCES "room" ("id");
 
-ALTER TABLE "post_report" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "post_report" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "post_report" ADD FOREIGN KEY ("post_id") REFERENCES "post" ("id");
 
