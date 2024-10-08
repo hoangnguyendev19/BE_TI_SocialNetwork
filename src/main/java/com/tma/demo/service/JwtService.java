@@ -4,7 +4,6 @@ public interface JwtService {
 
     public String extractEmail(String token);
 
-    boolean isTokenValid(String jwt, String username);
 
     boolean isExpired(String jwt);
 
