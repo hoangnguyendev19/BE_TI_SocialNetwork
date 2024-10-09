@@ -20,36 +20,38 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Date: 04/10/2024
  * Copyright
  * Modification Logs
- * DATE          AUTHOR          DESCRIPTION
+ * DATE AUTHOR DESCRIPTION
  * ------------------------------------------------
- * 04/10/2024        NGUYEN             create
+ * 04/10/2024 NGUYEN create
  */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {"/api/v1/auth/**",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/webjars/**"};
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationFilter jwtAuthFilter;
+        private final String[] PUBLIC_ENDPOINTS = { "/api/v1/auth/**",
+                        "/register",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/swagger-ui.html",
+                        "/webjars/**" };
+        private final AuthenticationProvider authenticationProvider;
+        private final JwtAuthenticationFilter jwtAuthFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-                                .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(request ->
 
-        return http.build();
-    }
+                                request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authenticationProvider)
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+                return http.build();
+        }
 }

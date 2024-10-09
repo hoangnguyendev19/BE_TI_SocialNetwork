@@ -1,16 +1,25 @@
 
 server:
-  port: 8888
+  port: 8080
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nguyenmanhhunglop91@gmail.com
+    password: yfnghyadgmuskfbb
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: smtp.gmail.com
   application:
     name: TI_Social-Network
   #    database
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: admin
+    username: postgres
     url: jdbc:postgresql://localhost:5432/ti_social_network
-    password: password
+    password: zingme123zd
   jpa:
     properties:
       hibernate:
@@ -32,5 +41,7 @@ application:
       expiration: 86400000 # 1 day
       refresh-token:
         expiration: 604800000 # 7 days
+
+
 
 

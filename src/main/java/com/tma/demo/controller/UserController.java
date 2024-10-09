@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
  * Date: 07/10/2024
  * Copyright
  * Modification Logs
- * DATE          AUTHOR          DESCRIPTION
+ * DATE AUTHOR DESCRIPTION
  * ------------------------------------------------
- * 07/10/2024        NGUYEN             create
+ * 07/10/2024 NGUYEN create
  */
 @RestController
 @RequestMapping(value = "/api/v1/users")
@@ -28,26 +28,26 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
+
     @PostMapping(value = "/change-password")
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "change password successfully", null));
     }
+
     @PutMapping(value = "/update-profile")
-    public ResponseEntity<ApiResponse<UserDto>> updateProfile(@RequestBody UpdateProfileRequest request){
-        UserDto userDto =  userService.updateProfile(request);
+    public ResponseEntity<ApiResponse<UserDto>> updateProfile(@RequestBody UpdateProfileRequest request) {
+        UserDto userDto = userService.updateProfile(request);
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK,
                 "update profile successfully",
-                userDto
-        )) ;
+                userDto));
     }
-
-
 
     @GetMapping("/test-secured")
-    public ResponseEntity<String> get(){
+    public ResponseEntity<String> get() {
         return ResponseEntity.ok("ok");
     }
+
 }

@@ -28,4 +28,5 @@ public interface UserService {
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     UserDto updateProfile(UpdateProfileRequest request);
+    
 }
