@@ -31,6 +31,6 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<TokenDto>> login(
             @RequestBody @Valid LoginRequest request){
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK," login successfully", authService.authenticate(request)));
+                new ApiResponse<>(HttpStatus.OK.value()," login successfully", authService.authenticate(request)));
     }
 }

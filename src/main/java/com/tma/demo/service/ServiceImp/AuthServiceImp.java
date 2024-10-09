@@ -1,5 +1,6 @@
 package com.tma.demo.service.ServiceImp;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.dto.request.LoginRequest;
 import com.tma.demo.dto.response.TokenDto;
 import com.tma.demo.entity.Token;
@@ -40,9 +41,11 @@ public class AuthServiceImp implements AuthService {
     @Override
     public TokenDto authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BaseException(HttpStatus.BAD_REQUEST, "email do not exist"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST.getCode(),ErrorCode.USER_DOES_NOT_EXIST.getMessage() ));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BaseException(HttpStatus.BAD_REQUEST, "wrong password");
+            throw new BaseException(
+                    ErrorCode.WRONG_PASSWORD.getCode(),
+                    ErrorCode.WRONG_PASSWORD.getMessage());
         }
         String accessToken = jwtService.generateToken(user.getEmail(), "ACCESS_TOKEN");
         String refreshToken = jwtService.generateToken(user.getEmail(), "REFRESH_TOKEN");
