@@ -3,6 +3,7 @@ package com.tma.demo.service.ServiceImp;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.dto.request.LoginRequest;
 import com.tma.demo.dto.response.TokenDto;
+import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.Token;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
@@ -10,6 +11,7 @@ import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.AuthService;
 import com.tma.demo.service.JwtService;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -56,7 +58,12 @@ public class AuthServiceImp implements AuthService {
                 .build();
         tokenRepository.save(token);
         user.setLastLogin(LocalDateTime.now());
-        userRepository.save(user);
-        return modelMapper.map(token, TokenDto.class);
+
+        user = userRepository.save(user);
+        return TokenDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .user(modelMapper.map(user, UserDto.class))
+                .build();
     }
 }
