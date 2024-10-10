@@ -1,5 +1,6 @@
 package com.tma.demo.service.ServiceImp;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -55,7 +56,9 @@ public class JwtServiceImp implements JwtService {
             claims = expiredJwtException.getClaims();
         } catch (JwtException e) {
             log.error(e.getMessage());
-            throw new BaseException(HttpStatus.UNAUTHORIZED, "unauthorized");
+            throw new BaseException(
+                    ErrorCode.TOKEN_INVALID.getCode(),
+                    ErrorCode.TOKEN_INVALID.getMessage());
         }
         return claims;
     }

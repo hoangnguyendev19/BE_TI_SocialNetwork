@@ -1,6 +1,7 @@
 package com.tma.demo.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,8 +17,10 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class TokenDto {
     private String accessToken;
     private String refreshToken;
+    UserDto user;
 }

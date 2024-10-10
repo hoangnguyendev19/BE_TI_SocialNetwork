@@ -1,5 +1,6 @@
 package com.tma.demo.service.ServiceImp;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
@@ -41,25 +42,33 @@ public class UserServiceImp implements UserService {
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(HttpStatus.UNAUTHORIZED, "email does not exist"));
+                .orElseThrow(() -> new BaseException(
+                        ErrorCode.WRONG_PASSWORD.getCode(),
+                        ErrorCode.WRONG_PASSWORD.getMessage()));
 
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
-            throw new BaseException(HttpStatus.BAD_REQUEST, "password and confirm password does not match");
+            throw new BaseException(
+                    ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH.getCode(),
+                    ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH.getMessage());
         }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
 //      TODO: revoked all tokens
 
-        } else throw new BaseException(HttpStatus.BAD_REQUEST, "wrong password");
+        } else throw new BaseException(
+                ErrorCode.WRONG_PASSWORD.getCode(),
+                ErrorCode.WRONG_PASSWORD.getMessage());
     }
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public UserDto updateProfile(UpdateProfileRequest request){
+    public UserDto updateProfile(UpdateProfileRequest request) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(HttpStatus.UNAUTHORIZED, "email does not exist"));
+                .orElseThrow(() -> new BaseException(
+                        ErrorCode.USER_DOES_NOT_EXIST.getCode(),
+                        ErrorCode.USER_DOES_NOT_EXIST.getMessage()));
 
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -74,10 +83,12 @@ public class UserServiceImp implements UserService {
     }
 
 
-    private  UserDetails getUserDetails() {
+    private UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new BaseException(HttpStatus.UNAUTHORIZED, "unauthenticated");
+            throw new BaseException(
+                    ErrorCode.UNAUTHENTICATED.getCode(),
+                    ErrorCode.UNAUTHENTICATED.getMessage());
         }
         return (UserDetails) authentication.getPrincipal();
     }

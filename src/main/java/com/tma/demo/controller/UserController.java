@@ -32,13 +32,13 @@ public class UserController {
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "change password successfully", null));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "change password successfully", null));
     }
     @PutMapping(value = "/update-profile")
     public ResponseEntity<ApiResponse<UserDto>> updateProfile(@RequestBody UpdateProfileRequest request){
         UserDto userDto =  userService.updateProfile(request);
         return ResponseEntity.ok(new ApiResponse<>(
-                HttpStatus.OK,
+                HttpStatus.OK.value(),
                 "update profile successfully",
                 userDto
         )) ;
@@ -50,4 +50,5 @@ public class UserController {
     public ResponseEntity<String> get(){
         return ResponseEntity.ok("ok");
     }
+
 }
