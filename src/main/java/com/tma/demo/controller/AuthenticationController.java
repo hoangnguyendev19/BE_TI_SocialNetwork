@@ -1,19 +1,21 @@
 package com.tma.demo.controller;
 
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.LoginRequest;
 import com.tma.demo.dto.request.RegisterRequest;
+import com.tma.demo.dto.request.SetPasswordRequest;
+import com.tma.demo.dto.response.RegisterResponse;
 import com.tma.demo.dto.response.TokenDto;
 import com.tma.demo.entity.User;
 import com.tma.demo.service.AuthService;
 import com.tma.demo.service.ForgotPassService;
-import com.tma.demo.service.JwtService;
 import com.tma.demo.service.RegisterService;
+import com.tma.demo.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,17 +41,33 @@ public class AuthenticationController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping(value = "/register")
-    public ResponseEntity<String> RegisterUser(@Valid @RequestBody RegisterRequest registerRequest)
+    public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
+            @Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            User user = this.registerService.registerDTOtoUser(registerRequest);
 
-    {
-        User user = this.registerService.registerDTOtoUser(registerRequest);
+            String hashPassword = this.passwordEncoder.encode(user.getPassword());
+            user.setPassword(hashPassword);
 
-        String hashPassword = this.passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashPassword);
+            RegisterResponse RegisterResponse = this.registerService.saveUser(user);
 
-        this.registerService.SaveUser(user);
+            // Tạo phản hồi thành công
+            ApiResponse<RegisterResponse> apiResponse = new ApiResponse<>(
+                    HttpStatus.CREATED,
+                    "Register Success", // Thông báo thành công
+                    RegisterResponse // 
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Register Success");
+        } catch (RuntimeException e) {
+            // Tạo phản hồi lỗi với thông báo
+            ApiResponse<RegisterResponse> apiResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(), // Thông báo lỗi từ service
+                    null // Không cần dữ liệu bổ sung
+            );
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
     }
 
     @PostMapping(value = "/login")
@@ -59,26 +77,80 @@ public class AuthenticationController {
                 new ApiResponse<>(HttpStatus.OK, " login successfully", authService.authenticate(request)));
     }
 
+    // API VERIFY OTP
     @PutMapping(value = "/verify-otp")
-    public ResponseEntity<String> verifyAccount(@RequestParam String email,
-            @RequestParam String otp) {
-        return new ResponseEntity<>(forgotPassService.verifyAccount(email, otp), HttpStatus.OK);
+    public ResponseEntity<ApiResponse<String>> verifyAccount(
+            @RequestParam(name = "email") String email,
+            @RequestParam(name = "otp") String otp) {
+        try {
+            String message = forgotPassService.verifyAccount(email, otp);
+
+            ApiResponse<String> apiResponse = new ApiResponse<>(
+                    HttpStatus.OK,
+                    message, // Thông báo từ service
+                    null //
+            );
+            return ResponseEntity.ok(apiResponse);
+        } catch (RuntimeException e) {
+
+            // Tạo phản hồi lỗi với thông báo
+            ApiResponse<String> apiResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(), // Thông báo lỗi từ service
+                    null // Không cần dữ liệu bổ sung
+            );
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
     }
 
-    @PutMapping(value = "/forgot-password")
-    public ResponseEntity<String> forgotpassword(@RequestParam String email) {
+    // API FORGOT PASSWORD
+    @GetMapping(value = "/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestParam(name = "email") String email) {
+        try {
+            String otp = forgotPassService.generateOtp(email);
 
-        return new ResponseEntity<>(forgotPassService.generateOtp(email), HttpStatus.OK);
+            ApiResponse<String> apiResponse = new ApiResponse<>(
+                    HttpStatus.OK,
+                    "OTP has been sent to your Email",
+                    otp // Trả về mã OTP trong `data`
+            );
+
+            return ResponseEntity.ok(apiResponse);
+        } catch (RuntimeException e) {
+            // Tạo phản hồi lỗi với thông báo
+            ApiResponse<String> apiResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(), // Thông báo lỗi từ service
+                    null // Không cần dữ liệu bổ sung
+            );
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
+
     }
 
-    @PutMapping(value = "/set-password")
-    public ResponseEntity<String> setpassword(@RequestParam String email, @RequestHeader String password,
-            @RequestHeader String confirmPassWord) {
-        // String user = userService.setPassWord(email,password);
-        // String hassPassword = this.passwordEncoder.encode(user.getPassword());
-        // user.setPassword(hassPassword);
-
-        return new ResponseEntity<>(forgotPassService.setPassWord(email, confirmPassWord), HttpStatus.OK);
+    // API SET PASSWORD
+    @PutMapping(value = "/set-password/{email}/{otp}")
+    public ResponseEntity<ApiResponse<String>> setPassword(
+            @PathVariable String email,
+            @PathVariable String otp,
+            @Valid @RequestBody SetPasswordRequest setPasswordRequest) {
+        try {
+            String response = forgotPassService.setPassword(email, otp, setPasswordRequest);
+            ApiResponse<String> apiResponse = new ApiResponse<>(
+                    HttpStatus.OK,
+                    response, // Thông báo thành công
+                    null // Không cần dữ liệu bổ sung
+            );
+            return ResponseEntity.ok(apiResponse);
+        } catch (RuntimeException e) {
+            // Tạo phản hồi lỗi với thông báo
+            ApiResponse<String> apiResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(), // Thông báo lỗi từ service
+                    null // Không cần dữ liệu bổ sung
+            );
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
     }
 
 }

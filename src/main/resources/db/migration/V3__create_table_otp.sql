@@ -1,9 +1,8 @@
 CREATE TABLE "otp" (
                                   "id" uuid PRIMARY KEY,
                                  "user_id" uuid,
-                                  "email" varchar,
                                   "otp" varchar,
-                                  "otpGeneratedTime" timestamp
+                                  "otp_generated_time" timestamp
                                   
 );
 ALTER TABLE "otp" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
