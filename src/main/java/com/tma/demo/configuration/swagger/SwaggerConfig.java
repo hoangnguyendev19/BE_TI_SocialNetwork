@@ -1,4 +1,4 @@
-package com.tma.demo.configuration;
+package com.tma.demo.configuration.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

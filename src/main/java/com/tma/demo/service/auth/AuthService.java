@@ -1,4 +1,4 @@
-package com.tma.demo.service;
+package com.tma.demo.service.auth;
 
 import com.tma.demo.dto.request.LoginRequest;
 import com.tma.demo.dto.response.TokenDto;

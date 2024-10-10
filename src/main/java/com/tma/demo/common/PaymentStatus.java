@@ -11,5 +11,6 @@ package com.tma.demo.common;
  * 07/10/2024        NGUYEN             create
  */
 public enum PaymentStatus {
-    PAID, UNPAID
+    PAID,
+    UNPAID
 }
