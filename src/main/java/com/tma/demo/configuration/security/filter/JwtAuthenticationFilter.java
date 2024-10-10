@@ -1,15 +1,15 @@
-package com.tma.demo.configuration;
+package com.tma.demo.configuration.security.filter;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.entity.Token;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.TokenRepository;
-import com.tma.demo.service.JwtService;
+import com.tma.demo.service.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,13 +41,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-           @NonNull HttpServletRequest request,
-           @NonNull HttpServletResponse response,
-           @NonNull FilterChain filterChain) throws ServletException, IOException {
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String jwt;
         String userEmail;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -57,10 +57,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             Optional<Token> token = tokenRepository.findByAccessToken(jwt);
-
-            if (token.isPresent() &&  !token.get().isRevoked()) {
-                if(jwtService.isExpired(jwt)){
-                    throw new BaseException(HttpStatus.UNAUTHORIZED, "jwt expired");
+            if (token.isEmpty()) {
+                throw new BaseException(ErrorCode.TOKEN_INVALID);
+            } else {
+                if (jwtService.isExpired(jwt)) {
+                    throw new BaseException(ErrorCode.TOKEN_EXPIRED);
                 }
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

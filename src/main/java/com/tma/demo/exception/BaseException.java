@@ -1,9 +1,7 @@
 package com.tma.demo.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.tma.demo.common.ErrorCode;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
@@ -14,9 +12,9 @@ import java.io.Serial;
  * Date: 04/10/2024
  * Copyright
  * Modification Logs
- * DATE          AUTHOR          DESCRIPTION
+ * DATE AUTHOR DESCRIPTION
  * ------------------------------------------------
- * 04/10/2024        NGUYEN             create
+ * 04/10/2024 NGUYEN create
  */
 @Data
 @Builder
@@ -25,8 +23,6 @@ import java.io.Serial;
 public class BaseException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
-    private HttpStatus code;
-    private String message;
-
+    private ErrorCode errorCode;
 
 }

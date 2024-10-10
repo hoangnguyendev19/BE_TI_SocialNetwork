@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private HttpStatus code;
+    private int code;
     private String message;
     private T data;
 }
