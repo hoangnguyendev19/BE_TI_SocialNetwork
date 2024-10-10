@@ -87,6 +87,19 @@ public class UserServiceImp implements UserService {
         return mapper.map(user, UserDto.class);
     }
 
+    @Override
+    public UserDto getUser() {
+        String email = getUserDetails().getUsername();
+        return getUserByEmail(email);
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        return mapper.map(user, UserDto.class);
+    }
+
     private UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
