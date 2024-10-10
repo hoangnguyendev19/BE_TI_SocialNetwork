@@ -64,7 +64,7 @@ public class AuthenticationController {
             ApiResponse<RegisterResponse> apiResponse = new ApiResponse<>(
                     HttpStatus.BAD_REQUEST,
                     e.getMessage(), // Thông báo lỗi từ service
-                    null // Không cần dữ liệu bổ sung
+                    null 
             );
             return ResponseEntity.badRequest().body(apiResponse);
         }
@@ -97,7 +97,7 @@ public class AuthenticationController {
             ApiResponse<String> apiResponse = new ApiResponse<>(
                     HttpStatus.BAD_REQUEST,
                     e.getMessage(), // Thông báo lỗi từ service
-                    null // Không cần dữ liệu bổ sung
+                    null // 
             );
             return ResponseEntity.badRequest().body(apiResponse);
         }
