@@ -50,7 +50,6 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHENTICATED.getCode(),
-                        ErrorCode.UNAUTHENTICATED.getMessage()));
+                .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHENTICATED));
     }
 }

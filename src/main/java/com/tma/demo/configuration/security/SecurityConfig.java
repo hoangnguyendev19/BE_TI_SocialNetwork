@@ -1,5 +1,6 @@
-package com.tma.demo.configuration;
+package com.tma.demo.configuration.security;
 
+import com.tma.demo.configuration.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

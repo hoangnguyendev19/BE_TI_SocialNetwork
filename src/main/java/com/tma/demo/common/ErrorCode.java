@@ -1,6 +1,7 @@
 package com.tma.demo.common;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 /**
  * ErrorCode
@@ -14,23 +15,18 @@ import lombok.Getter;
  */
 @Getter
 public enum ErrorCode {
-    WRONG_PASSWORD(400, "wrong-password"),
-    CONFIRM_PASSWORD_DOES_NOT_MATCH(400, "confirm-password-does-not-match"),
-    USER_DOES_NOT_EXIST(400, "user-does-not-exist"),
-    UNAUTHENTICATED(401, "unauthenticated"),
-    TOKEN_EXPIRED(401, "token-expired"),
-    TOKEN_INVALID(401, "token-invalid"),
-    IMAGE_UPLOAD_FAILED(400, "image-upload-failed"),
-
+    WRONG_PASSWORD(HttpStatus.BAD_REQUEST.value(), "wrong-password"),
+    CONFIRM_PASSWORD_DOES_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "confirm-password-does-not-match"),
+    USER_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "user-does-not-exist"),
+    UNAUTHENTICATED(HttpStatus.UNAUTHORIZED.value(), "unauthenticated"),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "token-expired"),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED.value(), "token-invalid"),
+    IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "image-upload-failed"),
     ;
     private final int code;
     private final String message;
-
-
     ErrorCode(int i, String s) {
         this.code = i;
         this.message = s;
-
-
     }
 }

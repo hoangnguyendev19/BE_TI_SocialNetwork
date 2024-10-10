@@ -1,10 +1,10 @@
-package com.tma.demo.configuration;
+package com.tma.demo.configuration.security.filter;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.entity.Token;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.TokenRepository;
-import com.tma.demo.service.JwtService;
+import com.tma.demo.service.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,15 +58,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             Optional<Token> token = tokenRepository.findByAccessToken(jwt);
             if (token.isEmpty()) {
-                throw new BaseException(
-                        ErrorCode.TOKEN_INVALID.getCode(),
-                        ErrorCode.TOKEN_INVALID.getMessage()
-                );
+                throw new BaseException(ErrorCode.TOKEN_INVALID);
             } else {
                 if (jwtService.isExpired(jwt)) {
-                    throw new BaseException(
-                            ErrorCode.TOKEN_EXPIRED.getCode(),
-                            ErrorCode.TOKEN_EXPIRED.getMessage());
+                    throw new BaseException(ErrorCode.TOKEN_EXPIRED);
                 }
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

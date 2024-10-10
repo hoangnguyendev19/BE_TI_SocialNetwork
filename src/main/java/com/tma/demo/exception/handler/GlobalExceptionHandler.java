@@ -24,16 +24,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
-
-
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ApiResponse<Object>> handlerBaseException(BaseException e) {
         log.error(e.getMessage());
-        return ResponseEntity.status(HttpStatusCode.valueOf(e.getCode()))
-                .body(new ApiResponse<>(e.getCode(), e.getMessage(), null));
+        return ResponseEntity.status(HttpStatusCode.valueOf(e.getErrorCode().getCode()))
+                .body(new ApiResponse<>(e.getErrorCode().getCode(), e.getErrorCode().getMessage(), null));
     }
-
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ApiResponse<Object>> handlerBindException(BindException e) {
@@ -43,6 +39,5 @@ public class GlobalExceptionHandler {
         }
 
         return ResponseEntity.badRequest().body(new ApiResponse<>(400, errorMessage, null) );
-
     }
 }

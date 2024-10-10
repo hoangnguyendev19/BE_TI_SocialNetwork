@@ -1,4 +1,4 @@
-package com.tma.demo.service.ServiceImp;
+package com.tma.demo.service.cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -34,8 +34,7 @@ public class CloudinaryService {
                     "folder", folderName,
                     "overwrite", true));
         }catch (IOException io){
-            throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED.getCode(),
-                    ErrorCode.IMAGE_UPLOAD_FAILED.getMessage());
+            throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
 }

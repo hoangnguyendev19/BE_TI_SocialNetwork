@@ -1,4 +1,4 @@
-package com.tma.demo.service.ServiceImp;
+package com.tma.demo.service.user.imp;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.dto.request.ChangePasswordRequest;
@@ -7,10 +7,10 @@ import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.UserRepository;
-import com.tma.demo.service.UserService;
+import com.tma.demo.service.cloudinary.CloudinaryService;
+import com.tma.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -47,23 +45,16 @@ public class UserServiceImp implements UserService {
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(
-                        ErrorCode.WRONG_PASSWORD.getCode(),
-                        ErrorCode.WRONG_PASSWORD.getMessage()));
-
+                .orElseThrow(() -> new BaseException(ErrorCode.WRONG_PASSWORD));
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
-            throw new BaseException(
-                    ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH.getCode(),
-                    ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH.getMessage());
+            throw new BaseException(ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH);
         }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
 //      TODO: revoked all tokens
 
-        } else throw new BaseException(
-                ErrorCode.WRONG_PASSWORD.getCode(),
-                ErrorCode.WRONG_PASSWORD.getMessage());
+        } else throw new BaseException(ErrorCode.WRONG_PASSWORD);
     }
 
     @Override
@@ -71,10 +62,7 @@ public class UserServiceImp implements UserService {
     public UserDto updateProfile(UpdateProfileRequest request) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(
-                        ErrorCode.USER_DOES_NOT_EXIST.getCode(),
-                        ErrorCode.USER_DOES_NOT_EXIST.getMessage()));
-
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDateOfBirth(request.getDateOfBirth());
@@ -92,10 +80,9 @@ public class UserServiceImp implements UserService {
     public UserDto changeAvatar(MultipartFile imageFile) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST.getCode(),
-                        ErrorCode.USER_DOES_NOT_EXIST.getMessage()));
-        Map data = cloudinaryService.upload(imageFile,"avatar", user.getId().toString());
-        user.setProfilePictureUrl( data.get("url").toString());
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        Map data = cloudinaryService.upload(imageFile, "avatar", user.getId().toString());
+        user.setProfilePictureUrl(data.get("url").toString());
         user = userRepository.saveAndFlush(user);
         return mapper.map(user, UserDto.class);
     }
@@ -103,9 +90,7 @@ public class UserServiceImp implements UserService {
     private UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new BaseException(
-                    ErrorCode.UNAUTHENTICATED.getCode(),
-                    ErrorCode.UNAUTHENTICATED.getMessage());
+            throw new BaseException(ErrorCode.UNAUTHENTICATED);
         }
         return (UserDetails) authentication.getPrincipal();
     }

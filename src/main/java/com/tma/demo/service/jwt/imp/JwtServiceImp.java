@@ -1,8 +1,11 @@
-package com.tma.demo.service.ServiceImp;
+package com.tma.demo.service.jwt.imp;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.common.JwtDetails;
+import com.tma.demo.common.TokenType;
+import com.tma.demo.constant.FieldConstant;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.service.JwtService;
+import com.tma.demo.service.jwt.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -11,8 +14,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -35,16 +36,10 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtServiceImp implements JwtService {
-
-    @Value("${application.security.jwt.secret-key}")
-    private String secretKey;
-    @Value("${application.security.jwt.expiration}")
-    private Long accessTokenExpiration;
-    @Value("${application.security.jwt.refresh-token.expiration}")
-    private Long refreshTokenExpiration;
+    private final JwtDetails jwtDetails;
 
     public SecretKey getKey() {
-        byte[] key = Decoders.BASE64.decode(secretKey);
+        byte[] key = Decoders.BASE64.decode(jwtDetails.getSecretKey());
         return Keys.hmacShaKeyFor(key);
     }
 
@@ -56,9 +51,7 @@ public class JwtServiceImp implements JwtService {
             claims = expiredJwtException.getClaims();
         } catch (JwtException e) {
             log.error(e.getMessage());
-            throw new BaseException(
-                    ErrorCode.TOKEN_INVALID.getCode(),
-                    ErrorCode.TOKEN_INVALID.getMessage());
+            throw new BaseException(ErrorCode.TOKEN_INVALID);
         }
         return claims;
     }
@@ -73,8 +66,6 @@ public class JwtServiceImp implements JwtService {
         return extractClaims(token, Claims::getSubject);
     }
 
-
-
     public Date extractExpired(String token) {
         return extractClaims(token, Claims::getExpiration);
     }
@@ -83,21 +74,21 @@ public class JwtServiceImp implements JwtService {
         return extractExpired(token).before(new Date());
 
     }
-    @Override
-    public String generateToken(String email, String tokenType) {
-        Map<String, String> claims = Map.of(
-                "email", email
-        );
-        if (tokenType.equals("ACCESS_TOKEN"))
-            return buildToken(claims, accessTokenExpiration);
-        else return buildToken(claims, refreshTokenExpiration);
 
+    @Override
+    public String generateToken(String email, TokenType tokenType) {
+        Map<String, String> claims = Map.of(
+                FieldConstant.EMAIL, email
+        );
+        if (tokenType.equals(TokenType.ACCESS_TOKEN))
+            return buildToken(claims, jwtDetails.getAccessTokenExpiration());
+        else return buildToken(claims, jwtDetails.getRefreshTokenExpiration());
     }
 
     private String buildToken(Map<String, String> claims, Long expiration) {
         return Jwts.builder()
                 .claims(claims)
-                .subject(claims.get("email"))
+                .subject(claims.get(FieldConstant.EMAIL))
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getKey())

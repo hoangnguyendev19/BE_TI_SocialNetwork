@@ -1,4 +1,4 @@
-package com.tma.demo.service;
+package com.tma.demo.service.user;
 
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
