@@ -3,8 +3,7 @@ package com.tma.demo.controller;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.LoginRequest;
 import com.tma.demo.dto.response.TokenDto;
-import com.tma.demo.service.AuthService;
-import com.tma.demo.service.JwtService;
+import com.tma.demo.service.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +30,6 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<TokenDto>> login(
             @RequestBody @Valid LoginRequest request){
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK," login successfully", authService.authenticate(request)));
+                new ApiResponse<>(HttpStatus.OK.value()," login successfully", authService.authenticate(request)));
     }
 }

@@ -1,23 +1,28 @@
-package com.tma.demo.service.ServiceImp;
+package com.tma.demo.service.user.imp;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.UserRepository;
-import com.tma.demo.service.UserService;
+import com.tma.demo.service.cloudinary.CloudinaryService;
+import com.tma.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Map;
 
 /**
  * UserServiceImp
@@ -35,35 +40,34 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(HttpStatus.UNAUTHORIZED, "email does not exist"));
-
+                .orElseThrow(() -> new BaseException(ErrorCode.WRONG_PASSWORD));
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
-            throw new BaseException(HttpStatus.BAD_REQUEST, "password and confirm password does not match");
+            throw new BaseException(ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH);
         }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
 //      TODO: revoked all tokens
 
-        } else throw new BaseException(HttpStatus.BAD_REQUEST, "wrong password");
+        } else throw new BaseException(ErrorCode.WRONG_PASSWORD);
     }
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public UserDto updateProfile(UpdateProfileRequest request){
+    public UserDto updateProfile(UpdateProfileRequest request) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(HttpStatus.UNAUTHORIZED, "email does not exist"));
-
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setDateOfBirth(request.getDateOfBirth());
+        user.setDateOfBirth(Date.valueOf(request.getDateOfBirth()));
         user.setPresentAddress(request.getPresentAddress());
         user.setPermanentAddress(request.getPermanentAddress());
         user.setPhoneNumber(request.getPhoneNumber());
@@ -73,11 +77,22 @@ public class UserServiceImp implements UserService {
         return mapper.map(user, UserDto.class);
     }
 
+    @Override
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public String changeAvatar(MultipartFile imageFile) {
+        String email = getUserDetails().getUsername();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        Map data = cloudinaryService.upload(imageFile, "avatar", user.getId().toString());
+        user.setProfilePictureUrl(data.get("url").toString());
+        user = userRepository.saveAndFlush(user);
+        return user.getProfilePictureUrl();
+    }
 
-    private  UserDetails getUserDetails() {
+    private UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new BaseException(HttpStatus.UNAUTHORIZED, "unauthenticated");
+            throw new BaseException(ErrorCode.UNAUTHENTICATED);
         }
         return (UserDetails) authentication.getPrincipal();
     }
