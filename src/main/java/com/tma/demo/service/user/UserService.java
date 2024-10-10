@@ -31,5 +31,5 @@ public interface UserService {
     UserDto updateProfile(UpdateProfileRequest request);
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    UserDto changeAvatar(MultipartFile imageFile);
+    String changeAvatar(MultipartFile imageFile);
 }

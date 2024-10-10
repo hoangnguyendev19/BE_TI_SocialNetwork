@@ -26,7 +26,7 @@ public class UpdateProfileRequest {
     @NotBlank(message = "last-name-is-required")
     private String lastName;
     @NotBlank(message = "date-of-birth-is-required")
-    private Date dateOfBirth;
+    private String dateOfBirth;
     @NotBlank(message = "present-address-is-required")
     private String presentAddress;
     @NotBlank(message = "permanent-address-is-required")

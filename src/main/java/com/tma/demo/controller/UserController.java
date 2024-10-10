@@ -50,11 +50,9 @@ public class UserController {
     }
 
     @PutMapping(value = "/avatar")
-    public ResponseEntity<ApiResponse<UserDto>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDto userDto = userService.changeAvatar(imageFile);
-        return ResponseEntity.ok(new ApiResponse<>(200, "change avatar successfully", userDto));
+    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
+        String imgUrl = userService.changeAvatar(imageFile);
+        return ResponseEntity.ok(new ApiResponse<>(200, "change avatar successfully", imgUrl));
     }
-
 
 }
