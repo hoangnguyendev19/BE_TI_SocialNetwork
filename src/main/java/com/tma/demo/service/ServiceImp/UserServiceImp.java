@@ -17,8 +17,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * UserServiceImp
@@ -36,6 +40,7 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
@@ -82,6 +87,18 @@ public class UserServiceImp implements UserService {
         return mapper.map(user, UserDto.class);
     }
 
+    @Override
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public UserDto changeAvatar(MultipartFile imageFile) {
+        String email = getUserDetails().getUsername();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST.getCode(),
+                        ErrorCode.USER_DOES_NOT_EXIST.getMessage()));
+        Map data = cloudinaryService.upload(imageFile,"avatar", user.getId().toString());
+        user.setProfilePictureUrl( data.get("url").toString());
+        user = userRepository.saveAndFlush(user);
+        return mapper.map(user, UserDto.class);
+    }
 
     private UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

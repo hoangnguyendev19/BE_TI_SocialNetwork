@@ -19,7 +19,8 @@ public enum ErrorCode {
     USER_DOES_NOT_EXIST(400, "user-does-not-exist"),
     UNAUTHENTICATED(401, "unauthenticated"),
     TOKEN_EXPIRED(401, "token-expired"),
-    TOKEN_INVALID(401, "token-invalid")
+    TOKEN_INVALID(401, "token-invalid"),
+    IMAGE_UPLOAD_FAILED(400, "image-upload-failed"),
 
     ;
     private final int code;

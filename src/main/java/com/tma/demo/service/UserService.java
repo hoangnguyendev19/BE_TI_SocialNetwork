@@ -5,6 +5,7 @@ import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 
@@ -28,4 +29,7 @@ public interface UserService {
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     UserDto updateProfile(UpdateProfileRequest request);
+
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    UserDto changeAvatar(MultipartFile imageFile);
 }

@@ -10,7 +10,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * UserController
@@ -42,6 +45,15 @@ public class UserController {
                 "update profile successfully",
                 userDto
         )) ;
+    }
+
+
+    @PutMapping(value = "/change-avatar")
+    public ResponseEntity<ApiResponse<UserDto>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDto userDto = userService.changeAvatar(imageFile);
+        return ResponseEntity.ok(new ApiResponse<>(200, "change avatar successfully", userDto));
+
     }
 
 
