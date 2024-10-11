@@ -55,4 +55,12 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse<>(200, "change avatar successfully", imgUrl));
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<UserDto>> getUserDto(){
+        UserDto userDto = userService.getUser();
+        return ResponseEntity.ok(new ApiResponse<>(200, "get user successfully", userDto));
+    }
+
+
+
 }

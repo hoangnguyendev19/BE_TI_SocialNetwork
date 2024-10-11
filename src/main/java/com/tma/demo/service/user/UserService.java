@@ -26,10 +26,13 @@ public interface UserService {
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
-
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     UserDto updateProfile(UpdateProfileRequest request);
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     String changeAvatar(MultipartFile imageFile);
+
+    UserDto getUser();
+
+    UserDto getUserByEmail(String email);
 }
