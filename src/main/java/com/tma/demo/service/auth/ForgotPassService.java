@@ -59,7 +59,7 @@ public class ForgotPassService {
 
         Otp geotp = otpRepository.findByUserAndOtp(user, otp)
                 .orElseThrow(() -> new RuntimeException("Invalid OTP or OTP has expired"));
-
+        System.out.println(geotp.toString());
         // Kiểm tra xem OTP có hợp lệ và chưa hết hạn
         if (geotp.getOtp().equals(otp) && Duration.between(
                 geotp.getOtpGeneratedTime(),
@@ -69,7 +69,7 @@ public class ForgotPassService {
             otpRepository.save(geotp);
 
             // Trả về phản hồi với trạng thái thành công và thông tin email
-            return new VerifyOtpResponse(user.getEmail());
+            return new VerifyOtpResponse(geotp.getUser().getEmail());
         }
 
         // Trường hợp OTP không hợp lệ hoặc đã hết hạn

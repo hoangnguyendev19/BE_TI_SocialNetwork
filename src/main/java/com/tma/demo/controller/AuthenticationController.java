@@ -82,31 +82,33 @@ public class AuthenticationController {
 
     // API VERIFY OTP
     @PutMapping(value = "/verify-otp")
-public ResponseEntity<ApiResponse<String>> verifyAccount(
-        @RequestBody VerifyOTPRequest verifyOTPRequest) {
-    try {
-        // Gọi service để xác thực OTP và nhận phản hồi
-      
-        String token = jwtService.generateToken( verifyOTPRequest.getEmail(), TokenType.ACCESS_TOKEN);
+    public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyAccount(
+            @RequestBody VerifyOTPRequest verifyOTPRequest) {
+        try {
+            // Gọi service để xác thực OTP và nhận phản hồi
 
-        ApiResponse<String> apiResponse = new ApiResponse<>(
-                HttpStatus.OK.value(),
-                "OTP verification successful",
-                token
+            // String token = jwtService.generateToken(verifyOTPRequest.getEmail(), TokenType.ACCESS_TOKEN);
+            VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(
+                verifyOTPRequest.getEmail(), 
+                verifyOTPRequest.getOtp()
         );
 
-        return ResponseEntity.ok(apiResponse);
-    } catch (RuntimeException e) {
-        ApiResponse<String> apiResponse = new ApiResponse<>(
-                HttpStatus.BAD_REQUEST.value(),
-                e.getMessage(),
-                null // Không có dữ liệu phản hồi khi thất bại
-        );
+            ApiResponse<VerifyOtpResponse> apiResponse = new ApiResponse<>(
+                    HttpStatus.OK.value(),
+                    "OTP verification successful",
+                    verifyOtpResponse);
 
-        return ResponseEntity.badRequest().body(apiResponse);
+            return ResponseEntity.ok(apiResponse);
+        } catch (RuntimeException e) {
+            ApiResponse<VerifyOtpResponse> apiResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST.value(),
+                    e.getMessage(),
+                    null // Không có dữ liệu phản hồi khi thất bại
+            );
+
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
     }
-}
-
 
     // API FORGOT PASSWORD
     @PostMapping(value = "/forgot-password")
