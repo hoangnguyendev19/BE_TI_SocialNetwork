@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Service
 public class PostMapper {
-    public PostDto from(Post post, List<Media> mediaList) {
+    public PostDto from(Post post, List<Media> mediaList, PostDto parentPost) {
         List<MediaDto> mediaDtoList = new ArrayList<>();
         for (Media media : mediaList) {
             mediaDtoList.add(new MediaDto(media.getId().toString(), media.getMediaUrl()));
@@ -29,6 +29,7 @@ public class PostMapper {
         return PostDto.builder()
                 .id(post.getId().toString())
                 .content(post.getContent())
+                .parentPost(parentPost)
                 .mediaList(mediaDtoList)
                 .build();
     }

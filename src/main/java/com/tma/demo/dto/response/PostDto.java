@@ -21,5 +21,6 @@ import java.util.List;
 public class PostDto {
     private String id;
     private String content;
+    private PostDto parentPost;
     private List<MediaDto> mediaList;
 }

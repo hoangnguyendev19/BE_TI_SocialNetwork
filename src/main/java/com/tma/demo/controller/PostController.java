@@ -30,6 +30,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostDto>> createPost(
             @RequestParam(value = "files") MultipartFile[] mediaFiles,
             @RequestParam(value = "content") String content){
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
                         .code(HttpStatus.CREATED.value())
@@ -37,15 +38,5 @@ public class PostController {
                         .data(postService.createPost(content, mediaFiles))
                         .build());
     }
-    @GetMapping
-    public ResponseEntity<ApiResponse<PostDto>> getPost(
-            @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam(value = "content") String content){
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<PostDto>builder()
-                        .code(HttpStatus.CREATED.value())
-                        .message("created post successfully")
-                        .data(postService.createPost(content, mediaFiles))
-                        .build());
-    }
+
 }

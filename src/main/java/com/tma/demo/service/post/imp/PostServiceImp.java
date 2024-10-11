@@ -64,7 +64,7 @@ public class PostServiceImp implements PostService {
                 .build();
         post = postRepository.save(post);
         List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
-        return postMapper.from(post, mediaList);
+        return postMapper.from(post, mediaList, null);
     }
 
     //    =================================================================================================================
@@ -84,7 +84,6 @@ public class PostServiceImp implements PostService {
         }
         return mediaList;
     }
-
 
     private User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
