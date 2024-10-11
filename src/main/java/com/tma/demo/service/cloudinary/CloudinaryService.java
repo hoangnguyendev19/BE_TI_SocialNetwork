@@ -37,4 +37,5 @@ public class CloudinaryService {
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
+
 }

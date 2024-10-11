@@ -8,9 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
-@Repository
 public interface TokenRepository extends JpaRepository<Token, UUID> {
-
     @Query("SELECT t FROM Token  t where t.accessToken = :token and t.isRevoked != true")
     Optional<Token> findByAccessToken(@Param("token") String token);
 }

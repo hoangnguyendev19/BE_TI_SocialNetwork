@@ -21,20 +21,20 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateProfileRequest {
-    @NotBlank(message = "first-name-is-required")
+    @NotBlank(message = "first name is required")
     private String firstName;
-    @NotBlank(message = "last-name-is-required")
+    @NotBlank(message = "last name is required")
     private String lastName;
-    @NotBlank(message = "date-of-birth-is-required")
+    @NotBlank(message = "date of birth is required")
     private String dateOfBirth;
-    @NotBlank(message = "present-address-is-required")
+    @NotBlank(message = "present address is required")
     private String presentAddress;
-    @NotBlank(message = "permanent-address-is-required")
+    @NotBlank(message = "permanent address is required")
     private String permanentAddress;
-    @NotBlank(message = "phone-number-is-required")
+    @NotBlank(message = "phone number is required")
     private String phoneNumber;
-    @NotBlank(message = "city-is-required")
+    @NotBlank(message = "city is required")
     private String city;
-    @NotBlank(message = "country-is-required")
+    @NotBlank(message = "country is required")
     private String country;
 }

@@ -1,6 +1,8 @@
 package com.tma.demo.service.user.imp;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.constant.AttributeConstant;
+import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
@@ -83,8 +85,8 @@ public class UserServiceImp implements UserService {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-        Map data = cloudinaryService.upload(imageFile, "avatar", user.getId().toString());
-        user.setProfilePictureUrl(data.get("url").toString());
+        Map data = cloudinaryService.upload(imageFile, FolderNameConstant.AVATAR, user.getId().toString());
+        user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
         user = userRepository.saveAndFlush(user);
         return user.getProfilePictureUrl();
     }

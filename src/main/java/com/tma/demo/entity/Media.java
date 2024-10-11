@@ -38,9 +38,7 @@ public class Media {
     private Post post;
     @Enumerated(EnumType.STRING)
     private MediaType mediaType;
-
     private String mediaUrl;
-
     private  boolean isDelete;
     @CreatedDate
     private LocalDateTime createdAt;
