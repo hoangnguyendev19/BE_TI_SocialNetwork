@@ -50,7 +50,7 @@ public class ForgotPassService {
         } catch (MessagingException e) {
             throw new RuntimeException("Unable to send otp please try again");
         }
-        return otp;
+        return "OTP Send To Your Email";
     }
 
     public VerifyOtpResponse verifyAccount(String email, String otp) {
@@ -59,15 +59,15 @@ public class ForgotPassService {
 
         Otp geotp = otpRepository.findByUserAndOtp(user, otp)
                 .orElseThrow(() -> new RuntimeException("Invalid OTP or OTP has expired"));
-        System.out.println(geotp.toString());
+       
         // Kiểm tra xem OTP có hợp lệ và chưa hết hạn
         if (geotp.getOtp().equals(otp) && Duration.between(
                 geotp.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds() < (1 * 100)) {
+                LocalDateTime.now()).getSeconds() < (1 * 10000)) {
 
             // Cập nhật thông tin OTP (nếu cần) và lưu lại
             otpRepository.save(geotp);
-
+                    System.out.println(geotp.getUser().getEmail());
             // Trả về phản hồi với trạng thái thành công và thông tin email
             return new VerifyOtpResponse(geotp.getUser().getEmail());
         }
@@ -76,7 +76,7 @@ public class ForgotPassService {
         throw new RuntimeException("Please regenerate OTP and try again");
     }
 
-    public String setPassword(String email, String otp, SetPasswordRequest setPasswordRequest) {
+    public String setPassword(SetPasswordRequest setPasswordRequest) {
         String password = setPasswordRequest.getNewPassword();
         String confirmPassword = setPasswordRequest.getConfirmNewPassword();
         if (!isValidPassword(password)) {
@@ -88,11 +88,12 @@ public class ForgotPassService {
             throw new RuntimeException("Passwords do not match.");
         }
         // Find User By Email
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        User user = userRepository.findByEmail(setPasswordRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + setPasswordRequest.getEmail()));
         // Find OTP Of That User
-        otpRepository.findByUserAndOtp(user, otp)
-                .orElseThrow(() -> new RuntimeException("Invalid OTP"));
+        //
+        // otpRepository.findByUserAndOtp(user, otp)
+        //         .orElseThrow(() -> new RuntimeException("Invalid OTP"));
         // HashPassWord And Save User into DB
         String hashedPassword = passwordEncoder.encode(password);
         user.setPassword(hashedPassword);

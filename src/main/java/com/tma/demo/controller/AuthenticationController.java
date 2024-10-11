@@ -87,11 +87,11 @@ public class AuthenticationController {
         try {
             // Gọi service để xác thực OTP và nhận phản hồi
 
-            // String token = jwtService.generateToken(verifyOTPRequest.getEmail(), TokenType.ACCESS_TOKEN);
+            // String token = jwtService.generateToken(verifyOTPRequest.getEmail(),
+            // TokenType.ACCESS_TOKEN);
             VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(
-                verifyOTPRequest.getEmail(), 
-                verifyOTPRequest.getOtp()
-        );
+                    verifyOTPRequest.getEmail(),
+                    verifyOTPRequest.getOtp());
 
             ApiResponse<VerifyOtpResponse> apiResponse = new ApiResponse<>(
                     HttpStatus.OK.value(),
@@ -119,8 +119,8 @@ public class AuthenticationController {
 
             ApiResponse<String> apiResponse = new ApiResponse<>(
                     HttpStatus.OK.value(),
-                    "OTP has been sent to your Email",
-                    otp // Trả về mã OTP trong `data`
+                    otp,
+                    null //
             );
 
             return ResponseEntity.ok(apiResponse);
@@ -137,13 +137,12 @@ public class AuthenticationController {
     }
 
     // API SET PASSWORD
-    @PutMapping(value = "/set-password/{email}/{otp}")
+    @PutMapping(value = "/set-password")
     public ResponseEntity<ApiResponse<String>> setPassword(
-            @PathVariable String email,
-            @PathVariable String otp,
+
             @Valid @RequestBody SetPasswordRequest setPasswordRequest) {
         try {
-            String response = forgotPassService.setPassword(email, otp, setPasswordRequest);
+            String response = forgotPassService.setPassword(setPasswordRequest);
             ApiResponse<String> apiResponse = new ApiResponse<>(
                     HttpStatus.OK.value(),
                     response, // Thông báo thành công
