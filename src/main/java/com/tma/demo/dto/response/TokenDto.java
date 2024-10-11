@@ -22,5 +22,4 @@ import lombok.NoArgsConstructor;
 public class TokenDto {
     private String accessToken;
     private String refreshToken;
-    private UserDto user;
 }

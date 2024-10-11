@@ -38,5 +38,9 @@ public class PostController {
                         .data(postService.createPost(content, mediaFiles))
                         .build());
     }
+    @PutMapping
+    public ResponseEntity<ApiResponse<PostDto>> updatePost(){
+        return null;
+    }
 
 }
