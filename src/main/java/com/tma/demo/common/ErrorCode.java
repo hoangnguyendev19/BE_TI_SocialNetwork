@@ -15,13 +15,13 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 public enum ErrorCode {
-    WRONG_PASSWORD(HttpStatus.BAD_REQUEST.value(), "wrong-password"),
-    CONFIRM_PASSWORD_DOES_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "confirm-password-does-not-match"),
-    USER_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "user-does-not-exist"),
+    WRONG_PASSWORD(HttpStatus.BAD_REQUEST.value(), "wrong password"),
+    CONFIRM_PASSWORD_DOES_NOT_MATCH(HttpStatus.BAD_REQUEST.value(), "confirm password does not match"),
+    USER_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "user does not exist"),
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED.value(), "unauthenticated"),
-    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "token-expired"),
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED.value(), "token-invalid"),
-    IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "image-upload-failed"),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "token expired"),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED.value(), "token invalid"),
+    IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "image upload failed"),
     ;
     private final int code;
     private final String message;

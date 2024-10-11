@@ -26,7 +26,7 @@ public class LoginRequest {
 
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~])[A-Za-z\\d!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~]{8,}$",
-            message = "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character."
+            message = "password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character."
     )
     private String password;
 }
