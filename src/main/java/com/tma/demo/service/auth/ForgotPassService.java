@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tma.demo.dto.request.ForgotPasswordRequest;
 import com.tma.demo.dto.request.SetPasswordRequest;
+import com.tma.demo.dto.response.VerifyOtpResponse;
 import com.tma.demo.entity.Otp;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
@@ -29,10 +31,12 @@ public class ForgotPassService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     public String generateOtp(String email) {
+
         // Find User
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException( "Not Found User"));
+                .orElseThrow(() -> new RuntimeException("Not Found User"));
         // Generate OTP
         String otp = otpUtil.generateOtp();
         // Save User and OTP
@@ -49,18 +53,27 @@ public class ForgotPassService {
         return otp;
     }
 
-    public String verifyAccount(String email, String otp) {
-        User user = userRepository.findByEmail(email) // Find 
+    public VerifyOtpResponse verifyAccount(String email, String otp) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User with email " + email + " not found"));
-        Otp geotp = otpRepository.findByUserAndOtp(user, otp) // Find OTP by User
-                .orElseThrow(() -> new RuntimeException("Invalid OTP or OTP has expired"));
-        if (geotp.getOtp().equals(otp) && Duration.between(geotp.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds() < (1 * 100)) { // Check Time OTP Expr
 
-            otpRepository.save(geotp); // SaveUser
-            return "OTP verified you can login";
+        Otp geotp = otpRepository.findByUserAndOtp(user, otp)
+                .orElseThrow(() -> new RuntimeException("Invalid OTP or OTP has expired"));
+
+        // Kiểm tra xem OTP có hợp lệ và chưa hết hạn
+        if (geotp.getOtp().equals(otp) && Duration.between(
+                geotp.getOtpGeneratedTime(),
+                LocalDateTime.now()).getSeconds() < (1 * 100)) {
+
+            // Cập nhật thông tin OTP (nếu cần) và lưu lại
+            otpRepository.save(geotp);
+
+            // Trả về phản hồi với trạng thái thành công và thông tin email
+            return new VerifyOtpResponse(user.getEmail());
         }
-        return "Please regenerate otp and try again";
+
+        // Trường hợp OTP không hợp lệ hoặc đã hết hạn
+        throw new RuntimeException("Please regenerate OTP and try again");
     }
 
     public String setPassword(String email, String otp, SetPasswordRequest setPasswordRequest) {
