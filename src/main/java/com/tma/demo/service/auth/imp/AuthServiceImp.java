@@ -44,6 +44,7 @@ public class AuthServiceImp implements AuthService {
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BaseException(ErrorCode.WRONG_PASSWORD);
+
         }
         String accessToken = jwtService.generateToken(user.getEmail(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtService.generateToken(user.getEmail(), TokenType.REFRESH_TOKEN);

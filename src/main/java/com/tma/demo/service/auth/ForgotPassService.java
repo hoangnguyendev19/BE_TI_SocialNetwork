@@ -3,25 +3,20 @@ package com.tma.demo.service.auth;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import org.hibernate.mapping.Map;
-import org.springframework.http.HttpStatus;
+import com.tma.demo.exception.BaseException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.tma.demo.dto.request.ForgotPasswordRequest;
 import com.tma.demo.dto.request.SetPasswordRequest;
 import com.tma.demo.dto.response.VerifyOtpResponse;
 import com.tma.demo.entity.Otp;
 import com.tma.demo.entity.User;
-import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.OtpRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.util.EmailUtil;
 import com.tma.demo.util.OtpUtil;
-
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-
+import com.tma.demo.common.ErrorCode;
 @Service
 @RequiredArgsConstructor
 public class ForgotPassService {
@@ -31,12 +26,10 @@ public class ForgotPassService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     public String generateOtp(String email) {
-
         // Find User
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Not Found User"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         // Generate OTP
         String otp = otpUtil.generateOtp();
         // Save User and OTP
@@ -44,67 +37,56 @@ public class ForgotPassService {
                 .user(user)
                 .otp(otp)
                 .build();
+//        Otp geotp = new Otp();
+//        geotp.setOtp(otp);
+//        geotp.setUser(user);
         otpRepository.save(geotp);
         try {
             emailUtil.sendOtpEmail(email, otp); // Send OTP to Email
         } catch (MessagingException e) {
-            throw new RuntimeException("Unable to send otp please try again");
+            throw new BaseException(ErrorCode.UNABLE_SEND_OTP);
         }
         return "OTP Send To Your Email";
     }
-
+//
     public VerifyOtpResponse verifyAccount(String email, String otp) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User with email " + email + " not found"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
 
         Otp geotp = otpRepository.findByUserAndOtp(user, otp)
-                .orElseThrow(() -> new RuntimeException("Invalid OTP or OTP has expired"));
+                .orElseThrow(() -> new BaseException(ErrorCode.OTP_DOES_NOT_EXIST));
        
-        // Kiểm tra xem OTP có hợp lệ và chưa hết hạn
+        // Expired OTP
         if (geotp.getOtp().equals(otp) && Duration.between(
                 geotp.getOtpGeneratedTime(),
                 LocalDateTime.now()).getSeconds() < (1 * 10000)) {
-
-            // Cập nhật thông tin OTP (nếu cần) và lưu lại
+            // UpdateOTP
             otpRepository.save(geotp);
-                    System.out.println(geotp.getUser().getEmail());
-            // Trả về phản hồi với trạng thái thành công và thông tin email
+//                    System.out.println(geotp.getUser().getEmail());
+            // Response
             return new VerifyOtpResponse(geotp.getUser().getEmail());
         }
-
-        // Trường hợp OTP không hợp lệ hoặc đã hết hạn
-        throw new RuntimeException("Please regenerate OTP and try again");
+        // OTP Had Expired
+        throw new BaseException(ErrorCode.OTP_EXPIRED);
     }
-
+//
     public String setPassword(SetPasswordRequest setPasswordRequest) {
         String password = setPasswordRequest.getNewPassword();
         String confirmPassword = setPasswordRequest.getConfirmNewPassword();
-        if (!isValidPassword(password)) {
-            throw new RuntimeException(
-                    "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character.");
-        }
         // Check PassWord And Confirm PassWord matching
         if (!password.equals(confirmPassword)) {
-            throw new RuntimeException("Passwords do not match.");
+            throw new BaseException(ErrorCode.MATCH_PASSWORD);
         }
         // Find User By Email
         User user = userRepository.findByEmail(setPasswordRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + setPasswordRequest.getEmail()));
-        // Find OTP Of That User
-        //
-        // otpRepository.findByUserAndOtp(user, otp)
-        //         .orElseThrow(() -> new RuntimeException("Invalid OTP"));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         // HashPassWord And Save User into DB
         String hashedPassword = passwordEncoder.encode(password);
         user.setPassword(hashedPassword);
         userRepository.save(user);
-
         return "Password updated successfully.";
     }
 
-    private boolean isValidPassword(String password) {
-        return password != null && password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~])[A-Za-z\\d!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~]{8,}$");
-    }
+
 
 }

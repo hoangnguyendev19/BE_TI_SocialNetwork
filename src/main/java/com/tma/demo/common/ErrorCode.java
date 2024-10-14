@@ -22,6 +22,13 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "token-expired"),
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED.value(), "token-invalid"),
     IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "image-upload-failed"),
+    EMAIL_EXIST(HttpStatus.BAD_REQUEST.value(),"email-already-exists."),
+    MATCH_PASSWORD(HttpStatus.BAD_REQUEST.value(),"passwords-do-not-match."),
+    UNABLE_SEND_OTP(HttpStatus.BAD_REQUEST.value(),"Unable to send otp please try again"),
+    OTP_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "otp-does-not-exist"),
+    OTP_EXPIRED(HttpStatus.BAD_REQUEST.value(), "otp-expired"),
+
+
     ;
     private final int code;
     private final String message;

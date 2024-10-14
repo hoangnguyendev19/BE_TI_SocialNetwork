@@ -1,12 +1,13 @@
 package com.tma.demo.service.auth;
 
+import com.tma.demo.exception.BaseException;
 import org.springframework.stereotype.Service;
 
 import com.tma.demo.dto.request.RegisterRequest;
 import com.tma.demo.dto.response.RegisterResponse;
 import com.tma.demo.entity.User;
 import com.tma.demo.repository.UserRepository;
-
+import com.tma.demo.common.ErrorCode;
 @Service
 public class RegisterService {
     private final UserRepository userRepository;
@@ -16,45 +17,16 @@ public class RegisterService {
     }
 
     public User registerDTOtoUser(RegisterRequest registerRequest) {
-        if (!isValidPassword(registerRequest.getPassword())) { //Check PassWord
-            throw new RuntimeException(
-                    "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character.");
-        }
-        if (!isValidPhoneNumber(registerRequest.getPhoneNumber())) { //
-            throw new RuntimeException(
-                    "Invalid Phone Number.");
-        }
-        if (!isValidEmail(registerRequest.getEmail())) { //
-            throw new RuntimeException(
-                    "Email not correct format.");
-        }
-        if (registerRequest.getFirstName() == null || registerRequest.getFirstName().isEmpty()) {
-            throw new RuntimeException("First name cannot be empty.");
-        }
 
-        // Validate last name
-        if (registerRequest.getLastName() == null || registerRequest.getLastName().isEmpty()) {
-            throw new RuntimeException("Last name cannot be empty.");
-        }
-
-        // Validate email
-        if (registerRequest.getEmail() == null || registerRequest.getEmail().isEmpty()) {
-            throw new RuntimeException("Email cannot be empty.");
-        }
-
-        // Validate phone number
-        if (registerRequest.getPhoneNumber() == null || registerRequest.getPhoneNumber().isEmpty()) {
-            throw new RuntimeException("Phone number cannot be empty.");
-        }
 
         // Check if email already exists
         if (isEmailExist(registerRequest.getEmail())) {
-            throw new RuntimeException("Email already exists.");
+            throw new BaseException(ErrorCode.EMAIL_EXIST);
         }
 
         // Check if passwords match
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match.");
+            throw new BaseException(ErrorCode.MATCH_PASSWORD);
         }
         // DTO to User
         User user = new User();
@@ -79,20 +51,6 @@ public class RegisterService {
         return this.userRepository.existsByEmail(email);
     }
 
-    private boolean isValidPassword(String password) {
-        System.out.println("Checking password: " + password);
-        return password != null && password.matches(
-                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*])[A-Za-z\\d!@#\\$%\\^&\\*]{8,}$");
-    }
 
-    private boolean isValidPhoneNumber(String phonenumber) {
-        return phonenumber != null && phonenumber.matches(
-                "^\\+?(\\d{1,3})?[-.\\s]?(\\d{2,4})[-.\\s]?(\\d{3,4})[-.\\s]?(\\d{3,4})$");
-    }
-
-    private boolean isValidEmail(String email) {
-        return email != null && email.matches(
-                "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"); 
-    }
 
 }
