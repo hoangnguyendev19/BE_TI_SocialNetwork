@@ -1,11 +1,12 @@
 package com.tma.demo.dto.request;
 
+import com.tma.demo.constant.PatternConstant;
+import com.tma.demo.constant.ValidateFieldMessage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * LoginRequest
@@ -21,12 +22,13 @@ import lombok.NonNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-    @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "email address invalid")
+    @Email(regexp = PatternConstant.EMAIL_ADDRESS,
+            message = ValidateFieldMessage.EMAIL_ADDRESS)
     private String email;
 
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~])[A-Za-z\\d!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~]{8,}$",
-            message = "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character."
+            regexp = PatternConstant.PASSWORD,
+            message = ValidateFieldMessage.PASSWORD
     )
     private String password;
 }

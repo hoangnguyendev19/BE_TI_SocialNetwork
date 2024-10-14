@@ -1,6 +1,7 @@
 package com.tma.demo.service.user.imp;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -66,7 +69,7 @@ public class UserServiceImp implements UserService {
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setDateOfBirth(request.getDateOfBirth());
+        user.setDateOfBirth(Date.valueOf(request.getDateOfBirth()));
         user.setPresentAddress(request.getPresentAddress());
         user.setPermanentAddress(request.getPermanentAddress());
         user.setPhoneNumber(request.getPhoneNumber());
@@ -78,14 +81,14 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public UserDto changeAvatar(MultipartFile imageFile) {
+    public String changeAvatar(MultipartFile imageFile) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         Map data = cloudinaryService.upload(imageFile, FolderNameConstant.AVATAR, user.getId().toString());
-        user.setProfilePictureUrl(data.get("url").toString());
+        user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
         user = userRepository.saveAndFlush(user);
-        return mapper.map(user, UserDto.class);
+        return user.getProfilePictureUrl();
     }
 
     @Override

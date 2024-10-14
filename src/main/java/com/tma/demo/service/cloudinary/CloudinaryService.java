@@ -3,6 +3,7 @@ package com.tma.demo.service.cloudinary;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,12 @@ public class CloudinaryService {
     public Map upload(MultipartFile file, String folderName, String id)  {
         try{
             return this.cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
-                    "public_id", id,
-                    "folder", folderName,
-                    "overwrite", true));
+                    AttributeConstant.CLOUDINARY_PUBLIC_ID, id,
+                    AttributeConstant.CLOUDINARY_FOLDER, folderName,
+                    AttributeConstant.CLOUDINARY_OVERWRITE, true));
         }catch (IOException io){
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
+
 }

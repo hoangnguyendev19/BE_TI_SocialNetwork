@@ -46,22 +46,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String jwt;
-        String userEmail;
+        String userEmail = null;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractEmail(jwt);
+
+        try {
+            userEmail = jwtService.extractEmail(jwt);
+        } catch (Exception e) {
+            sendError(response, ErrorCode.TOKEN_INVALID);
+        }
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             Optional<Token> token = tokenRepository.findByAccessToken(jwt);
             if (token.isEmpty()) {
-                throw new BaseException(ErrorCode.TOKEN_INVALID);
+                sendError(response, ErrorCode.TOKEN_INVALID);
             } else {
                 if (jwtService.isExpired(jwt)) {
-                    throw new BaseException(ErrorCode.TOKEN_EXPIRED);
+                    sendError(response, ErrorCode.TOKEN_EXPIRED);
                 }
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -77,4 +82,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
+    private static void sendError(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+        response.setStatus(errorCode.getCode());
+        response.setContentType("application/json");
+        response.getWriter().write(errorCode.getMessage());
+        response.getWriter().flush();
+    }
+
+
 }

@@ -19,7 +19,6 @@ import java.util.UUID;
  * ------------------------------------------------
  * 07/10/2024        NGUYEN             create
  */
-@Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u WHERE u.email = :email and u.isDelete != true")
     Optional<User> findByEmail(@Param("email") String email);

@@ -1,7 +1,7 @@
 package com.tma.demo.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import com.tma.demo.constant.PatternConstant;
+import com.tma.demo.constant.ValidateFieldMessage;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -21,13 +21,13 @@ import lombok.*;
 @Builder
 public class ChangePasswordRequest {
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~])[A-Za-z\\d!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~]{8,}$",
-            message = "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character."
+            regexp = PatternConstant.PASSWORD,
+            message = ValidateFieldMessage.PASSWORD
     )
     private String currentPassword;
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~])[A-Za-z\\d!@#\\$%\\^&\\*\\(\\)_\\+\\[\\]\\{\\};':\"\\\\|,.<>\\/?`~]{8,}$",
-            message = "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character."
+            regexp = PatternConstant.PASSWORD,
+            message = ValidateFieldMessage.PASSWORD
     )
     private String newPassword;
 

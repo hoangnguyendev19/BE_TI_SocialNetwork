@@ -58,7 +58,6 @@ public class AuthServiceImp implements AuthService {
         return TokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .user(modelMapper.map(user, UserDto.class))
                 .build();
     }
 }
