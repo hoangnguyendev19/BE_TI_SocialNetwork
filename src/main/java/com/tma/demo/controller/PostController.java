@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.service.post.PostService;
@@ -34,7 +35,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
                         .code(HttpStatus.CREATED.value())
-                        .message("created post successfully")
+                        .message(SuccessMessage.CREATED_POST_SUCCESS.getMessage())
                         .data(postService.createPost(content, mediaFiles))
                         .build());
     }

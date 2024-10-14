@@ -56,7 +56,10 @@ public class UserController {
     @PutMapping(value = "/avatar")
     public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
         String imgUrl = userService.changeAvatar(imageFile);
-        return ResponseEntity.ok(new ApiResponse<>(200, "change avatar successfully", imgUrl));
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.CHANGE_AVATAR_SUCCESS.getMessage(),
+                imgUrl));
     }
 
     @GetMapping

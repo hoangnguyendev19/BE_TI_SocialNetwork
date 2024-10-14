@@ -13,4 +13,6 @@ package com.tma.demo.constant;
 public class AttributeConstant {
     public static final String CLOUDINARY_URL = "url";
     public static final String CLOUDINARY_PUBLIC_ID = "public_id";
+    public static final String CLOUDINARY_FOLDER = "folder";
+    public static final String CLOUDINARY_OVERWRITE = "overwrite";
 }
