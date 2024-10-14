@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
@@ -34,7 +35,10 @@ public class UserController {
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "change password successfully", null));
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.CHANGE_PASSWORD_SUCCESS.getMessage(),
+                null));
     }
 
     @PutMapping
@@ -42,21 +46,27 @@ public class UserController {
         UserDto userDto = userService.updateProfile(request);
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),
-                "update profile successfully",
+                SuccessMessage.UPDATE_PROFILE_SUCCESS.getMessage(),
                 userDto
         ));
     }
 
     @PutMapping(value = "/avatar")
-    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
-        String imgUrl = userService.changeAvatar(imageFile);
-        return ResponseEntity.ok(new ApiResponse<>(200, "change avatar successfully", imgUrl));
+    public ResponseEntity<ApiResponse<UserDto>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
+        UserDto userDto = userService.changeAvatar(imageFile);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.CHANGE_AVATAR_SUCCESS.getMessage(),
+                userDto));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<UserDto>> getUserDto(){
         UserDto userDto = userService.getUser();
-        return ResponseEntity.ok(new ApiResponse<>(200, "get user successfully", userDto));
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.GET_USER_SUCCESS.getMessage(),
+                userDto));
     }
 
 

@@ -2,6 +2,7 @@ package com.tma.demo.configuration.security;
 
 import com.tma.demo.configuration.security.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * SecurityConfig
@@ -32,6 +35,8 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Value("${application.origin.fe-url}")
+    private String frontEndUrl;
     private final String[] PUBLIC_ENDPOINTS = {"/api/v1/auth/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
@@ -61,6 +66,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 // Add JWT filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -73,10 +79,25 @@ public class SecurityConfig {
         corsConfiguration.addAllowedMethod("*"); // Allow all HTTP methods
         corsConfiguration.setAllowCredentials(true); // Allow credentials such as cookies, authorization headers, etc.
 
+        corsConfiguration.addAllowedOrigin(frontEndUrl); // Replace with your frontend URL
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
-
         return new CorsFilter(source);
     }
-}
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins(frontEndUrl) // Replace with your frontend URL
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
+}

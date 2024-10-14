@@ -1,8 +1,6 @@
 package com.tma.demo.service.user.imp;
 
 import com.tma.demo.common.ErrorCode;
-import com.tma.demo.constant.AttributeConstant;
-import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
@@ -21,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -86,7 +82,7 @@ public class UserServiceImp implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         Map data = cloudinaryService.upload(imageFile, FolderNameConstant.AVATAR, user.getId().toString());
-        user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+        user.setProfilePictureUrl(data.get("url").toString());
         user = userRepository.saveAndFlush(user);
         return user.getProfilePictureUrl();
     }
