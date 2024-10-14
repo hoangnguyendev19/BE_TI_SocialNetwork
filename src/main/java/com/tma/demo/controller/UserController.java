@@ -1,16 +1,18 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
-import com.tma.demo.service.UserService;
+import com.tma.demo.service.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * UserController
@@ -28,26 +30,45 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
-    @PostMapping(value = "/change-password")
+
+    @PutMapping(value = "/password")
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK, "change password successfully", null));
-    }
-    @PutMapping(value = "/update-profile")
-    public ResponseEntity<ApiResponse<UserDto>> updateProfile(@RequestBody UpdateProfileRequest request){
-        UserDto userDto =  userService.updateProfile(request);
         return ResponseEntity.ok(new ApiResponse<>(
-                HttpStatus.OK,
-                "update profile successfully",
+                HttpStatus.OK.value(),
+                SuccessMessage.CHANGE_PASSWORD_SUCCESS.getMessage(),
+                null));
+    }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<UserDto>> updateProfile(@RequestBody UpdateProfileRequest request) {
+        UserDto userDto = userService.updateProfile(request);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.UPDATE_PROFILE_SUCCESS.getMessage(),
                 userDto
-        )) ;
+        ));
+    }
+
+    @PutMapping(value = "/avatar")
+    public ResponseEntity<ApiResponse<UserDto>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
+        UserDto userDto = userService.changeAvatar(imageFile);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.CHANGE_AVATAR_SUCCESS.getMessage(),
+                userDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<UserDto>> getUserDto(){
+        UserDto userDto = userService.getUser();
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.GET_USER_SUCCESS.getMessage(),
+                userDto));
     }
 
 
 
-    @GetMapping("/test-secured")
-    public ResponseEntity<String> get(){
-        return ResponseEntity.ok("ok");
-    }
 }

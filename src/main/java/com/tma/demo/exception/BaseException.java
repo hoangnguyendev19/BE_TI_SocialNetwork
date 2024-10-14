@@ -1,9 +1,7 @@
 package com.tma.demo.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.tma.demo.common.ErrorCode;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serial;
@@ -25,8 +23,5 @@ import java.io.Serial;
 public class BaseException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
-    private HttpStatus code;
-    private String message;
-
-
+    private ErrorCode errorCode;
 }

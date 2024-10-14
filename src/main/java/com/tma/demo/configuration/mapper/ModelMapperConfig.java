@@ -1,4 +1,4 @@
-package com.tma.demo.configuration;
+package com.tma.demo.configuration.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;

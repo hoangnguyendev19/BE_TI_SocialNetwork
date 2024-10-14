@@ -1,5 +1,6 @@
 package com.tma.demo.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,12 +21,20 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateProfileRequest {
+    @NotBlank(message = "first-name-is-required")
     private String firstName;
+    @NotBlank(message = "last-name-is-required")
     private String lastName;
+    @NotBlank(message = "date-of-birth-is-required")
     private Date dateOfBirth;
+    @NotBlank(message = "present-address-is-required")
     private String presentAddress;
+    @NotBlank(message = "permanent-address-is-required")
     private String permanentAddress;
+    @NotBlank(message = "phone-number-is-required")
     private String phoneNumber;
+    @NotBlank(message = "city-is-required")
     private String city;
+    @NotBlank(message = "country-is-required")
     private String country;
 }
