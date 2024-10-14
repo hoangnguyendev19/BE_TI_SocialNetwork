@@ -60,6 +60,7 @@ public class AuthenticationController {
             user.setPassword(hashPassword);
 
             RegisterResponse RegisterResponse = this.registerService.saveUser(user);
+<<<<<<< HEAD
             //
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.CREATED.value(),
@@ -98,5 +99,24 @@ public class AuthenticationController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
                 response, //
                 null ));
+=======
+
+            // Tạo phản hồi thành công
+            ApiResponse<RegisterResponse> apiResponse = new ApiResponse<>(
+                    HttpStatus.CREATED.value(),
+                    "Register Success", // Thông báo thành công
+                    RegisterResponse //
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+
+        } catch (RuntimeException e) {
+            //
+            ApiResponse<RegisterResponse> apiResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST.value(),
+                    e.getMessage(), // Thông báo lỗi từ service
+                    null);
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
+>>>>>>> 71318b3 (Push)
     }
 }
