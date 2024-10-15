@@ -30,9 +30,9 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(ErrorCode.UNAUTHENTICATED.getCode());
+        response.setStatus(ErrorCode.BAD_REQUEST.getCode());
         response.setContentType("application/json");
-        response.getWriter().write(ErrorCode.UNAUTHENTICATED.getMessage());
+        response.getWriter().write(ErrorCode.BAD_REQUEST.getMessage());
         response.getWriter().flush();
     }
 }

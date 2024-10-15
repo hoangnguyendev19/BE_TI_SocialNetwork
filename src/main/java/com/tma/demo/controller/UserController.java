@@ -11,8 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,14 +61,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<UserDto>> getUserDto(){
+    public ResponseEntity<ApiResponse<UserDto>> getUserDto() {
         UserDto userDto = userService.getUser();
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),
                 SuccessMessage.GET_USER_SUCCESS.getMessage(),
                 userDto));
     }
-
 
 
 }

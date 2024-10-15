@@ -49,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String userEmail = null;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            sendError(response,ErrorCode.UNAUTHENTICATED);
             return;
         }
         jwt = authHeader.substring(7);

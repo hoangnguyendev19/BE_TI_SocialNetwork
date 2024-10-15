@@ -66,25 +66,70 @@ public class PostServiceImp implements PostService {
         List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
         return postMapper.from(post, mediaList, null);
     }
+    @Override
+    public PostDto updatePost(String postId,
+                              MultipartFile[] files,
+                              String content,
+                              String[] deleteFiles) {
+
+        Post post = postRepository.findById(UUID.fromString(postId))
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
+        post.setContent(content);
+        saveAllMediaFiles(files, post);
+        deleteMedia(deleteFiles, postId);
+        deleteMediaInCloud(deleteFiles, postId, FolderNameConstant.POST);
+        List<Media> mediaList = getMediaByPostId(UUID.fromString(postId));
+        PostDto parentPost = getParentPost(post.getParentPost());
+        return postMapper.from(post, mediaList, parentPost);
+    }
+
+
+    private PostDto getParentPost(Post post) {
+        if(post == null ){
+            return null;
+        }
+        if (post.getParentPost() == null) {
+            return postMapper.from(post, getMediaByPostId(post.getId()), null);
+        }
+        return getParentPost(post.getParentPost());
+    }
 
     //    =================================================================================================================
 //    MEDIA
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (MultipartFile mediaFile : mediaFiles) {
-            String uuid = UUID.randomUUID().toString();
-            Map data = cloudinaryService.upload(mediaFile, FolderNameConstant.POST, post.getId() + "/" + uuid);
+
             Media media = Media.builder()
                     .isDelete(false)
-                    .mediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString())
                     .mediaType(MediaType.IMAGE)
                     .post(post)
                     .build();
+            media = mediaRepository.saveAndFlush(media);
+            Map data = cloudinaryService.upload(mediaFile, FolderNameConstant.POST, post.getId() + "/" + media.getId());
+            media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
         return mediaList;
     }
 
+    private List<Media> getMediaByPostId(UUID postId) {
+        return mediaRepository.findAllByPostId(postId);
+    }
+
+    private void deleteMedia(String[] deleteFiles, String postId) {
+        List<Media> mediaList = mediaRepository.findAllByIdsAndPostId(deleteFiles, postId);
+        mediaRepository.deleteAll(mediaList);
+    }
+
+    private void deleteMediaInCloud(String[] deleteFiles, String prefix, String folder) {
+        for (String deleteFile : deleteFiles) {
+            String publicId = folder + (prefix != null ? "/" + prefix : "") + "/" + deleteFile;
+            cloudinaryService.deleteFile(publicId);
+        }
+    }
+
+    //    =================================================================================================
     private User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {

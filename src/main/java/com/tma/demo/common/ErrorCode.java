@@ -22,9 +22,13 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED.value(), "token-expired"),
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED.value(), "token-invalid"),
     IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "image-upload-failed"),
+    DELETE_FILE_FAILED(HttpStatus.BAD_REQUEST.value(), "delete-file-failed"),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "bad-request"),
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "post-not-found")
     ;
     private final int code;
     private final String message;
+
     ErrorCode(int i, String s) {
         this.code = i;
         this.message = s;

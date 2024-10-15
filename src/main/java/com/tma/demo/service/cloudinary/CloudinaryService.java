@@ -38,5 +38,12 @@ public class CloudinaryService {
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
+    public String deleteFile(String publicId){
+        try {
+            return this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap()).toString();
+        } catch (IOException e) {
+            throw new BaseException(ErrorCode.DELETE_FILE_FAILED);
+        }
+    }
 
 }
