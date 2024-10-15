@@ -25,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * PostServiceImp
@@ -66,6 +63,7 @@ public class PostServiceImp implements PostService {
         List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
         return postMapper.from(post, mediaList, null);
     }
+
     @Override
     public PostDto updatePost(String postId,
                               MultipartFile[] files,
@@ -76,7 +74,8 @@ public class PostServiceImp implements PostService {
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
         post.setContent(content);
         saveAllMediaFiles(files, post);
-        deleteMedia(deleteFiles, postId);
+        List<UUID> deletedFileIds = Arrays.stream(deleteFiles).map(UUID::fromString).toList();
+        deleteMedia(deletedFileIds, UUID.fromString(postId));
         deleteMediaInCloud(deleteFiles, postId, FolderNameConstant.POST);
         List<Media> mediaList = getMediaByPostId(UUID.fromString(postId));
         PostDto parentPost = getParentPost(post.getParentPost());
@@ -85,7 +84,7 @@ public class PostServiceImp implements PostService {
 
 
     private PostDto getParentPost(Post post) {
-        if(post == null ){
+        if (post == null) {
             return null;
         }
         if (post.getParentPost() == null) {
@@ -117,8 +116,9 @@ public class PostServiceImp implements PostService {
         return mediaRepository.findAllByPostId(postId);
     }
 
-    private void deleteMedia(String[] deleteFiles, String postId) {
+    private void deleteMedia(List<UUID> deleteFiles, UUID postId) {
         List<Media> mediaList = mediaRepository.findAllByIdsAndPostId(deleteFiles, postId);
+        System.out.println(mediaList);
         mediaRepository.deleteAll(mediaList);
     }
 
