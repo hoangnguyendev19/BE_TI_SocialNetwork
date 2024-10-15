@@ -1,5 +1,6 @@
 package com.tma.demo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewListCommentRequest {
-    private String post_id;
+    @JsonProperty("post_id")
+    private String postId;
 }

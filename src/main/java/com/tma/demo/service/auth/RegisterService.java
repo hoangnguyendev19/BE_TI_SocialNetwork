@@ -17,13 +17,10 @@ public class RegisterService {
     }
 
     public User registerDTOtoUser(RegisterRequest registerRequest) {
-
-
         // Check if email already exists
         if (isEmailExist(registerRequest.getEmail())) {
             throw new BaseException(ErrorCode.EMAIL_EXIST);
         }
-
         // Check if passwords match
         if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
             throw new BaseException(ErrorCode.MATCH_PASSWORD);
@@ -37,7 +34,6 @@ public class RegisterService {
         user.setPassword(registerRequest.getPassword());
         return user;
     }
-
     public RegisterResponse saveUser(User user) {
         User savedUser = this.userRepository.save(user);  //save User
         return new RegisterResponse(  //Response Register
@@ -46,11 +42,7 @@ public class RegisterService {
                 savedUser.getEmail(),
                 savedUser.getPhoneNumber());
     }
-
     public boolean isEmailExist(String email) {
         return this.userRepository.existsByEmail(email);
     }
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.tma.demo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateCommentRequest {
-    private String comment_id;
-    private String user_id;
+
+    @JsonProperty("comment_id")
+    private String commentId;
+
+    @JsonProperty("user_id")
+    private String userId;
+
+    @JsonProperty("commentText")
     private String commentText;
 }

@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.CommentRequest;
 import com.tma.demo.dto.request.DeleteCommentRequest;
@@ -30,13 +31,13 @@ public class CommentPostController {
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(@RequestBody CommentRequest request) {
         CommentResponse commentResponse = commentPostService.createComment(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.CREATED.value(),
-                "create-post-success",commentResponse));
+                SuccessMessage.CREATED_COMMENT_SUCCESS.getMessage(), commentResponse));
     }
 //
     @PutMapping(value = "/update-comment-post")
     public ResponseEntity<ApiResponse<UpdateCommentResponse>> updateComment(@RequestBody UpdateCommentRequest request) {
         UpdateCommentResponse updateresponse = commentPostService.updateComment(request);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "update success",updateresponse));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
 }
     @DeleteMapping("/delete-comment-post")
     public ResponseEntity<ApiResponse<String>> deleteComment(@RequestBody DeleteCommentRequest deleteCommentRequest) {

@@ -1,4 +1,6 @@
 package com.tma.demo.dto.request;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentRequest {
-    private String user_id;
-    private String post_id;
+
+    @JsonProperty("user_id")
+    private String userId;
+
+    @JsonProperty("post_id")
+    private String postId;
+
+    @JsonProperty("commentText")
     private String commentText;
-
-
 }
