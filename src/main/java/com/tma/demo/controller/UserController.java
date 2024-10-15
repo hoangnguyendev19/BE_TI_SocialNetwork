@@ -3,8 +3,10 @@ package com.tma.demo.controller;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ChangePasswordRequest;
+import com.tma.demo.dto.request.SetPasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
+import com.tma.demo.service.auth.ForgotPassService;
 import com.tma.demo.service.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -30,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
-
+    private final ForgotPassService forgotPassService;
     @PutMapping(value = "/password")
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
@@ -68,6 +70,7 @@ public class UserController {
                 SuccessMessage.GET_USER_SUCCESS.getMessage(),
                 userDto));
     }
+    
 
 
 }

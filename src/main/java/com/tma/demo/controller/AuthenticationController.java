@@ -1,18 +1,27 @@
 package com.tma.demo.controller;
 
+
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.request.ForgotPasswordRequest;
 import com.tma.demo.dto.request.LoginRequest;
+import com.tma.demo.dto.request.RegisterRequest;
+import com.tma.demo.dto.request.SetPasswordRequest;
+import com.tma.demo.dto.request.VerifyOTPRequest;
+import com.tma.demo.dto.response.RegisterResponse;
 import com.tma.demo.dto.response.TokenDto;
+import com.tma.demo.dto.response.VerifyOtpResponse;
+import com.tma.demo.entity.User;
 import com.tma.demo.service.auth.AuthService;
+import com.tma.demo.service.auth.ForgotPassService;
+import com.tma.demo.service.auth.RegisterService;
+import com.tma.demo.service.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * AuthenticationController
@@ -29,13 +38,67 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthService authService;
+    private final ForgotPassService forgotPassService;
+    private final RegisterService registerService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @PostMapping(value = "/login")
     public ResponseEntity<ApiResponse<TokenDto>> login(
-            @RequestBody @Valid LoginRequest request) {
+            @RequestBody @Valid LoginRequest request){
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(),
                         SuccessMessage.LOGIN_SUCCESS.getMessage(),
                         authService.authenticate(request)));
+    }
+
+    @PostMapping(value = "/register")
+    public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
+            @Valid @RequestBody RegisterRequest registerRequest) {
+
+            User user = this.registerService.registerDTOtoUser(registerRequest);
+
+            String hashPassword = this.passwordEncoder.encode(user.getPassword());
+
+            user.setPassword(hashPassword);
+
+            RegisterResponse RegisterResponse = this.registerService.saveUser(user);
+        return ResponseEntity.ok(
+                new ApiResponse<>(HttpStatus.CREATED.value(),
+                        SuccessMessage.REGISTER_SUCCESS.getMessage(),
+                                RegisterResponse));
+    }
+    // API VERIFY OTP
+    @PutMapping(value = "/verify-otp")
+    public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyAccount(
+            @RequestBody VerifyOTPRequest verifyOTPRequest) {
+            // String token = jwtService.generateToken(verifyOTPRequest.getEmail(),
+            // TokenType.ACCESS_TOKEN);
+            VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(
+                    verifyOTPRequest.getEmail(),
+                    verifyOTPRequest.getOtp());
+            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+                    SuccessMessage.OTP_VERIFY.getMessage(),
+                    verifyOtpResponse));
+    }
+    // API FORGOT PASSWORD
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+
+        String otp = forgotPassService.generateOtp(request.getEmail());
+
+            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+                    otp,
+                    null ));
+    }
+    // API SET PASSWORD
+    @PutMapping(value = "/set-password")
+    public ResponseEntity<ApiResponse<String>> setPassword(
+            @Valid @RequestBody SetPasswordRequest setPasswordRequest) {
+
+        String response = forgotPassService.setPassword(setPasswordRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+                response,
+                null ));
     }
 }

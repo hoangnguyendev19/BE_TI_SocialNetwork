@@ -15,11 +15,13 @@ import java.util.UUID;
  * Date: 07/10/2024
  * Copyright
  * Modification Logs
- * DATE          AUTHOR          DESCRIPTION
+ * DATE AUTHOR DESCRIPTION
  * ------------------------------------------------
- * 07/10/2024        NGUYEN             create
+ * 07/10/2024 NGUYEN create
  */
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u WHERE u.email = :email and u.isDelete != true")
     Optional<User> findByEmail(@Param("email") String email);
+
+    boolean existsByEmail(String email);
 }
