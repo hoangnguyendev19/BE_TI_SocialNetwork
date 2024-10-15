@@ -27,8 +27,10 @@ public enum ErrorCode {
     UNABLE_SEND_OTP(HttpStatus.BAD_REQUEST.value(),"Unable to send otp please try again"),
     OTP_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "otp-does-not-exist"),
     OTP_EXPIRED(HttpStatus.BAD_REQUEST.value(), "otp-expired"),
-
-
+    POST_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "post-does-not-exist"),
+    COMMENT_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "comment-does-not-exist"),
+    UPDATE_COMMENT_ERROR(HttpStatus.BAD_REQUEST.value(), "update-comment-error"),
+    DELETE_COMMENT_ERROR(HttpStatus.BAD_REQUEST.value(), "delete-comment-error"),
     ;
     private final int code;
     private final String message;

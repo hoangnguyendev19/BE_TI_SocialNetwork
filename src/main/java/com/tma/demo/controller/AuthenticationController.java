@@ -51,7 +51,7 @@ public class AuthenticationController {
                         SuccessMessage.LOGIN_SUCCESS.getMessage(),
                         authService.authenticate(request)));
     }
-    //
+
     @PostMapping(value = "/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
             @Valid @RequestBody RegisterRequest registerRequest) {
@@ -63,7 +63,6 @@ public class AuthenticationController {
             user.setPassword(hashPassword);
 
             RegisterResponse RegisterResponse = this.registerService.saveUser(user);
-            //
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.CREATED.value(),
                         SuccessMessage.REGISTER_SUCCESS.getMessage(),
@@ -99,10 +98,7 @@ public class AuthenticationController {
 
         String response = forgotPassService.setPassword(setPasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
-                response, //
+                response,
                 null ));
-
-
-
     }
 }

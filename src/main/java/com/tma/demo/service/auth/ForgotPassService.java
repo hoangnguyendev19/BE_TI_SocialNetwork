@@ -3,6 +3,7 @@ package com.tma.demo.service.auth;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.exception.BaseException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.tma.demo.util.OtpUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import com.tma.demo.common.ErrorCode;
+
 @Service
 @RequiredArgsConstructor
 public class ForgotPassService {
@@ -46,30 +48,27 @@ public class ForgotPassService {
         } catch (MessagingException e) {
             throw new BaseException(ErrorCode.UNABLE_SEND_OTP);
         }
-        return "OTP Send To Your Email";
+        return SuccessMessage.OTP_SEND.getMessage();
     }
-//
+
     public VerifyOtpResponse verifyAccount(String email, String otp) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-
         Otp geotp = otpRepository.findByUserAndOtp(user, otp)
                 .orElseThrow(() -> new BaseException(ErrorCode.OTP_DOES_NOT_EXIST));
-       
         // Expired OTP
         if (geotp.getOtp().equals(otp) && Duration.between(
                 geotp.getOtpGeneratedTime(),
                 LocalDateTime.now()).getSeconds() < (1 * 10000)) {
             // UpdateOTP
             otpRepository.save(geotp);
-//                    System.out.println(geotp.getUser().getEmail());
             // Response
             return new VerifyOtpResponse(geotp.getUser().getEmail());
         }
         // OTP Had Expired
         throw new BaseException(ErrorCode.OTP_EXPIRED);
     }
-//
+
     public String setPassword(SetPasswordRequest setPasswordRequest) {
         String password = setPasswordRequest.getNewPassword();
         String confirmPassword = setPasswordRequest.getConfirmNewPassword();
@@ -84,9 +83,8 @@ public class ForgotPassService {
         String hashedPassword = passwordEncoder.encode(password);
         user.setPassword(hashedPassword);
         userRepository.save(user);
-        return "Password updated successfully.";
+        return SuccessMessage.UPDATE_PASSWORD_SUCCESS.getMessage();
     }
-
 
 
 }
