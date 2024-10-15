@@ -45,8 +45,9 @@ public class AuthenticationController {
                 new ApiResponse<>(HttpStatus.OK.value(),
                         SuccessMessage.LOGIN_SUCCESS.getMessage(),
                         authService.authenticate(request)));
-                new ApiResponse<>(HttpStatus.OK.value(), " login successfully", authService.authenticate(request));
-    }
+        new ApiResponse<>(HttpStatus.OK.value(),
+                SuccessMessage.LOGIN_SUCCESS.getMessage(),
+                authService.authenticate(request));    }
     //
     @PostMapping(value = "/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
