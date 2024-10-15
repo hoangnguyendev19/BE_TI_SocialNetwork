@@ -1,12 +1,8 @@
 package com.tma.demo.controller;
 
-
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
-import com.tma.demo.dto.request.ForgotPasswordRequest;
-import com.tma.demo.dto.request.LoginRequest;
-import com.tma.demo.dto.request.RegisterRequest;
-import com.tma.demo.dto.request.SetPasswordRequest;
-import com.tma.demo.dto.request.VerifyOTPRequest;
+import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.RegisterResponse;
 import com.tma.demo.dto.response.TokenDto;
 import com.tma.demo.dto.response.VerifyOtpResponse;
@@ -28,9 +24,9 @@ import org.springframework.web.bind.annotation.*;
  * Date: 07/10/2024
  * Copyright
  * Modification Logs
- * DATE AUTHOR DESCRIPTION
+ * DATE          AUTHOR          DESCRIPTION
  * ------------------------------------------------
- * 07/10/2024 NGUYEN create
+ * 07/10/2024        NGUYEN             create
  */
 @RestController
 @RequestMapping(value = "/api/v1/auth")
@@ -46,7 +42,10 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<TokenDto>> login(
             @RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK.value(), " login successfully", authService.authenticate(request)));
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        SuccessMessage.LOGIN_SUCCESS.getMessage(),
+                        authService.authenticate(request)));
+                new ApiResponse<>(HttpStatus.OK.value(), " login successfully", authService.authenticate(request));
     }
     //
     @PostMapping(value = "/register")
