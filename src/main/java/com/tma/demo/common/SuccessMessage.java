@@ -11,11 +11,11 @@ public enum SuccessMessage {
     CHANGE_AVATAR_SUCCESS("change-avatar-successfully"),
     GET_USER_SUCCESS("get-user-successfully"),
     REGISTER_SUCCESS("register-successfully"),
+    CREATED_POST_SUCCESS("create-post-successfully"),
     OTP_VERIFY("otp_verify-successfully"),
     OTP_SEND("otp_send-successfully"),
     DELETE_COMMENT_SUCCESS("delete-comment-successfully"),
     UPDATE_COMMENT_SUCCESS("update-comment-successfully"),
-    CREATE_SUCCESS("create-successfully"),
     CREATED_COMMENT_SUCCESS("create-comment-successfully"),;
     private final String message;
     SuccessMessage(String s) {
