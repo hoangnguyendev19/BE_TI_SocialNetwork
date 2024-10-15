@@ -67,6 +67,13 @@ public class PostServiceImp implements PostService {
         return postMapper.from(post, mediaList, null);
     }
 
+    @Override
+    public void deletePost(String postId) {
+        Post post = postRepository.findById(UUID.fromString(postId))
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
+
+    }
+
     //    =================================================================================================================
 //    MEDIA
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {

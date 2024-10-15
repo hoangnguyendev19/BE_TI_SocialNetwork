@@ -27,10 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 @SecurityRequirement(name = "bearerAuth")
 public class PostController {
     private final PostService postService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(
             @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam(value = "content") String content){
+            @RequestParam(value = "content") String content) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
@@ -39,9 +40,20 @@ public class PostController {
                         .data(postService.createPost(content, mediaFiles))
                         .build());
     }
+
     @PutMapping
-    public ResponseEntity<ApiResponse<PostDto>> updatePost(){
+    public ResponseEntity<ApiResponse<PostDto>> updatePost() {
         return null;
+    }
+
+    @DeleteMapping(value = "/{postId}")
+    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("postId") String postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.DELETE_POST_SUCCESS.getMessage())
+                .data(null)
+                .build());
     }
 
 }
