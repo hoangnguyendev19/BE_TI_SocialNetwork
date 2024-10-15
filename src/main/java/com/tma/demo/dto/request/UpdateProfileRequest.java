@@ -1,5 +1,6 @@
 package com.tma.demo.dto.request;
 
+import com.tma.demo.constant.ValidateFieldMessage;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,20 +22,21 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateProfileRequest {
-    @NotBlank(message = "first-name-is-required")
+    @NotBlank(message = ValidateFieldMessage.FIRST_NAME)
     private String firstName;
-    @NotBlank(message = "last-name-is-required")
+    @NotBlank(message = ValidateFieldMessage.LAST_NAME)
     private String lastName;
-    @NotBlank(message = "date-of-birth-is-required")
-    private Date dateOfBirth;
-    @NotBlank(message = "present-address-is-required")
+    @NotBlank(message = ValidateFieldMessage.DATE_OF_BIRTH)
+    private String dateOfBirth;
+    @NotBlank(message = ValidateFieldMessage.PRESENT_ADDRESS)
+
     private String presentAddress;
-    @NotBlank(message = "permanent-address-is-required")
+    @NotBlank(message = ValidateFieldMessage.PERMANENT_ADDRESS)
     private String permanentAddress;
-    @NotBlank(message = "phone-number-is-required")
+    @NotBlank(message = ValidateFieldMessage.PHONE_NUMBER)
     private String phoneNumber;
-    @NotBlank(message = "city-is-required")
+    @NotBlank(message = ValidateFieldMessage.CITY)
     private String city;
-    @NotBlank(message = "country-is-required")
+    @NotBlank(message = ValidateFieldMessage.COUNTRY)
     private String country;
 }

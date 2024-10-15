@@ -1,6 +1,7 @@
 package com.tma.demo.controller;
 
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ForgotPasswordRequest;
 import com.tma.demo.dto.request.LoginRequest;
@@ -46,7 +47,9 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<TokenDto>> login(
             @RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK.value(), " login successfully", authService.authenticate(request)));
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        SuccessMessage.LOGIN_SUCCESS.getMessage(),
+                        authService.authenticate(request)));
     }
     //
     @PostMapping(value = "/register")
@@ -100,5 +103,6 @@ public class AuthenticationController {
                 null ));
 
 
+               
     }
 }
