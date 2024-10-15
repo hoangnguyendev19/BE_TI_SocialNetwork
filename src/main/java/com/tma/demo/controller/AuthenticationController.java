@@ -62,7 +62,7 @@ public class AuthenticationController {
             //
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.CREATED.value(),
-                        "Register Success",
+                        SuccessMessage.REGISTER_SUCCESS.getMessage(),
                                 RegisterResponse));
     }
     // API VERIFY OTP
@@ -75,7 +75,7 @@ public class AuthenticationController {
                     verifyOTPRequest.getEmail(),
                     verifyOTPRequest.getOtp());
             return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
-                    "OTP verification successful",
+                    SuccessMessage.OTP_VERIFY.getMessage(),
                     verifyOtpResponse));
     }
     // API FORGOT PASSWORD
