@@ -3,6 +3,15 @@ server:
   port: 8888
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nguyenmanhhunglop91@gmail.com
+    password: yfnghyadgmuskfbb
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: smtp.gmail.com
   application:
     name: TI_Social-Network
   #    database
