@@ -70,7 +70,7 @@ public class PostServiceImp implements PostService {
                               String content,
                               String[] deleteFiles) {
 
-        Post post = postRepository.findById(UUID.fromString(postId))
+        Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
         post.setContent(content);
         saveAllMediaFiles(files, post);
