@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.tma.demo.common.APIConstant.*;
+
 /**
  * UserController
  * Version 1.0
@@ -27,13 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
  * 07/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = "/api/v1/users")
+@RequestMapping(value = USERS)
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
     private final ForgotPassService forgotPassService;
-    @PutMapping(value = "/password")
+    @PutMapping(value = USER_PASSWORD)
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         userService.changePassword(changePasswordRequest);
@@ -53,7 +55,7 @@ public class UserController {
         ));
     }
 
-    @PutMapping(value = "/avatar")
+    @PutMapping(value = USER_AVATAR)
     public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
         String imgUrl = userService.changeAvatar(imageFile);
         return ResponseEntity.ok(new ApiResponse<>(

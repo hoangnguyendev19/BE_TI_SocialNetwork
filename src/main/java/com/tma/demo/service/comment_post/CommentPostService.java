@@ -17,6 +17,7 @@ import com.tma.demo.repository.CommentRepository;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,9 +40,8 @@ public class CommentPostService {
         // Find post by ID
         Post post = postRepository.findById(UUID.fromString(request.getPostId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-
         Comment parentComment = null;
-        if (request.getParentCommentId() != null) {
+        if (!StringUtils.isBlank(request.getParentCommentId())) {
             parentComment = commentRepository.findById(UUID.fromString(request.getParentCommentId()))
                     .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST));
         }
@@ -94,16 +94,14 @@ public class CommentPostService {
     public List<ViewListCommentResponse> fetchAllCommentsByPostId(ViewListCommentRequest viewListCommentRequest) {
         Post post = postRepository.findById(UUID.fromString(viewListCommentRequest.getPostId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        List<Comment> parentComments = commentRepository.findByPostIdAndParentCommentIsNull(post.getId());
-
-        List<ViewListCommentResponse> responseList = new ArrayList<>();
-//      Loop Parent Comments -> Response
-        for (Comment comment : parentComments) {
-            responseList.add(convertToResponse(comment));
-        }
+        List<ViewListCommentResponse> responseList = commentRepository.findByPostIdAndParentCommentIsNull(post.getId())
+                .stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
         return responseList;
     }
-// Response
+
+    // Response
     private ViewListCommentResponse convertToResponse(Comment comment) {
         ViewListCommentResponse response = new ViewListCommentResponse();
         response.setCommentId(comment.getId().toString());
@@ -112,11 +110,9 @@ public class CommentPostService {
         response.setCommentText(comment.getCommentText());
         response.setCreatedAt(comment.getCreatedAt());
         response.setLastModified(comment.getLastModified());
-        List<ViewListCommentResponse> childComments = new ArrayList<>();
-        List<Comment> childCommentsEntities = commentRepository.findByParentCommentId(comment.getId());
-        for (Comment childComment : childCommentsEntities) {
-            childComments.add(convertToResponse(childComment));
-        }
+        List<ViewListCommentResponse> childComments = commentRepository.findByParentCommentId(comment.getId()).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
         response.setChildComments(childComments);
         return response;
     }

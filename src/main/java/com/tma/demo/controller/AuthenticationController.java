@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import static com.tma.demo.common.APIConstant.*;
+
 /**
  * AuthenticationController
  * Version 1.0
@@ -34,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
  * 07/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = "/api/v1/auth")
+@RequestMapping(value = AUTH)
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthService authService;
@@ -43,7 +45,7 @@ public class AuthenticationController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    @PostMapping(value = "/login")
+    @PostMapping(value = AUTH_LOGIN)
     public ResponseEntity<ApiResponse<TokenDto>> login(
             @RequestBody @Valid LoginRequest request){
         return ResponseEntity.ok(
@@ -52,7 +54,7 @@ public class AuthenticationController {
                         authService.authenticate(request)));
     }
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = AUTH_REGISTER)
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
             @Valid @RequestBody RegisterRequest registerRequest) {
 
@@ -69,7 +71,7 @@ public class AuthenticationController {
                                 RegisterResponse));
     }
     // API VERIFY OTP
-    @PutMapping(value = "/verify-otp")
+    @PutMapping(value = AUTH_VERIFY_OTP)
     public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyAccount(
             @RequestBody VerifyOTPRequest verifyOTPRequest) {
             // String token = jwtService.generateToken(verifyOTPRequest.getEmail(),
@@ -82,7 +84,7 @@ public class AuthenticationController {
                     verifyOtpResponse));
     }
     // API FORGOT PASSWORD
-    @PostMapping(value = "/forgot-password")
+    @PostMapping(value = AUTH_FORGOT_PASSWORD)
     public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
 
         String otp = forgotPassService.generateOtp(request.getEmail());
@@ -92,7 +94,7 @@ public class AuthenticationController {
                     null ));
     }
     // API SET PASSWORD
-    @PutMapping(value = "/set-password")
+    @PutMapping(value = AUTH_SET_PASSWORD)
     public ResponseEntity<ApiResponse<String>> setPassword(
             @Valid @RequestBody SetPasswordRequest setPasswordRequest) {
 

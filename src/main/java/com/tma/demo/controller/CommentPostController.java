@@ -9,7 +9,6 @@ import com.tma.demo.dto.request.ViewListCommentRequest;
 import com.tma.demo.dto.response.CommentResponse;
 import com.tma.demo.dto.response.UpdateCommentResponse;
 import com.tma.demo.dto.response.ViewListCommentResponse;
-import com.tma.demo.entity.Comment;
 import com.tma.demo.service.comment_post.CommentPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.tma.demo.common.APIConstant.COMMENTS;
+
 @RestController
-@RequestMapping(value = "/api/v1/comment")
+@RequestMapping(value = COMMENTS)
 @RequiredArgsConstructor
 public class CommentPostController {
     private final CommentPostService commentPostService;
