@@ -14,5 +14,7 @@ public interface PostService {
 
     PostDto updatePost(String postId, MultipartFile[] files, String content, String[] deleteFiles);
 
+    void deletePost(String postId);
+
     Page<PostDto> getNews(int page);
 }

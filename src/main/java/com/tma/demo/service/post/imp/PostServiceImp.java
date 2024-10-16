@@ -52,9 +52,6 @@ public class PostServiceImp implements PostService {
     private final MediaRepository mediaRepository;
     private final PostMapper postMapper;
 
-    @Value("${application.total-post-per-page}")
-    private int TOTAL_POSTS_PER_PAGE;
-
     // POST
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
@@ -79,7 +76,7 @@ public class PostServiceImp implements PostService {
 
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if (post.getId() != (getUser().getId())) {
+        if(post.getId() != getUser().getId()){
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setContent(content);
@@ -115,7 +112,17 @@ public class PostServiceImp implements PostService {
         return getParentPost(post.getParentPost());
     }
 
-    //    MEDIA
+    @Override
+    public void deletePost(String postId) {
+        Post post = postRepository.findPostById(UUID.fromString(postId))
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
+        if(post.getId() != (getUser().getId())){
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
+        post.setDelete(true);
+        postRepository.save(post);
+    }
+
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (MultipartFile mediaFile : mediaFiles) {
@@ -170,7 +177,7 @@ public class PostServiceImp implements PostService {
     }
 
     private Pageable getPageable(int page, Sort sort) {
-        int pageSize = TOTAL_POSTS_PER_PAGE;
+
         return PageRequest.of(page, pageSize, sort);
     }
 }
