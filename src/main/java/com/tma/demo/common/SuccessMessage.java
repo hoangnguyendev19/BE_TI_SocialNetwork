@@ -12,6 +12,7 @@ public enum SuccessMessage {
     GET_USER_SUCCESS("get-user-successfully"),
     REGISTER_SUCCESS("register-successfully"),
     CREATED_POST_SUCCESS("create-post-successfully"),
+    UPDATE_POST_SUCCESS("update-post-successfully"),
     OTP_VERIFY("otp_verify-successfully"),
     OTP_SEND("otp_send-successfully"),
     DELETE_COMMENT_SUCCESS("delete-comment-successfully"),

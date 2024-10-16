@@ -1,6 +1,8 @@
 package com.tma.demo.configuration.security.filter;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.constant.AttributeConstant;
+import com.tma.demo.constant.CommonConstant;
 import com.tma.demo.entity.Token;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.TokenRepository;
@@ -44,11 +46,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader(AttributeConstant.HEADER_AUTHORIZATION);
         String jwt;
         String userEmail = null;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(CommonConstant.PREFIX_TOKEN)) {
             filterChain.doFilter(request, response);
+            sendError(response,ErrorCode.UNAUTHENTICATED);
             return;
         }
         jwt = authHeader.substring(7);
@@ -85,7 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static void sendError(HttpServletResponse response, ErrorCode errorCode) throws IOException {
         response.setStatus(errorCode.getCode());
-        response.setContentType("application/json");
+        response.setContentType(CommonConstant.JSON_CONTENT_TYPE);
         response.getWriter().write(errorCode.getMessage());
         response.getWriter().flush();
     }

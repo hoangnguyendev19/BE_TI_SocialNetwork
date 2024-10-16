@@ -29,9 +29,9 @@ import org.springframework.web.bind.annotation.*;
  * Date: 07/10/2024
  * Copyright
  * Modification Logs
- * DATE AUTHOR DESCRIPTION
+ * DATE          AUTHOR          DESCRIPTION
  * ------------------------------------------------
- * 07/10/2024 NGUYEN create
+ * 07/10/2024        NGUYEN             create
  */
 @RestController
 @RequestMapping(value = "/api/v1/auth")
@@ -45,7 +45,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<ApiResponse<TokenDto>> login(
-            @RequestBody @Valid LoginRequest request) {
+            @RequestBody @Valid LoginRequest request){
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(),
                         SuccessMessage.LOGIN_SUCCESS.getMessage(),
