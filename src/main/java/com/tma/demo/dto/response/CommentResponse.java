@@ -11,4 +11,5 @@ public class CommentResponse {
     private String userId;
     private String content;
     private String createdAt;
+    private String lastModified;
 }

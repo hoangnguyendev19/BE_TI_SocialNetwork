@@ -16,6 +16,7 @@ public enum SuccessMessage {
     OTP_SEND("otp_send-successfully"),
     DELETE_COMMENT_SUCCESS("delete-comment-successfully"),
     UPDATE_COMMENT_SUCCESS("update-comment-successfully"),
+    VIEW_COMMENT_SUCCESS("view-comment-successfully"),
     CREATED_COMMENT_SUCCESS("create-comment-successfully"),;
     private final String message;
     SuccessMessage(String s) {
