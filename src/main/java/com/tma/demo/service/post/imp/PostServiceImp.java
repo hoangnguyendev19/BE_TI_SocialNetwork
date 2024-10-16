@@ -71,6 +71,9 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
+        if(post.getId() != (getUser().getId())){
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
         post.setDelete(true);
         postRepository.save(post);
     }
