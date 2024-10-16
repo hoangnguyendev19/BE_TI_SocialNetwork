@@ -39,7 +39,6 @@ public class Post {
     private String content;
     @ManyToOne
     private Post parentPost;
-    private int totalShares;
 
     private  boolean isDelete;
     @CreatedDate

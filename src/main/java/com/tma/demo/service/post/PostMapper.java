@@ -4,6 +4,10 @@ import com.tma.demo.dto.response.MediaDto;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
+import com.tma.demo.repository.CommentRepository;
+import com.tma.demo.repository.LikeRepository;
+import com.tma.demo.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,17 +24,35 @@ import java.util.List;
  * 11/10/2024        NGUYEN             create
  */
 @Service
+@RequiredArgsConstructor
 public class PostMapper {
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
+    private final PostRepository postRepository;
+
     public PostDto from(Post post, List<Media> mediaList, PostDto parentPost) {
+        List<MediaDto> mediaDtoList = getMediaDtoList(mediaList);
+        long totalLikes = likeRepository.getTotalLikes(post.getId());
+        long totalComments = commentRepository.getTotalComments(post.getId());
+        long totalShares = postRepository.getTotalShares(post.getId());
+        return PostDto.builder()
+                .id(post.getId().toString())
+                .content(post.getContent())
+                .totalLikes(totalLikes)
+                .totalComments(totalComments)
+                .totalShares(totalShares)
+                .parentPost(parentPost)
+                .mediaList(mediaDtoList)
+                .createdAt(post.getCreatedAt())
+                .lastModified(post.getLastModified())
+                .build();
+    }
+
+    private static List<MediaDto> getMediaDtoList(List<Media> mediaList) {
         List<MediaDto> mediaDtoList = new ArrayList<>();
         for (Media media : mediaList) {
             mediaDtoList.add(new MediaDto(media.getId().toString(), media.getMediaUrl()));
         }
-        return PostDto.builder()
-                .id(post.getId().toString())
-                .content(post.getContent())
-                .parentPost(parentPost)
-                .mediaList(mediaDtoList)
-                .build();
+        return mediaDtoList;
     }
 }

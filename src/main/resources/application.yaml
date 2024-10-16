@@ -39,6 +39,7 @@ logging:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
 application:
+  total-post-per-page: 10
   origin:
     fe-url: http://localhost:5173
   cloudinary:
