@@ -1,6 +1,5 @@
 package com.tma.demo.service.post;
 
-import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.response.PostDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public interface PostService {
 
     void deletePost(String postId);
 
-    Page<PostDto> getNews(int page);
+    Page<PostDto> getNews(int page, int pageSize);
 
     void report(ReportPostRequest reportPostRequest);
 }
