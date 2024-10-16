@@ -15,5 +15,7 @@ public class APIConstant {
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
     public static final String USER_PASSWORD = "/password";
-    //
+    // Post Endpoints
+    public static final String DELETE_POST = "/{postId}";
+    public static final String GET_POST_NEWS = "/news";
 }
