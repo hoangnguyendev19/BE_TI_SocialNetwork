@@ -32,8 +32,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(
-            @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam(value = "content") String content) {
+            @RequestParam(value = "files") MultipartFile[] mediaFiles, String content){
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
@@ -51,6 +50,16 @@ public class PostController {
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.UPDATE_POST_SUCCESS.getMessage())
                 .data(postDto)
+                .build());
+    }
+
+    @DeleteMapping(value = "/{postId}")
+    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("postId") String postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.DELETE_POST_SUCCESS.getMessage())
+                .data(null)
                 .build());
     }
 
