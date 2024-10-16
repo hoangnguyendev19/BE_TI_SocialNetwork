@@ -2,6 +2,7 @@ package com.tma.demo.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,6 +22,11 @@ import java.util.List;
 public class PostDto {
     private String id;
     private String content;
+    private long totalShares;
+    private long totalLikes;
+    private long totalComments;
     private PostDto parentPost;
     private List<MediaDto> mediaList;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModified;
 }

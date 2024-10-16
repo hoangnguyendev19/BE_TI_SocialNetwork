@@ -19,6 +19,7 @@ public enum SuccessMessage {
     UPDATE_COMMENT_SUCCESS("update-comment-successfully"),
     CREATED_COMMENT_SUCCESS("create-comment-successfully"),
     DELETE_POST_SUCCESS("delete-post-successfully"),
+    GET_NEWS_SUCCESS("get-news-successfully")
     ;
     private final String message;
 

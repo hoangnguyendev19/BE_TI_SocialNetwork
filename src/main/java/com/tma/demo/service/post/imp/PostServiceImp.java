@@ -17,6 +17,8 @@ import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,7 +62,6 @@ public class PostServiceImp implements PostService {
                 .user(user)
                 .isDelete(false)
                 .parentPost(null)
-                .totalShares(0)
                 .build();
         post = postRepository.save(post);
         List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
@@ -88,6 +89,19 @@ public class PostServiceImp implements PostService {
         return postMapper.from(post, mediaList, parentPost);
     }
 
+    @Override
+    public Page<PostDto> getNews(int page, int pageSize) {
+        Sort sort = Sort.by(AttributeConstant.POST_CREATED_AT).descending();
+        Pageable pageable = getPageable(page, sort, pageSize);
+        Page<Post> posts = postRepository.getNews(pageable);
+        List<PostDto> postsDto = posts.stream().map(post -> {
+            List<Media> mediaList = getMediaByPostId(post.getId());
+            PostDto parentPost = getParentPost(post.getParentPost());
+            return postMapper.from(post, mediaList, parentPost);
+        }).toList();
+        return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
+    }
+
     private PostDto getParentPost(Post post) {
         if (post == null) {
             return null;
@@ -102,14 +116,13 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        if(post.getId() != (getUser().getId())){
+        if(post.getId() != getUser().getId()){
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);
         postRepository.save(post);
     }
 
-//    MEDIA
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (MultipartFile mediaFile : mediaFiles) {
@@ -161,5 +174,9 @@ public class PostServiceImp implements PostService {
         String email = ((UserDetails) authentication.getPrincipal()).getUsername();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+    }
+
+    private Pageable getPageable(int page, Sort sort, int pageSize) {
+        return PageRequest.of(page, pageSize, sort);
     }
 }

@@ -1,6 +1,7 @@
 package com.tma.demo.service.post;
 
 import com.tma.demo.dto.response.PostDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,4 +15,6 @@ public interface PostService {
     PostDto updatePost(String postId, MultipartFile[] files, String content, String[] deleteFiles);
 
     void deletePost(String postId);
+
+    Page<PostDto> getNews(int page, int pageSize);
 }

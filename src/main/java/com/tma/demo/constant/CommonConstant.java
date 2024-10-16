@@ -1,5 +1,7 @@
 package com.tma.demo.constant;
 
+import org.springframework.beans.factory.annotation.Value;
+
 /**
  * CommonConstant
  * Version 1.0
