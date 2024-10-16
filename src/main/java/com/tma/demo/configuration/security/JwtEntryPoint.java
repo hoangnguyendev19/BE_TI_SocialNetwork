@@ -1,6 +1,7 @@
 package com.tma.demo.configuration.security;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.constant.CommonConstant;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(ErrorCode.BAD_REQUEST.getCode());
-        response.setContentType("application/json");
+        response.setContentType(CommonConstant.JSON_CONTENT_TYPE);
         response.getWriter().write(ErrorCode.BAD_REQUEST.getMessage());
         response.getWriter().flush();
     }

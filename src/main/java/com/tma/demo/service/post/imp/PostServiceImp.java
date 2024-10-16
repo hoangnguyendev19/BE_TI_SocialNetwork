@@ -27,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
+import static com.tma.demo.constant.CommonConstant.OLIDUS;
+
 /**
  * PostServiceImp
  * Version 1.0
@@ -82,7 +85,6 @@ public class PostServiceImp implements PostService {
         return postMapper.from(post, mediaList, parentPost);
     }
 
-
     private PostDto getParentPost(Post post) {
         if (post == null) {
             return null;
@@ -93,8 +95,7 @@ public class PostServiceImp implements PostService {
         return getParentPost(post.getParentPost());
     }
 
-    //    =================================================================================================================
-//    MEDIA
+    //    MEDIA
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (MultipartFile mediaFile : mediaFiles) {
@@ -105,7 +106,10 @@ public class PostServiceImp implements PostService {
                     .post(post)
                     .build();
             media = mediaRepository.saveAndFlush(media);
-            Map data = cloudinaryService.upload(mediaFile, FolderNameConstant.POST, post.getId() + "/" + media.getId());
+            Map data = cloudinaryService.upload(
+                    mediaFile,
+                    FolderNameConstant.POST,
+                    String.format("%s%s%s", post.getId(), OLIDUS, media.getId()));
             media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
@@ -124,12 +128,17 @@ public class PostServiceImp implements PostService {
 
     private void deleteMediaInCloud(String[] deleteFiles, String prefix, String folder) {
         for (String deleteFile : deleteFiles) {
-            String publicId = folder + (prefix != null ? "/" + prefix : "") + "/" + deleteFile;
+            String publicId = String.format(
+                    "%s%s%s%s",
+                    folder,
+                    prefix != null ? OLIDUS + prefix : EMPTY_STRING,
+                    OLIDUS,
+                    deleteFile
+            );
             cloudinaryService.deleteFile(publicId);
         }
     }
 
-    //    =================================================================================================
     private User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
