@@ -69,9 +69,10 @@ public class PostServiceImp implements PostService {
 
     @Override
     public void deletePost(String postId) {
-        Post post = postRepository.findById(UUID.fromString(postId))
+        Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-
+        post.setDelete(true);
+        postRepository.save(post);
     }
 
     //    =================================================================================================================
