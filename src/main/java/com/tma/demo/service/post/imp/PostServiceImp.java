@@ -17,6 +17,8 @@ import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,6 +52,9 @@ public class PostServiceImp implements PostService {
     private final MediaRepository mediaRepository;
     private final PostMapper postMapper;
 
+    @Value("${application.total-post-per-page}")
+    private int TOTAL_POSTS_PER_PAGE;
+
     // POST
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
@@ -60,7 +65,6 @@ public class PostServiceImp implements PostService {
                 .user(user)
                 .isDelete(false)
                 .parentPost(null)
-                .totalShares(0)
                 .build();
         post = postRepository.save(post);
         List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
@@ -75,7 +79,7 @@ public class PostServiceImp implements PostService {
 
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if(post.getId() != (getUser().getId())){
+        if (post.getId() != (getUser().getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setContent(content);
@@ -86,6 +90,19 @@ public class PostServiceImp implements PostService {
         List<Media> mediaList = getMediaByPostId(UUID.fromString(postId));
         PostDto parentPost = getParentPost(post.getParentPost());
         return postMapper.from(post, mediaList, parentPost);
+    }
+
+    @Override
+    public Page<PostDto> getNews(int page) {
+        Sort sort = Sort.by(AttributeConstant.POST_CREATED_AT).descending();
+        Pageable pageable = getPageable(page, sort);
+        Page<Post> posts = postRepository.getNews(pageable);
+        List<PostDto> postsDto = posts.stream().map(post -> {
+            List<Media> mediaList = getMediaByPostId(post.getId());
+            PostDto parentPost = getParentPost(post.getParentPost());
+            return postMapper.from(post, mediaList, parentPost);
+        }).toList();
+        return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
     }
 
     private PostDto getParentPost(Post post) {
@@ -150,5 +167,10 @@ public class PostServiceImp implements PostService {
         String email = ((UserDetails) authentication.getPrincipal()).getUsername();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+    }
+
+    private Pageable getPageable(int page, Sort sort) {
+        int pageSize = TOTAL_POSTS_PER_PAGE;
+        return PageRequest.of(page, pageSize, sort);
     }
 }

@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * PostController
@@ -52,6 +55,18 @@ public class PostController {
                 .message(SuccessMessage.UPDATE_POST_SUCCESS.getMessage())
                 .data(postDto)
                 .build());
+    }
+
+    @GetMapping("/news")
+    public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestParam(name = "page", defaultValue = "0") int page){
+        Page<PostDto> postsDto = postService.getNews(page);
+        return ResponseEntity.ok(
+                ApiResponse.<Page<PostDto>>builder()
+                        .code(HttpStatus.OK.value())
+                        .message(SuccessMessage.GET_NEWS_SUCCESS.getMessage())
+                        .data(postsDto)
+                        .build()
+        );
     }
 
 }
