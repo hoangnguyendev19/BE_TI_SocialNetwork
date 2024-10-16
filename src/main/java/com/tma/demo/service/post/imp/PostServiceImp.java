@@ -75,7 +75,7 @@ public class PostServiceImp implements PostService {
 
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if(post.getId() != (getUser().getId())){
+        if(post.getId() != getUser().getId()){
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setContent(content);

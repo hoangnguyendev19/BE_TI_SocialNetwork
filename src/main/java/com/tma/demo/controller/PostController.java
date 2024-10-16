@@ -32,8 +32,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(
-            @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam(value = "content") String content){
+            @RequestParam(value = "files") MultipartFile[] mediaFiles, String content){
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
