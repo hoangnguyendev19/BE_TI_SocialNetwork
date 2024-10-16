@@ -2,16 +2,17 @@ package com.tma.demo.service.post.imp;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.MediaType;
+import com.tma.demo.common.SettingKey;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
+import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
+import com.tma.demo.entity.PostReport;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.MediaRepository;
-import com.tma.demo.repository.PostRepository;
-import com.tma.demo.repository.UserRepository;
+import com.tma.demo.repository.*;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
@@ -51,6 +52,8 @@ public class PostServiceImp implements PostService {
     private final CloudinaryService cloudinaryService;
     private final MediaRepository mediaRepository;
     private final PostMapper postMapper;
+    private final PostReportRepository postReportRepository;
+    private final SettingRepository settingRepository;
 
     @Value("${application.total-post-per-page}")
     private int TOTAL_POSTS_PER_PAGE;
@@ -103,6 +106,34 @@ public class PostServiceImp implements PostService {
             return postMapper.from(post, mediaList, parentPost);
         }).toList();
         return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
+    }
+
+    @Override
+    public void report(ReportPostRequest reportPostRequest) {
+        User user = getUser();
+        Optional<PostReport> postReport = postReportRepository.findByUser(user);
+        if (postReport.isPresent()) {
+            postReport.get().setReason(reportPostRequest.getReason());
+            postReportRepository.save(postReport.get());
+        } else {
+            Post post = postRepository.findPostById(UUID.fromString(reportPostRequest.getPostId()))
+                    .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
+            PostReport report = PostReport.builder()
+                    .post(post)
+                    .user(user)
+                    .reason(reportPostRequest.getReason())
+                    .build();
+            postReportRepository.save(report);
+            int totalReport = postReportRepository.findTotalReport(post.getId());
+            int maxReport = Integer.parseInt(settingRepository.findByKey(SettingKey.MAX_REPORTS)
+                    .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST))
+                    .getValue());
+            if(totalReport >= maxReport){
+                deletePost(post.getId());
+            }
+
+        }
+
     }
 
     private PostDto getParentPost(Post post) {

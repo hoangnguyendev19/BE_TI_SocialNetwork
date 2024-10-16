@@ -34,7 +34,10 @@ public enum ErrorCode {
     DELETE_FILE_FAILED(HttpStatus.BAD_REQUEST.value(), "delete-file-failed"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "bad-request"),
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "post-not-found"),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized");
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized"),
+    FORBIDDEN(HttpStatus.FORBIDDEN.value(), "forbidden"),
+    SETTING_KEY_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "setting-key-does-not-exist")
+    ;
     private final int code;
     private final String message;
 

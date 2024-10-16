@@ -2,19 +2,17 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * PostController
@@ -32,6 +30,7 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 public class PostController {
     private final PostService postService;
+    private final PostRepository postRepository;
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(
@@ -58,7 +57,7 @@ public class PostController {
     }
 
     @GetMapping("/news")
-    public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestParam(name = "page", defaultValue = "0") int page){
+    public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestParam(name = "page", defaultValue = "0") int page) {
         Page<PostDto> postsDto = postService.getNews(page);
         return ResponseEntity.ok(
                 ApiResponse.<Page<PostDto>>builder()
@@ -67,6 +66,15 @@ public class PostController {
                         .data(postsDto)
                         .build()
         );
+    }
+
+    @PostMapping("/report")
+    public ResponseEntity<ApiResponse<String>> reportPost(@RequestBody ReportPostRequest reportPostRequest) {
+        postService.report(reportPostRequest);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.REPORT_POST_SUCCESS.getMessage())
+                .build());
     }
 
 }
