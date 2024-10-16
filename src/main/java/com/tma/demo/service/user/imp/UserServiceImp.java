@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -104,11 +103,14 @@ public class UserServiceImp implements UserService {
         return mapper.map(user, UserDto.class);
     }
 
-    private UserDetails getUserDetails() {
+    @Override
+    public User getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
             throw new BaseException(ErrorCode.UNAUTHENTICATED);
         }
-        return (UserDetails) authentication.getPrincipal();
+        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 }

@@ -6,6 +6,7 @@ import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
+import com.tma.demo.service.report.ReportService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
+    private final ReportService reportService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(
@@ -82,21 +84,12 @@ public class PostController {
 
     @PostMapping("/report")
     public ResponseEntity<ApiResponse<String>> reportPost(@RequestBody ReportPostRequest reportPostRequest) {
-        postService.report(reportPostRequest);
+        reportService.report(reportPostRequest);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.REPORT_POST_SUCCESS.getMessage())
                 .build());
     }
 
-    @DeleteMapping(value = "/{postId}")
-    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("postId") String postId) {
-        postService.deletePost(postId);
-        return ResponseEntity.ok(ApiResponse.<String>builder()
-                .code(HttpStatus.OK.value())
-                .message(SuccessMessage.DELETE_POST_SUCCESS.getMessage())
-                .data(null)
-                .build());
-    }
 
 }

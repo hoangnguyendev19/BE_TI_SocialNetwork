@@ -2,27 +2,23 @@ package com.tma.demo.service.post.imp;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.MediaType;
-import com.tma.demo.common.SettingKey;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
-import com.tma.demo.entity.PostReport;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.*;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
+import com.tma.demo.service.report.ReportService;
+import com.tma.demo.service.user.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,14 +48,13 @@ public class PostServiceImp implements PostService {
     private final CloudinaryService cloudinaryService;
     private final MediaRepository mediaRepository;
     private final PostMapper postMapper;
-    private final PostReportRepository postReportRepository;
-    private final SettingRepository settingRepository;
+    private final UserService userService;
 
     // POST
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public PostDto createPost(String content, MultipartFile[] mediaFiles) {
-        User user = getUser();
+        User user = userService.getUserDetails();
         Post post = Post.builder()
                 .content(content)
                 .user(user)
@@ -79,7 +74,7 @@ public class PostServiceImp implements PostService {
 
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if(post.getId() != getUser().getId()){
+        if (post.getId() != userService.getUserDetails().getId()) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setContent(content);
@@ -105,32 +100,11 @@ public class PostServiceImp implements PostService {
         return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
     }
 
+
     @Override
-    public void report(ReportPostRequest reportPostRequest) {
-        User user = getUser();
-        Optional<PostReport> postReport = postReportRepository.findByUser(user);
-        if (postReport.isPresent()) {
-            postReport.get().setReason(reportPostRequest.getReason());
-            postReportRepository.save(postReport.get());
-        } else {
-            Post post = postRepository.findPostById(UUID.fromString(reportPostRequest.getPostId()))
-                    .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-            PostReport report = PostReport.builder()
-                    .post(post)
-                    .user(user)
-                    .reason(reportPostRequest.getReason())
-                    .build();
-            postReportRepository.save(report);
-            int totalReport = postReportRepository.findTotalReport(post.getId());
-            int maxReport = Integer.parseInt(settingRepository.findByKey(SettingKey.MAX_REPORTS)
-                    .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST))
-                    .getValue());
-            if (totalReport >= maxReport) {
-                deletePost(post.getId().toString());
-            }
-
-        }
-
+    public Post getPost(String postId) {
+        return postRepository.findPostById(UUID.fromString(postId))
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
     }
 
     private PostDto getParentPost(Post post) {
@@ -147,7 +121,7 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        if(post.getId() != getUser().getId()){
+        if (post.getId() != userService.getUserDetails().getId()) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);
@@ -195,16 +169,6 @@ public class PostServiceImp implements PostService {
             );
             cloudinaryService.deleteFile(publicId);
         }
-    }
-
-    private User getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new BaseException(ErrorCode.UNAUTHENTICATED);
-        }
-        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 
     private Pageable getPageable(int page, Sort sort, int pageSize) {
