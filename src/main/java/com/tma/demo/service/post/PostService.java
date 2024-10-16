@@ -11,5 +11,7 @@ import java.sql.SQLException;
 public interface PostService {
     PostDto createPost(String content, MultipartFile[] mediaFiles);
 
+    PostDto updatePost(String postId, MultipartFile[] files, String content, String[] deleteFiles);
+
     void deletePost(String postId);
 }

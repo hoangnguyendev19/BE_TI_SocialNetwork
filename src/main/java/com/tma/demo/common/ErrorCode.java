@@ -31,7 +31,10 @@ public enum ErrorCode {
     COMMENT_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "comment-does-not-exist"),
     UPDATE_COMMENT_ERROR(HttpStatus.BAD_REQUEST.value(), "update-comment-error"),
     DELETE_COMMENT_ERROR(HttpStatus.BAD_REQUEST.value(), "delete-comment-error"),
-    ;
+    DELETE_FILE_FAILED(HttpStatus.BAD_REQUEST.value(), "delete-file-failed"),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "bad-request"),
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "post-not-found"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized");
     private final int code;
     private final String message;
 

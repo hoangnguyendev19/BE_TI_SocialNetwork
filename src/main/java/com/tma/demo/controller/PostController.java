@@ -5,6 +5,8 @@ import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.service.post.PostService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(
             @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam(value = "content") String content) {
+            @RequestParam(value = "content") String content){
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
@@ -42,8 +44,14 @@ public class PostController {
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<PostDto>> updatePost() {
-        return null;
+    public ResponseEntity<ApiResponse<PostDto>> updatePost(
+            String postId, MultipartFile[] files, String content, String[] deleteFiles) {
+        PostDto postDto = postService.updatePost(postId, files, content, deleteFiles);
+        return ResponseEntity.ok(ApiResponse.<PostDto>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.UPDATE_POST_SUCCESS.getMessage())
+                .data(postDto)
+                .build());
     }
 
     @DeleteMapping(value = "/{postId}")
