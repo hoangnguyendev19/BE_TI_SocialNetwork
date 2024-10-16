@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
     List<Comment> findByPostId(UUID postId);
 
-    @Query("SELECT count (c) FROM Comment c WHERE c.post.id = :postId and c.isDelete != true ")
+    @Query("SELECT count (c.id) FROM Comment c WHERE c.post.id = :postId and c.isDelete != true ")
     long getTotalComments(@Param("postId") UUID postId);
 }

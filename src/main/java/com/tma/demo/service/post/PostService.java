@@ -16,5 +16,5 @@ public interface PostService {
 
     void deletePost(String postId);
 
-    Page<PostDto> getNews(int page);
+    Page<PostDto> getNews(int page, int pageSize);
 }

@@ -18,6 +18,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     @Query("SELECT p FROM Post p WHERE p.isDelete != true")
     Page<Post> getNews(Pageable pageable);
 
-    @Query("SELECT COUNT(p) FROM Post p WHERE p.parentPost.id = :id and p.isDelete != true")
+    @Query("SELECT COUNT(p.id) FROM Post p WHERE p.parentPost.id = :id and p.isDelete != true")
     long getTotalShares(@Param("id") UUID id);
 }

@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.UUID;
 
 public interface LikeRepository extends JpaRepository<Like, UUID> {
-    @Query("SELECT COUNT(l) FROM Like l WHERE  l.post.id = :postId")
+    @Query("SELECT COUNT(l.id) FROM Like l WHERE  l.post.id = :postId")
     long getTotalLikes(@Param("postId") UUID postId);
 }

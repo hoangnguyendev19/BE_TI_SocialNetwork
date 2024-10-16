@@ -90,9 +90,9 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<PostDto> getNews(int page) {
+    public Page<PostDto> getNews(int page, int pageSize) {
         Sort sort = Sort.by(AttributeConstant.POST_CREATED_AT).descending();
-        Pageable pageable = getPageable(page, sort);
+        Pageable pageable = getPageable(page, sort, pageSize);
         Page<Post> posts = postRepository.getNews(pageable);
         List<PostDto> postsDto = posts.stream().map(post -> {
             List<Media> mediaList = getMediaByPostId(post.getId());
@@ -116,7 +116,7 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        if(post.getId() != (getUser().getId())){
+        if(post.getId() != getUser().getId()){
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);
@@ -176,8 +176,7 @@ public class PostServiceImp implements PostService {
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 
-    private Pageable getPageable(int page, Sort sort) {
-
+    private Pageable getPageable(int page, Sort sort, int pageSize) {
         return PageRequest.of(page, pageSize, sort);
     }
 }
