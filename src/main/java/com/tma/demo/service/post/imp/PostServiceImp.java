@@ -128,8 +128,8 @@ public class PostServiceImp implements PostService {
             int maxReport = Integer.parseInt(settingRepository.findByKey(SettingKey.MAX_REPORTS)
                     .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST))
                     .getValue());
-            if(totalReport >= maxReport){
-                deletePost(post.getId());
+            if (totalReport >= maxReport) {
+                deletePost(post.getId().toString());
             }
 
         }
@@ -150,14 +150,14 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        if(post.getId() != (getUser().getId())){
+        if (post.getId() != (getUser().getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);
         postRepository.save(post);
     }
 
-//    MEDIA
+    //    MEDIA
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (MultipartFile mediaFile : mediaFiles) {
