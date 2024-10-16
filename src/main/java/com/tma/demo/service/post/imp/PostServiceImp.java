@@ -25,10 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
+import static com.tma.demo.constant.CommonConstant.OLIDUS;
 
 /**
  * PostServiceImp
@@ -67,22 +67,79 @@ public class PostServiceImp implements PostService {
         return postMapper.from(post, mediaList, null);
     }
 
-    //    =================================================================================================================
-//    MEDIA
+    @Override
+    public PostDto updatePost(String postId,
+                              MultipartFile[] files,
+                              String content,
+                              String[] deleteFiles) {
+
+        Post post = postRepository.findPostById(UUID.fromString(postId))
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
+        if(post.getId() != (getUser().getId())){
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
+        post.setContent(content);
+        saveAllMediaFiles(files, post);
+        List<UUID> deletedFileIds = Arrays.stream(deleteFiles).map(UUID::fromString).toList();
+        deleteMedia(deletedFileIds, UUID.fromString(postId));
+        deleteMediaInCloud(deleteFiles, postId, FolderNameConstant.POST);
+        List<Media> mediaList = getMediaByPostId(UUID.fromString(postId));
+        PostDto parentPost = getParentPost(post.getParentPost());
+        return postMapper.from(post, mediaList, parentPost);
+    }
+
+    private PostDto getParentPost(Post post) {
+        if (post == null) {
+            return null;
+        }
+        if (post.getParentPost() == null) {
+            return postMapper.from(post, getMediaByPostId(post.getId()), null);
+        }
+        return getParentPost(post.getParentPost());
+    }
+
+    //    MEDIA
     private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (MultipartFile mediaFile : mediaFiles) {
-            String uuid = UUID.randomUUID().toString();
-            Map data = cloudinaryService.upload(mediaFile, FolderNameConstant.POST, post.getId() + "/" + uuid);
+
             Media media = Media.builder()
                     .isDelete(false)
-                    .mediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString())
                     .mediaType(MediaType.IMAGE)
                     .post(post)
                     .build();
+            media = mediaRepository.saveAndFlush(media);
+            Map data = cloudinaryService.upload(
+                    mediaFile,
+                    FolderNameConstant.POST,
+                    String.format("%s%s%s", post.getId(), OLIDUS, media.getId()));
+            media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
         return mediaList;
+    }
+
+    private List<Media> getMediaByPostId(UUID postId) {
+        return mediaRepository.findAllByPostId(postId);
+    }
+
+    private void deleteMedia(List<UUID> deleteFiles, UUID postId) {
+        List<Media> mediaList = mediaRepository.findAllByIdsAndPostId(deleteFiles, postId);
+        System.out.println(mediaList);
+        mediaRepository.deleteAll(mediaList);
+    }
+
+    private void deleteMediaInCloud(String[] deleteFiles, String prefix, String folder) {
+        for (String deleteFile : deleteFiles) {
+            String publicId = String.format(
+                    "%s%s%s%s",
+                    folder,
+                    prefix != null ? OLIDUS + prefix : EMPTY_STRING,
+                    OLIDUS,
+                    deleteFile
+            );
+            cloudinaryService.deleteFile(publicId);
+        }
     }
 
     private User getUser() {
