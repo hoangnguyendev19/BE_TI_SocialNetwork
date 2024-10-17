@@ -11,6 +11,7 @@ import com.tma.demo.repository.PostReportRepository;
 import com.tma.demo.repository.SettingRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
+import com.tma.demo.service.setting.SettingService;
 import com.tma.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class ReportServiceImp implements ReportService {
     private final UserService userService;
     private final PostService postService;
     private final PostReportRepository postReportRepository;
-    private final SettingRepository settingRepository;
+    private final SettingService settingService;
 
     @Override
     public void report(ReportPostRequest reportPostRequest) {
@@ -44,21 +45,28 @@ public class ReportServiceImp implements ReportService {
             postReportRepository.save(postReport.get());
         } else {
             Post post = postService.getPost(reportPostRequest.getPostId());
-            PostReport report = PostReport.builder()
-                    .post(post)
-                    .user(user)
-                    .reason(reportPostRequest.getReason())
-                    .build();
-            postReportRepository.save(report);
-            int totalReport = postReportRepository.findTotalReport(post.getId());
-            int maxReport = Integer.parseInt(settingRepository.findByKey(SettingKey.MAX_REPORTS)
-                    .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST))
-                    .getValue());
-            if (totalReport >= maxReport) {
-                postService.deletePost(post.getId().toString());
-            }
-
+            saveReport(reportPostRequest, post, user);
+            handleMaxReport(post);
         }
 
     }
+
+    private void handleMaxReport(Post post) {
+        int totalReport = postReportRepository.findTotalReport(post.getId());
+        int maxReport = settingService.getMaxReport();
+        if (totalReport >= maxReport) {
+            postService.deletePost(post.getId().toString());
+        }
+    }
+
+    private void saveReport(ReportPostRequest reportPostRequest, Post post, User user) {
+        PostReport report = PostReport.builder()
+                .post(post)
+                .user(user)
+                .reason(reportPostRequest.getReason())
+                .build();
+        postReportRepository.save(report);
+    }
+
+
 }

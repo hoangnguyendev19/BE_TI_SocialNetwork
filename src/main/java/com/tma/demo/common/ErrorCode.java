@@ -37,7 +37,7 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized"),
     FORBIDDEN(HttpStatus.FORBIDDEN.value(), "forbidden"),
     SETTING_KEY_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "setting-key-does-not-exist"),
-    WRITE_BASE64_TO_IMAGE_ERROR(HttpStatus.BAD_REQUEST.value(), "write-base64-to-image-error"),
+    NOT_BASE64_FORMAT(HttpStatus.BAD_REQUEST.value(), "not-base64-format")
     ;
     private final int code;
     private final String message;

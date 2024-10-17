@@ -32,7 +32,7 @@ public interface UserService {
     UserDto updateProfile(UpdateProfileRequest request);
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    String changeAvatar(MultipartFile imageFile) throws IOException;
+    String changeAvatar(MultipartFile imageFile);
 
     UserDto getUser();
 

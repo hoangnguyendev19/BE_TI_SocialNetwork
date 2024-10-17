@@ -83,13 +83,18 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class, Exception.class, IOException.class})
-    public String changeAvatar(MultipartFile imageFile) throws IOException {
+    @Transactional(rollbackFor = {SQLException.class, Exception.class})
+    public String changeAvatar(MultipartFile imageFile) {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
 
-        Map data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
+        Map data = null;
+        try {
+            data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
+        } catch (IOException e) {
+            throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
         user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
         user = userRepository.saveAndFlush(user);
         return user.getProfilePictureUrl();

@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/avatar")
-    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile)  {
         String imgUrl = userService.changeAvatar(imageFile);
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),

@@ -136,7 +136,10 @@ public class PostServiceImp implements PostService {
                     .build();
             media = mediaRepository.saveAndFlush(media);
             int index = mediaFile.indexOf(BASE64_PREF);
-            index = index < 0 ? 0 : index + 7;
+            if(index < 0){
+                throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
+            }
+            index = index + 7;
             String fileWithoutHeader = mediaFile.substring(index);
             byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(

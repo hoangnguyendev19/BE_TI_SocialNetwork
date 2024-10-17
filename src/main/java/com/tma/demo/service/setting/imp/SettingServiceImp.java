@@ -44,4 +44,11 @@ public class SettingServiceImp implements SettingService {
         setting = settingRepository.saveAndFlush(setting);
         return new SettingDto(setting.getKey().toString(), setting.getValue());
     }
+
+    @Override
+    public int getMaxReport() {
+        return Integer.parseInt(settingRepository.findByKey(SettingKey.MAX_REPORTS)
+                .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST))
+                .getValue());
+    }
 }

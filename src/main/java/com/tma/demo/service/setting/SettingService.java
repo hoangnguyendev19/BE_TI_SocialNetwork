@@ -8,4 +8,6 @@ public interface SettingService {
     SettingDto createSetting(SettingDto settingRequest);
 
     SettingDto updateSetting(SettingDto settingRequest);
+
+    int getMaxReport();
 }
