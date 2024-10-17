@@ -4,8 +4,6 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.MediaType;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
-import com.tma.demo.dto.request.ReportPostRequest;
-import com.tma.demo.constant.PrefixConstant;
 import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
@@ -13,28 +11,24 @@ import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.*;
+import com.tma.demo.repository.MediaRepository;
+import com.tma.demo.repository.PostRepository;
+import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
-import com.tma.demo.service.report.ReportService;
 import com.tma.demo.service.user.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
 import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
 import static com.tma.demo.constant.CommonConstant.OLIDUS;
-import static com.tma.demo.constant.EOF.IMAGE_JPG;
 import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 
 /**
@@ -61,10 +55,8 @@ public class PostServiceImp implements PostService {
     // POST
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public PostDto createPost(String content, MultipartFile[] mediaFiles) {
-        User user = userService.getUserDetails();
     public PostDto createPost(CreatePostRequest createPostRequest) {
-        User user = getUser();
+        User user = userService.getUserDetails();
         Post post = Post.builder()
                 .content(createPostRequest.getContent())
                 .user(user)
@@ -78,10 +70,9 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostDto updatePost(UpdatePostRequest updatePostRequest) {
-
         Post post = postRepository.findPostById(UUID.fromString(updatePostRequest.getPostId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if(post.getUser().getId() != getUser().getId()){
+        if (post.getUser().getId() != userService.getUserDetails().getId()) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setContent(updatePostRequest.getContent());
@@ -146,7 +137,7 @@ public class PostServiceImp implements PostService {
             media = mediaRepository.saveAndFlush(media);
             int index = mediaFile.indexOf(BASE64_PREF);
             index = index < 0 ? 0 : index + 7;
-            String fileWithoutHeader = mediaFile.substring( index);
+            String fileWithoutHeader = mediaFile.substring(index);
             byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
                     decodedBytes,
