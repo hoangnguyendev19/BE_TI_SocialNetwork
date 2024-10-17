@@ -27,8 +27,5 @@ import java.util.UUID;
 @Entity
 @Table(name = TableName.REASON_REPORT_POST)
 public class ReasonReportPost extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
     private String reason;
 }

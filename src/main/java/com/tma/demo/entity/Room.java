@@ -1,6 +1,5 @@
 package com.tma.demo.entity;
 
-import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
@@ -28,9 +27,6 @@ import java.util.UUID;
 @Entity
 @Table(name = TableName.ROOM)
 public class Room extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
     @ManyToOne
     private BoardingHouse boardingHouse;
     private String roomName;
