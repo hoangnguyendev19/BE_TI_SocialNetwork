@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.tma.demo.common.APIConstant.*;
+
 /**
  * PostController
  * Version 1.0
@@ -23,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 11/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = "/api/v1/posts")
+@RequestMapping(value = POSTS)
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class PostController {
@@ -53,7 +55,7 @@ public class PostController {
                 .build());
     }
 
-    @DeleteMapping(value = "/{postId}")
+    @DeleteMapping(value = DELETE_POST)
     public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("postId") String postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
@@ -63,7 +65,7 @@ public class PostController {
                 .build());
     }
 
-    @GetMapping("/news")
+    @GetMapping(value = GET_POST_NEWS)
     public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "pageSize", defaultValue = "8") int pageSize) {
