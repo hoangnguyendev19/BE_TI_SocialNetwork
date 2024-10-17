@@ -41,7 +41,7 @@ logging:
 application:
   total-post-per-page: 10
   origin:
-    fe-url: http://localhost:5173
+    fe-url: http://localhost:5173, /*
   cloudinary:
     cloud-name: dunemoydy
     api-key: 451832414779783

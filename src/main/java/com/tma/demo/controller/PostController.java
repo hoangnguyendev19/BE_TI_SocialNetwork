@@ -3,6 +3,8 @@ package com.tma.demo.controller;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ReportPostRequest;
+import com.tma.demo.dto.request.CreatePostRequest;
+import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
@@ -35,22 +37,18 @@ public class PostController {
     private final ReportService reportService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostDto>> createPost(
-            @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam String content) {
-
+    public ResponseEntity<ApiResponse<PostDto>> createPost(@RequestBody CreatePostRequest createPostRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
                         .code(HttpStatus.CREATED.value())
                         .message(SuccessMessage.CREATED_POST_SUCCESS.getMessage())
-                        .data(postService.createPost(content, mediaFiles))
+                        .data(postService.createPost(createPostRequest))
                         .build());
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<PostDto>> updatePost(
-            String postId, MultipartFile[] files, String content, String[] deleteFiles) {
-        PostDto postDto = postService.updatePost(postId, files, content, deleteFiles);
+    public ResponseEntity<ApiResponse<PostDto>> updatePost(@RequestBody UpdatePostRequest updatePostRequest) {
+        PostDto postDto = postService.updatePost(updatePostRequest);
         return ResponseEntity.ok(ApiResponse.<PostDto>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.UPDATE_POST_SUCCESS.getMessage())
@@ -81,15 +79,5 @@ public class PostController {
                         .build()
         );
     }
-
-    @PostMapping("/report")
-    public ResponseEntity<ApiResponse<String>> reportPost(@RequestBody ReportPostRequest reportPostRequest) {
-        reportService.report(reportPostRequest);
-        return ResponseEntity.ok(ApiResponse.<String>builder()
-                .code(HttpStatus.OK.value())
-                .message(SuccessMessage.REPORT_POST_SUCCESS.getMessage())
-                .build());
-    }
-
 
 }

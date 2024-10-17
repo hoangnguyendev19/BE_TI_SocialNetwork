@@ -21,8 +21,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -79,12 +83,13 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public String changeAvatar(MultipartFile imageFile) {
+    @Transactional(rollbackFor = {SQLException.class, Exception.class, IOException.class})
+    public String changeAvatar(MultipartFile imageFile) throws IOException {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-        Map data = cloudinaryService.upload(imageFile, FolderNameConstant.AVATAR, user.getId().toString());
+
+        Map data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
         user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
         user = userRepository.saveAndFlush(user);
         return user.getProfilePictureUrl();
