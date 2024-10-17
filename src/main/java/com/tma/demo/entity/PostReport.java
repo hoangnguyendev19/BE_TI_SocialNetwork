@@ -1,6 +1,5 @@
 package com.tma.demo.entity;
 
-import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,9 +28,6 @@ import java.util.UUID;
 @Table(name = TableName.POST_REPORT)
 @EntityListeners(AuditingEntityListener.class)
 public class PostReport extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
     @ManyToOne
     private User user;
     @ManyToOne
