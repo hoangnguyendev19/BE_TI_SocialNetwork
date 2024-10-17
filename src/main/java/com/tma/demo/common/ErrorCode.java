@@ -34,7 +34,8 @@ public enum ErrorCode {
     DELETE_FILE_FAILED(HttpStatus.BAD_REQUEST.value(), "delete-file-failed"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "bad-request"),
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "post-not-found"),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized");
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized"),
+    WRITE_BASE64_TO_IMAGE_ERROR(HttpStatus.BAD_REQUEST.value(), "write-base64-to-image-error"),;
     private final int code;
     private final String message;
 

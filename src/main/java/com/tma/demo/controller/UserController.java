@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 /**
  * UserController
  * Version 1.0
@@ -54,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/avatar")
-    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) {
+    public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile) throws IOException {
         String imgUrl = userService.changeAvatar(imageFile);
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),

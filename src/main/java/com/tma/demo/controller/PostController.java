@@ -2,6 +2,8 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.request.CreatePostRequest;
+import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.service.post.PostService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,22 +32,19 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostDto>> createPost(
-            @RequestParam(value = "files") MultipartFile[] mediaFiles,
-            @RequestParam String content) {
-
+    public ResponseEntity<ApiResponse<PostDto>> createPost(@RequestBody CreatePostRequest createPostRequest) {
+        System.out.println(1);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
                         .code(HttpStatus.CREATED.value())
                         .message(SuccessMessage.CREATED_POST_SUCCESS.getMessage())
-                        .data(postService.createPost(content, mediaFiles))
+                        .data(postService.createPost(createPostRequest))
                         .build());
     }
 
     @PutMapping
-    public ResponseEntity<ApiResponse<PostDto>> updatePost(
-            String postId, MultipartFile[] files, String content, String[] deleteFiles) {
-        PostDto postDto = postService.updatePost(postId, files, content, deleteFiles);
+    public ResponseEntity<ApiResponse<PostDto>> updatePost(@RequestBody UpdatePostRequest updatePostRequest) {
+        PostDto postDto = postService.updatePost(updatePostRequest);
         return ResponseEntity.ok(ApiResponse.<PostDto>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.UPDATE_POST_SUCCESS.getMessage())

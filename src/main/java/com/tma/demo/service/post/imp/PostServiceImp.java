@@ -4,6 +4,9 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.MediaType;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
+import com.tma.demo.constant.PrefixConstant;
+import com.tma.demo.dto.request.CreatePostRequest;
+import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
@@ -17,7 +20,7 @@ import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.io.FileUtils;
 import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,11 +29,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
 import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
 import static com.tma.demo.constant.CommonConstant.OLIDUS;
+import static com.tma.demo.constant.EOF.IMAGE_JPG;
+import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 
 /**
  * PostServiceImp
@@ -55,36 +62,33 @@ public class PostServiceImp implements PostService {
     // POST
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public PostDto createPost(String content, MultipartFile[] mediaFiles) {
+    public PostDto createPost(CreatePostRequest createPostRequest) {
         User user = getUser();
         Post post = Post.builder()
-                .content(content)
+                .content(createPostRequest.getContent())
                 .user(user)
                 .isDelete(false)
                 .parentPost(null)
                 .build();
         post = postRepository.save(post);
-        List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
+        List<Media> mediaList = saveAllMediaFiles(createPostRequest.getFiles(), post);
         return postMapper.from(post, mediaList, null);
     }
 
     @Override
-    public PostDto updatePost(String postId,
-                              MultipartFile[] files,
-                              String content,
-                              String[] deleteFiles) {
+    public PostDto updatePost(UpdatePostRequest updatePostRequest) {
 
-        Post post = postRepository.findPostById(UUID.fromString(postId))
+        Post post = postRepository.findPostById(UUID.fromString(updatePostRequest.getPostId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if(post.getId() != getUser().getId()){
+        if(post.getUser().getId() != getUser().getId()){
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
-        post.setContent(content);
-        saveAllMediaFiles(files, post);
-        List<UUID> deletedFileIds = Arrays.stream(deleteFiles).map(UUID::fromString).toList();
-        deleteMedia(deletedFileIds, UUID.fromString(postId));
-        deleteMediaInCloud(deleteFiles, postId, FolderNameConstant.POST);
-        List<Media> mediaList = getMediaByPostId(UUID.fromString(postId));
+        post.setContent(updatePostRequest.getContent());
+        saveAllMediaFiles(updatePostRequest.getFiles(), post);
+        List<UUID> deletedFileIds = updatePostRequest.getDeleteFileIds().stream().map(UUID::fromString).toList();
+        deleteMedia(deletedFileIds, UUID.fromString(updatePostRequest.getPostId()));
+        deleteMediaInCloud(updatePostRequest.getDeleteFileIds(), updatePostRequest.getPostId(), FolderNameConstant.POST);
+        List<Media> mediaList = getMediaByPostId(UUID.fromString(updatePostRequest.getPostId()));
         PostDto parentPost = getParentPost(post.getParentPost());
         return postMapper.from(post, mediaList, parentPost);
     }
@@ -123,18 +127,20 @@ public class PostServiceImp implements PostService {
         postRepository.save(post);
     }
 
-    private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
+    private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
-        for (MultipartFile mediaFile : mediaFiles) {
-
+        System.out.println(12);
+        for (String mediaFile : mediaFiles) {
             Media media = Media.builder()
                     .isDelete(false)
                     .mediaType(MediaType.IMAGE)
                     .post(post)
                     .build();
             media = mediaRepository.saveAndFlush(media);
+            String fileWithoutHeader = mediaFile.substring(mediaFile.indexOf(BASE64_PREF) + 7);
+            byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
-                    mediaFile,
+                    decodedBytes,
                     FolderNameConstant.POST,
                     String.format("%s%s%s", post.getId(), OLIDUS, media.getId()));
             media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
@@ -153,7 +159,7 @@ public class PostServiceImp implements PostService {
         mediaRepository.deleteAll(mediaList);
     }
 
-    private void deleteMediaInCloud(String[] deleteFiles, String prefix, String folder) {
+    private void deleteMediaInCloud(List<String> deleteFiles, String prefix, String folder) {
         for (String deleteFile : deleteFiles) {
             String publicId = String.format(
                     "%s%s%s%s",
