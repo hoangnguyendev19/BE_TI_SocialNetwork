@@ -1,10 +1,9 @@
-package com.tma.demo.util;
+package com.tma.demo.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -26,8 +25,7 @@ import java.util.List;
 public class PagingRequest<T> {
     private int page;
     private int size;
-    private List<Sort.Order> orderList;
+    private String sortField;
+    private Sort.Direction sortBy;
     private T filter;
-
-
 }

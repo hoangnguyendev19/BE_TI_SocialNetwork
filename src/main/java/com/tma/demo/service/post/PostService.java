@@ -1,5 +1,6 @@
 package com.tma.demo.service.post;
 
+import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
@@ -24,6 +25,6 @@ public interface PostService {
 
     void deletePost(String postId);
 
-    Page<PostDto> getNews(Pageable pageable);
+    Page<PostDto> getNews(PagingRequest pagingRequest);
 
 }

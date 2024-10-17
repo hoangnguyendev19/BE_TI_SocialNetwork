@@ -9,7 +9,7 @@ import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
 import com.tma.demo.util.PageUtil;
-import com.tma.demo.util.PagingRequest;
+import com.tma.demo.dto.request.PagingRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -67,18 +67,9 @@ public class PostController {
                 .build());
     }
 
-    @GetMapping("/news")
-    public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(
-            @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "pageSize", defaultValue = "8") int pageSize,
-            @RequestParam(name = "sort", defaultValue = "createdAt, desc") String[] sort
-    ) {
-        Pageable pageable = PageUtil.getPageable(PagingRequest.<Object>builder()
-                .size(pageSize)
-                .page(page)
-                .orderList(PageUtil.getOrderList(sort))
-                .build());
-        Page<PostDto> postsDto = postService.getNews(pageable);
+    @PostMapping("/news")
+    public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestBody PagingRequest pagingRequest) {
+        Page<PostDto> postsDto = postService.getNews(pagingRequest);
         return ResponseEntity.ok(
                 ApiResponse.<Page<PostDto>>builder()
                         .code(HttpStatus.OK.value())

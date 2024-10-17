@@ -38,8 +38,7 @@ public class SettingServiceImp implements SettingService {
     @Override
     public SettingDto updateSetting(SettingDto settingRequest) {
         SettingKey key = SettingKey.valueOf(settingRequest.getKey());
-        Setting setting = settingRepository.findByKey(key)
-                .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST));
+        Setting setting = getSetting(key);
         setting.setValue(settingRequest.getValue());
         setting = settingRepository.saveAndFlush(setting);
         return new SettingDto(setting.getKey().toString(), setting.getValue());
@@ -47,8 +46,11 @@ public class SettingServiceImp implements SettingService {
 
     @Override
     public int getMaxReport() {
-        return Integer.parseInt(settingRepository.findByKey(SettingKey.MAX_REPORTS)
-                .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST))
-                .getValue());
+        return Integer.parseInt(getSetting(SettingKey.MAX_REPORTS).getValue());
+    }
+
+    private Setting getSetting(SettingKey key) {
+        return settingRepository.findByKey(key)
+                .orElseThrow(() -> new BaseException(ErrorCode.SETTING_KEY_DOES_NOT_EXIST));
     }
 }

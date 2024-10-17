@@ -4,7 +4,9 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.MediaType;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
+import com.tma.demo.constant.FormatConstant;
 import com.tma.demo.dto.request.CreatePostRequest;
+import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Media;
@@ -18,6 +20,7 @@ import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.user.UserService;
+import com.tma.demo.util.PageUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,8 +75,7 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostDto updatePost(UpdatePostRequest updatePostRequest) {
-        Post post = postRepository.findPostById(UUID.fromString(updatePostRequest.getPostId()))
-                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
+        Post post = getPost(updatePostRequest.getPostId());
         if (post.getUser().getId() != userService.getUserDetails().getId()) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
@@ -88,7 +90,8 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<PostDto> getNews(Pageable pageable) {
+    public Page<PostDto> getNews(PagingRequest pagingRequest) {
+        Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Post> posts = postRepository.getNews(pageable);
         List<PostDto> postsDto = posts.stream().map(post -> {
             List<Media> mediaList = getMediaByPostId(post.getId());
@@ -145,7 +148,7 @@ public class PostServiceImp implements PostService {
             Map data = cloudinaryService.upload(
                     decodedBytes,
                     FolderNameConstant.POST,
-                    String.format("%s%s%s", post.getId(), OLIDUS, media.getId()));
+                    String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), OLIDUS, media.getId()));
             media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
@@ -164,7 +167,7 @@ public class PostServiceImp implements PostService {
     private void deleteMediaInCloud(List<String> deleteFiles, String prefix, String folder) {
         for (String deleteFile : deleteFiles) {
             String publicId = String.format(
-                    "%s%s%s%s",
+                    FormatConstant.CLOUDINARY_PUBLIC_ID_DELETE_FORMAT,
                     folder,
                     prefix != null ? OLIDUS + prefix : EMPTY_STRING,
                     OLIDUS,
