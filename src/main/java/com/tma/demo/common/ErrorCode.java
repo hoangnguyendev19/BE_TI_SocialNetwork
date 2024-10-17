@@ -37,8 +37,8 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "unauthorized"),
     FORBIDDEN(HttpStatus.FORBIDDEN.value(), "forbidden"),
     SETTING_KEY_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "setting-key-does-not-exist"),
-    NOT_BASE64_FORMAT(HttpStatus.BAD_REQUEST.value(), "not-base64-format")
-    ;
+    NOT_BASE64_FORMAT(HttpStatus.BAD_REQUEST.value(), "not-base64-format"),
+    DIRECTION_INVALID(HttpStatus.BAD_REQUEST.value(), "direction-must-be-asc-or-desc");
     private final int code;
     private final String message;
 

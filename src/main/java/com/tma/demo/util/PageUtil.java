@@ -1,6 +1,8 @@
 package com.tma.demo.util;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.constant.CommonConstant;
+import com.tma.demo.exception.BaseException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,7 +42,13 @@ public class PageUtil {
     }
 
     public static Sort.Direction getSortDirection(String s) {
-        return Sort.Direction.fromString(s);
+        Sort.Direction direction = null;
+        try {
+            direction = Sort.Direction.fromString(s);
+        } catch (Exception e) {
+            throw new BaseException(ErrorCode.DIRECTION_INVALID);
+        }
+        return direction;
     }
 
     public static Pageable getPageable(PagingRequest pagingRequest) {

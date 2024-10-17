@@ -20,7 +20,9 @@ import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.user.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,7 +136,7 @@ public class PostServiceImp implements PostService {
                     .build();
             media = mediaRepository.saveAndFlush(media);
             int index = mediaFile.indexOf(BASE64_PREF);
-            if(index < 0){
+            if (index < 0) {
                 throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
             }
             index = index + 7;
