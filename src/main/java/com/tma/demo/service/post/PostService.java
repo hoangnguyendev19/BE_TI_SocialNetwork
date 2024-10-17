@@ -7,6 +7,7 @@ import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Post;
 import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,6 @@ public interface PostService {
 
     void deletePost(String postId);
 
-    Page<PostDto> getNews(int page, int pageSize);
+    Page<PostDto> getNews(Pageable pageable);
 
 }

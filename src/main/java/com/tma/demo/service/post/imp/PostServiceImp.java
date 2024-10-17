@@ -86,9 +86,7 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<PostDto> getNews(int page, int pageSize) {
-        Sort sort = Sort.by(AttributeConstant.POST_CREATED_AT).descending();
-        Pageable pageable = getPageable(page, sort, pageSize);
+    public Page<PostDto> getNews(Pageable pageable) {
         Page<Post> posts = postRepository.getNews(pageable);
         List<PostDto> postsDto = posts.stream().map(post -> {
             List<Media> mediaList = getMediaByPostId(post.getId());
@@ -172,9 +170,5 @@ public class PostServiceImp implements PostService {
             );
             cloudinaryService.deleteFile(publicId);
         }
-    }
-
-    private Pageable getPageable(int page, Sort sort, int pageSize) {
-        return PageRequest.of(page, pageSize, sort);
     }
 }
