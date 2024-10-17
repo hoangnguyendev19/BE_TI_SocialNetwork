@@ -18,4 +18,12 @@ public class APIConstant {
     // Post Endpoints
     public static final String DELETE_POST = "/{postId}";
     public static final String GET_POST_NEWS = "/news";
+    // Comment Post Endpoints
+    public static final String CREATE_COMMENT_POST = "/create";
+    public static final String UPDATE_COMMENT_POST = "/update";
+    public static final String DELETE_COMMENT_POST = "/delete";
+    public static final String VIEW_LIST_COMMENT_POST = "/view-list";
+    public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
+
+
 }

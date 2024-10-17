@@ -2,11 +2,9 @@ package com.tma.demo.service.comment_post;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.SuccessMessage;
-import com.tma.demo.dto.request.CommentRequest;
-import com.tma.demo.dto.request.DeleteCommentRequest;
-import com.tma.demo.dto.request.UpdateCommentRequest;
-import com.tma.demo.dto.request.ViewListCommentRequest;
-import com.tma.demo.dto.response.CommentResponse;
+import com.tma.demo.dto.request.*;
+import com.tma.demo.dto.response.CreateCommentResponse;
+import com.tma.demo.dto.response.HiddenCommentResponse;
 import com.tma.demo.dto.response.UpdateCommentResponse;
 import com.tma.demo.dto.response.ViewListCommentResponse;
 import com.tma.demo.entity.Comment;
@@ -21,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,7 +30,8 @@ public class CommentPostService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CommentResponse createComment(CommentRequest request) {
+    //Create Comment
+    public CreateCommentResponse createComment(CreateCommentRequest request) {
         // Find user by ID
         User user = userRepository.findById(UUID.fromString(request.getUserId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
@@ -55,7 +53,7 @@ public class CommentPostService {
         comment.setLastModified(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
         // Create response
-        return new CommentResponse(
+        return new CreateCommentResponse(
                 savedComment.getId().toString(),
                 post.getId().toString(),
                 user.getId().toString(),
@@ -65,6 +63,7 @@ public class CommentPostService {
         );
     }
 
+    //Update Comment
     public UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest) {
         //Find Cmt Id
         Comment comment = commentRepository.findById(UUID.fromString(updateCommentRequest.getCommentId()))
@@ -81,6 +80,7 @@ public class CommentPostService {
         );
     }
 
+    //Delete Comment
     public String deleteComment(DeleteCommentRequest deleteCommentRequest) {
         Comment comment = commentRepository.findById(UUID.fromString(deleteCommentRequest.getCommentId()))
                 .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST));
@@ -109,6 +109,7 @@ public class CommentPostService {
         response.setUserId(comment.getUser().getId().toString());
         response.setCommentText(comment.getCommentText());
         response.setCreatedAt(comment.getCreatedAt());
+        response.setHidden(comment.getParentComment().isHidden());
         response.setLastModified(comment.getLastModified());
         List<ViewListCommentResponse> childComments = commentRepository.findByParentCommentId(comment.getId()).stream()
                 .map(this::convertToResponse)
@@ -116,4 +117,27 @@ public class CommentPostService {
         response.setChildComments(childComments);
         return response;
     }
+
+    //Hidden Comment
+    public HiddenCommentResponse hideComment(HiddenCommentRequest hiddenCommentRequest) {
+        Comment comment = commentRepository.findById(UUID.fromString(hiddenCommentRequest.getCommentId()))
+                .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST));
+
+        if (!comment.getUser().getId().toString().equals(hiddenCommentRequest.getUserId())) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
+        comment.setHidden(true);
+        commentRepository.save(comment);
+
+        return new HiddenCommentResponse(
+                comment.getId().toString(),
+                comment.getPost().getId().toString(),
+                comment.getUser().getId().toString(),
+                comment.getCommentText(),
+                comment.isHidden(),
+                comment.getCreatedAt().toString(),
+                comment.getLastModified().toString()
+        );
+    }
+
 }

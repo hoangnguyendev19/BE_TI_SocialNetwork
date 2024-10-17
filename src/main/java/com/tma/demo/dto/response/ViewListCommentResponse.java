@@ -23,6 +23,8 @@ public class ViewListCommentResponse {
 
     private LocalDateTime createdAt;
 
+    private boolean isHidden;
+
     private LocalDateTime lastModified;
 
     private List<ViewListCommentResponse> childComments;
