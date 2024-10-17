@@ -129,7 +129,6 @@ public class PostServiceImp implements PostService {
 
     private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
-        System.out.println(12);
         for (String mediaFile : mediaFiles) {
             Media media = Media.builder()
                     .isDelete(false)
@@ -137,7 +136,9 @@ public class PostServiceImp implements PostService {
                     .post(post)
                     .build();
             media = mediaRepository.saveAndFlush(media);
-            String fileWithoutHeader = mediaFile.substring(mediaFile.indexOf(BASE64_PREF) + 7);
+            int index = mediaFile.indexOf(BASE64_PREF);
+            index = index < 0 ? 0 : index + 7;
+            String fileWithoutHeader = mediaFile.substring( index);
             byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
                     decodedBytes,
@@ -155,7 +156,6 @@ public class PostServiceImp implements PostService {
 
     private void deleteMedia(List<UUID> deleteFiles, UUID postId) {
         List<Media> mediaList = mediaRepository.findAllByIdsAndPostId(deleteFiles, postId);
-        System.out.println(mediaList);
         mediaRepository.deleteAll(mediaList);
     }
 

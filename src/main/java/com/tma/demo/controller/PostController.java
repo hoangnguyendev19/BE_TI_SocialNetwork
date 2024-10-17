@@ -33,7 +33,6 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(@RequestBody CreatePostRequest createPostRequest) {
-        System.out.println(1);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.<PostDto>builder()
                         .code(HttpStatus.CREATED.value())
