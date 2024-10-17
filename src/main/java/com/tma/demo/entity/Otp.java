@@ -1,6 +1,7 @@
 package com.tma.demo.entity;
 
 
+import com.tma.demo.constant.TableName;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "otp")
+@Table(name = TableName.OTP)
 @EntityListeners(AuditingEntityListener.class)
 public class Otp {
     @Id

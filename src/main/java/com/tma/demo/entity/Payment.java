@@ -1,6 +1,8 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.PaymentStatus;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +30,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "payment")
-@EntityListeners(AuditingEntityListener.class)
-public class Payment {
+@Table(name = TableName.PAYMENT)
+public class Payment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -38,8 +39,5 @@ public class Payment {
     private Room room;
     private int totalAmount;
     private PaymentStatus paymentStatus;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
+
 }

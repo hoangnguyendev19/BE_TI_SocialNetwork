@@ -1,5 +1,7 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +29,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "room_Setting")
-@EntityListeners(AuditingEntityListener.class)
-public class RoomSetting {
+@Table(name = TableName.ROOM_SETTING)
+public class RoomSetting extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -37,12 +38,5 @@ public class RoomSetting {
     private BoardingHouse boardingHouse;
     private int electricBill;
     private int waterBill;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime lastModified;
-
 
 }
