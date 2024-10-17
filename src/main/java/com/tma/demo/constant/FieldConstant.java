@@ -15,4 +15,5 @@ import lombok.Setter;
  */
 public class FieldConstant {
     public static final String EMAIL = "email";
+    public static final String ID = "id";
 }

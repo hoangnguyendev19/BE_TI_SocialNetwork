@@ -4,6 +4,10 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.MediaType;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
+import com.tma.demo.constant.FormatConstant;
+import com.tma.demo.dto.request.CreatePostRequest;
+import com.tma.demo.dto.request.PagingRequest;
+import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
@@ -15,22 +19,22 @@ import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
+import com.tma.demo.service.user.UserService;
+import com.tma.demo.util.PageUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.*;
 
 import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
 import static com.tma.demo.constant.CommonConstant.OLIDUS;
+import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 
 /**
  * PostServiceImp
@@ -51,48 +55,43 @@ public class PostServiceImp implements PostService {
     private final CloudinaryService cloudinaryService;
     private final MediaRepository mediaRepository;
     private final PostMapper postMapper;
+    private final UserService userService;
 
     // POST
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public PostDto createPost(String content, MultipartFile[] mediaFiles) {
-        User user = getUser();
+    public PostDto createPost(CreatePostRequest createPostRequest) {
+        User user = userService.getUserDetails();
         Post post = Post.builder()
-                .content(content)
+                .content(createPostRequest.getContent())
                 .user(user)
                 .isDelete(false)
                 .parentPost(null)
                 .build();
         post = postRepository.save(post);
-        List<Media> mediaList = saveAllMediaFiles(mediaFiles, post);
+        List<Media> mediaList = saveAllMediaFiles(createPostRequest.getFiles(), post);
         return postMapper.from(post, mediaList, null);
     }
 
     @Override
-    public PostDto updatePost(String postId,
-                              MultipartFile[] files,
-                              String content,
-                              String[] deleteFiles) {
-
-        Post post = postRepository.findPostById(UUID.fromString(postId))
-                .orElseThrow(() -> new BaseException(ErrorCode.POST_NOT_FOUND));
-        if(post.getId() != getUser().getId()){
+    public PostDto updatePost(UpdatePostRequest updatePostRequest) {
+        Post post = getPost(updatePostRequest.getPostId());
+        if (post.getUser().getId() != userService.getUserDetails().getId()) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
-        post.setContent(content);
-        saveAllMediaFiles(files, post);
-        List<UUID> deletedFileIds = Arrays.stream(deleteFiles).map(UUID::fromString).toList();
-        deleteMedia(deletedFileIds, UUID.fromString(postId));
-        deleteMediaInCloud(deleteFiles, postId, FolderNameConstant.POST);
-        List<Media> mediaList = getMediaByPostId(UUID.fromString(postId));
+        post.setContent(updatePostRequest.getContent());
+        saveAllMediaFiles(updatePostRequest.getFiles(), post);
+        List<UUID> deletedFileIds = updatePostRequest.getDeleteFileIds().stream().map(UUID::fromString).toList();
+        deleteMedia(deletedFileIds, UUID.fromString(updatePostRequest.getPostId()));
+        deleteMediaInCloud(updatePostRequest.getDeleteFileIds(), updatePostRequest.getPostId(), FolderNameConstant.POST);
+        List<Media> mediaList = getMediaByPostId(UUID.fromString(updatePostRequest.getPostId()));
         PostDto parentPost = getParentPost(post.getParentPost());
         return postMapper.from(post, mediaList, parentPost);
     }
 
     @Override
-    public Page<PostDto> getNews(int page, int pageSize) {
-        Sort sort = Sort.by(AttributeConstant.POST_CREATED_AT).descending();
-        Pageable pageable = getPageable(page, sort, pageSize);
+    public Page<PostDto> getNews(PagingRequest pagingRequest) {
+        Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Post> posts = postRepository.getNews(pageable);
         List<PostDto> postsDto = posts.stream().map(post -> {
             List<Media> mediaList = getMediaByPostId(post.getId());
@@ -100,6 +99,13 @@ public class PostServiceImp implements PostService {
             return postMapper.from(post, mediaList, parentPost);
         }).toList();
         return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
+    }
+
+
+    @Override
+    public Post getPost(String postId) {
+        return postRepository.findPostById(UUID.fromString(postId))
+                .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
     }
 
     private PostDto getParentPost(Post post) {
@@ -116,27 +122,33 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        if(post.getId() != getUser().getId()){
+        if (post.getId() != userService.getUserDetails().getId()) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);
         postRepository.save(post);
     }
 
-    private List<Media> saveAllMediaFiles(MultipartFile[] mediaFiles, Post post) {
+    private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
-        for (MultipartFile mediaFile : mediaFiles) {
-
+        for (String mediaFile : mediaFiles) {
             Media media = Media.builder()
                     .isDelete(false)
                     .mediaType(MediaType.IMAGE)
                     .post(post)
                     .build();
             media = mediaRepository.saveAndFlush(media);
+            int index = mediaFile.indexOf(BASE64_PREF);
+            if (index < 0) {
+                throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
+            }
+            index = index + 7;
+            String fileWithoutHeader = mediaFile.substring(index);
+            byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
-                    mediaFile,
+                    decodedBytes,
                     FolderNameConstant.POST,
-                    String.format("%s%s%s", post.getId(), OLIDUS, media.getId()));
+                    String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), OLIDUS, media.getId()));
             media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
@@ -149,14 +161,13 @@ public class PostServiceImp implements PostService {
 
     private void deleteMedia(List<UUID> deleteFiles, UUID postId) {
         List<Media> mediaList = mediaRepository.findAllByIdsAndPostId(deleteFiles, postId);
-        System.out.println(mediaList);
         mediaRepository.deleteAll(mediaList);
     }
 
-    private void deleteMediaInCloud(String[] deleteFiles, String prefix, String folder) {
+    private void deleteMediaInCloud(List<String> deleteFiles, String prefix, String folder) {
         for (String deleteFile : deleteFiles) {
             String publicId = String.format(
-                    "%s%s%s%s",
+                    FormatConstant.CLOUDINARY_PUBLIC_ID_DELETE_FORMAT,
                     folder,
                     prefix != null ? OLIDUS + prefix : EMPTY_STRING,
                     OLIDUS,
@@ -164,19 +175,5 @@ public class PostServiceImp implements PostService {
             );
             cloudinaryService.deleteFile(publicId);
         }
-    }
-
-    private User getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new BaseException(ErrorCode.UNAUTHENTICATED);
-        }
-        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-    }
-
-    private Pageable getPageable(int page, Sort sort, int pageSize) {
-        return PageRequest.of(page, pageSize, sort);
     }
 }

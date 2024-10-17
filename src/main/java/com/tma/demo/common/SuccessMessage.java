@@ -19,8 +19,11 @@ public enum SuccessMessage {
     UPDATE_COMMENT_SUCCESS("update-comment-successfully"),
     CREATED_COMMENT_SUCCESS("create-comment-successfully"),
     DELETE_POST_SUCCESS("delete-post-successfully"),
-    GET_NEWS_SUCCESS("get-news-successfully")
-    ;
+    GET_NEWS_SUCCESS("get-news-successfully"),
+    REPORT_POST_SUCCESS("report-post-successfully"),
+    CREATED_SETTING_SUCCESS("create-setting-successfully"),
+    UPDATE_SETTING_SUCCESS("update-setting-successfully");
+
     private final String message;
 
     SuccessMessage(String s) {

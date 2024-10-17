@@ -32,6 +32,6 @@ public class Media extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private MediaType mediaType;
     private String mediaUrl;
-    private  boolean isDelete;
+    private boolean isDelete;
 
 }

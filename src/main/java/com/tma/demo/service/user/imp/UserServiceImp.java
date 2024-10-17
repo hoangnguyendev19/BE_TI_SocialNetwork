@@ -21,9 +21,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -85,7 +88,13 @@ public class UserServiceImp implements UserService {
         String email = getUserDetails().getUsername();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-        Map data = cloudinaryService.upload(imageFile, FolderNameConstant.AVATAR, user.getId().toString());
+
+        Map data = null;
+        try {
+            data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
+        } catch (IOException e) {
+            throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
         user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
         user = userRepository.saveAndFlush(user);
         return user.getProfilePictureUrl();
@@ -104,11 +113,14 @@ public class UserServiceImp implements UserService {
         return mapper.map(user, UserDto.class);
     }
 
-    private UserDetails getUserDetails() {
+    @Override
+    public User getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
             throw new BaseException(ErrorCode.UNAUTHENTICATED);
         }
-        return (UserDetails) authentication.getPrincipal();
+        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 }
