@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.RoomStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,21 +30,13 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "token")
-@EntityListeners(AuditingEntityListener.class)
-public class Token {
+public class Token extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     @ManyToOne
     private User user;
     private String accessToken;
     private String refreshToken;
     private boolean isRevoked;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
-
 }

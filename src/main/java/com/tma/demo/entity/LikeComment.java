@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,8 +29,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "like")
-@EntityListeners(AuditingEntityListener.class)
-public class LikeComment {
+public class LikeComment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -37,9 +37,5 @@ public class LikeComment {
     private User user;
     @ManyToOne
     private Comment comment;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
 
 }

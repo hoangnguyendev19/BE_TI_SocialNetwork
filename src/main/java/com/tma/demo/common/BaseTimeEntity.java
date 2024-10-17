@@ -1,7 +1,7 @@
-package com.tma.demo.entity;
+package com.tma.demo.common;
 
-import com.tma.demo.common.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,31 +11,24 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
- * RoomSetting
+ * BaseTimeEntity
  * Version 1.0
- * Date: 07/10/2024
+ * Date: 17/10/2024
  * Copyright
  * Modification Logs
  * DATE          AUTHOR          DESCRIPTION
  * ------------------------------------------------
- * 07/10/2024        NGUYEN             create
+ * 17/10/2024        NGUYEN             create
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "room_Setting")
-public class RoomSetting extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    @ManyToOne
-    private BoardingHouse boardingHouse;
-    private int electricBill;
-    private int waterBill;
-
+@EntityListeners(AuditingEntityListener.class)
+public class BaseTimeEntity {
+    @CreatedDate
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    private LocalDateTime lastModified;
 }

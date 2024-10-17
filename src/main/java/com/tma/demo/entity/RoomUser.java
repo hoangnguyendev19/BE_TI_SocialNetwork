@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,8 +29,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "room_user")
-@EntityListeners(AuditingEntityListener.class)
-public class RoomUser {
+public class RoomUser extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -37,12 +37,5 @@ public class RoomUser {
     private Room room;
     @ManyToOne
     private User user;
-
     private boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
-
-
 }

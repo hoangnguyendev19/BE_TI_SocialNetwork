@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,14 +30,9 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "reason_report_post")
-@EntityListeners(AuditingEntityListener.class)
-public class ReasonReportPost {
+public class ReasonReportPost extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String reason;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
 }

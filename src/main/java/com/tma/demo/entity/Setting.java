@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.SettingKey;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,17 +30,12 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "setting")
-@EntityListeners(AuditingEntityListener.class)
-public class Setting {
-
+public class Setting extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     @Enumerated(EnumType.STRING)
     private SettingKey key;
     private String value;
 
-    @LastModifiedDate
-    private LocalDateTime lastModified;
 }

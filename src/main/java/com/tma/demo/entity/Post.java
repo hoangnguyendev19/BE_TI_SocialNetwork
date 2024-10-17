@@ -1,16 +1,13 @@
 package com.tma.demo.entity;
 
-import com.tma.demo.common.RoomStatus;
+import com.tma.demo.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -29,8 +26,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "post")
-@EntityListeners(AuditingEntityListener.class)
-public class Post {
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -39,10 +35,5 @@ public class Post {
     private String content;
     @ManyToOne
     private Post parentPost;
-
-    private  boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
+    private boolean isDelete;
 }

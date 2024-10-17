@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.MediaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,8 +30,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "media")
-@EntityListeners(AuditingEntityListener.class)
-public class Media {
+public class Media extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -40,8 +40,5 @@ public class Media {
     private MediaType mediaType;
     private String mediaUrl;
     private  boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
+
 }

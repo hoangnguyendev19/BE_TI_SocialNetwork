@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,8 +35,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
+public class User extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -56,11 +56,6 @@ public class User implements UserDetails {
     private String coverPictureUrl;
     private  boolean isDelete;
     private LocalDateTime lastLogin;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
