@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import static com.tma.demo.constant.TableName.BOARDING_HOUSE;
+
 /**
  * BoardingHouse
  * Version 1.0
@@ -24,7 +26,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "boarding_house")
+@Table(name = BOARDING_HOUSE)
 public class BoardingHouse extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

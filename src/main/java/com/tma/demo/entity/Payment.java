@@ -2,6 +2,7 @@ package com.tma.demo.entity;
 
 import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.PaymentStatus;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "payment")
+@Table(name = TableName.PAYMENT)
 public class Payment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

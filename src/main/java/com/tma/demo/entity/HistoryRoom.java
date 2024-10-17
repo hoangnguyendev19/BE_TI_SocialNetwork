@@ -1,6 +1,7 @@
 package com.tma.demo.entity;
 
 import com.tma.demo.common.BaseTimeEntity;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "history_room")
+@Table(name = TableName.HISTORY_ROOM)
 public class HistoryRoom extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

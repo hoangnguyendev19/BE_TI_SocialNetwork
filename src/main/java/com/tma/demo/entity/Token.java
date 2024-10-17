@@ -2,6 +2,7 @@ package com.tma.demo.entity;
 
 import com.tma.demo.common.BaseTimeEntity;
 import com.tma.demo.common.RoomStatus;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "token")
+@Table(name = TableName.TOKEN)
 public class Token extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
