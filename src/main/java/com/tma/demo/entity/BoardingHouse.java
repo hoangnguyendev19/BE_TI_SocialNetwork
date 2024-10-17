@@ -1,6 +1,5 @@
 package com.tma.demo.entity;
 
-import com.tma.demo.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +27,6 @@ import static com.tma.demo.constant.TableName.BOARDING_HOUSE;
 @Entity
 @Table(name = BOARDING_HOUSE)
 public class BoardingHouse extends BaseTimeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
     @ManyToOne
     private User user;
     private String boardingHouseName;
