@@ -5,6 +5,7 @@ import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.entity.Post;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
@@ -64,6 +65,14 @@ public class PostController {
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.DELETE_POST_SUCCESS.getMessage())
                 .data(null)
+                .build());
+    }
+    @GetMapping(value = "/{postId}")
+    public ResponseEntity<ApiResponse<PostDto>> getPost(@PathVariable("postId") String postId) {
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.GET_POST_SUCCESS.getMessage())
+                .data(postService.getPostDto(postId))
                 .build());
     }
 
