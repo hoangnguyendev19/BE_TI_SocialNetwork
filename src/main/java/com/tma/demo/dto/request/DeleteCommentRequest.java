@@ -12,7 +12,6 @@ public class DeleteCommentRequest {
 
     @JsonProperty("comment_id")
     private String commentId;
-
     @JsonProperty("user_id")
     private String userId;
 }

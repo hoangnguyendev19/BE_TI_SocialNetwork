@@ -8,14 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentRequest {
-
+public class CreateFavoriteCommentRequest {
+    @JsonProperty("comment_id")
+    private String commentId;
     @JsonProperty("user_id")
     private String userId;
-
-    @JsonProperty("post_id")
-    private String postId;
-
-    @JsonProperty("commentText")
-    private String commentText;
 }

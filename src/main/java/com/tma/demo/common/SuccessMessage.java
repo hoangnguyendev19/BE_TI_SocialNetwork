@@ -20,6 +20,8 @@ public enum SuccessMessage {
     CREATED_COMMENT_SUCCESS("create-comment-successfully"),
     DELETE_POST_SUCCESS("delete-post-successfully"),
     GET_NEWS_SUCCESS("get-news-successfully"),
+    HIDDEN_COMMENT_SUCCESS("hidden-comment-successfully"),
+    VIEW_COMMENT_SUCCESS("view-comment-successfully"),
     REPORT_POST_SUCCESS("report-post-successfully"),
     CREATED_SETTING_SUCCESS("create-setting-successfully"),
     UPDATE_SETTING_SUCCESS("update-setting-successfully"),

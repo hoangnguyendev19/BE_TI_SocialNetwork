@@ -5,15 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewListCommentResponse {
-    @JsonProperty("post_id")
     private String postId;
-    @JsonProperty("comment_id")
     private String commentId;
-    @JsonProperty("commentText")
+    private String userId;
     private String commentText;
-
+    private LocalDateTime createdAt;
+    private boolean isHidden;
+    private LocalDateTime lastModified;
+    private List<ViewListCommentResponse> childComments;
 }

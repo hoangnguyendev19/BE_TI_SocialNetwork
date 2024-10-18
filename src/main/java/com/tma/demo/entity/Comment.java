@@ -6,7 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,8 +38,8 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne
     private Comment parentComment;
     private String commentText;
-
+    @OneToMany(mappedBy = "parentComment")
+    private List<Comment> childComments;
     private boolean isHidden;
     private boolean isDelete;
-
 }
