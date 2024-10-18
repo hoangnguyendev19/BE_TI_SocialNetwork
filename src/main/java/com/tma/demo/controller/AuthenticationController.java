@@ -3,11 +3,7 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
-import com.tma.demo.dto.request.ForgotPasswordRequest;
-import com.tma.demo.dto.request.LoginRequest;
-import com.tma.demo.dto.request.RegisterRequest;
-import com.tma.demo.dto.request.SetPasswordRequest;
-import com.tma.demo.dto.request.VerifyOTPRequest;
+import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.RegisterResponse;
 import com.tma.demo.dto.response.TokenDto;
 import com.tma.demo.dto.response.VerifyOtpResponse;
@@ -47,7 +43,7 @@ public class AuthenticationController {
 
     @PostMapping(value = AUTH_LOGIN)
     public ResponseEntity<ApiResponse<TokenDto>> login(
-            @RequestBody @Valid LoginRequest request){
+            @RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(),
                         SuccessMessage.LOGIN_SUCCESS.getMessage(),
@@ -57,42 +53,41 @@ public class AuthenticationController {
     @PostMapping(value = AUTH_REGISTER)
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
             @Valid @RequestBody RegisterRequest registerRequest) {
-
-            User user = this.registerService.registerDTOtoUser(registerRequest);
-
-            String hashPassword = this.passwordEncoder.encode(user.getPassword());
-
-            user.setPassword(hashPassword);
-
-            RegisterResponse RegisterResponse = this.registerService.saveUser(user);
+        User user = this.registerService.registerDTOtoUser(registerRequest);
+        String hashPassword = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
+        RegisterResponse RegisterResponse = this.registerService.saveUser(user);
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.CREATED.value(),
                         SuccessMessage.REGISTER_SUCCESS.getMessage(),
-                                RegisterResponse));
+                        RegisterResponse));
     }
+
     // API VERIFY OTP
     @PutMapping(value = AUTH_VERIFY_OTP)
     public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyAccount(
             @RequestBody VerifyOTPRequest verifyOTPRequest) {
-            // String token = jwtService.generateToken(verifyOTPRequest.getEmail(),
-            // TokenType.ACCESS_TOKEN);
-            VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(
-                    verifyOTPRequest.getEmail(),
-                    verifyOTPRequest.getOtp());
-            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
-                    SuccessMessage.OTP_VERIFY.getMessage(),
-                    verifyOtpResponse));
+        // String token = jwtService.generateToken(verifyOTPRequest.getEmail(),
+        // TokenType.ACCESS_TOKEN);
+        VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(
+                verifyOTPRequest.getEmail(),
+                verifyOTPRequest.getOtp());
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+                SuccessMessage.OTP_VERIFY.getMessage(),
+                verifyOtpResponse));
     }
+
     // API FORGOT PASSWORD
     @PostMapping(value = AUTH_FORGOT_PASSWORD)
     public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
 
         String otp = forgotPassService.generateOtp(request.getEmail());
 
-            return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
-                    otp,
-                    null ));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
+                otp,
+                null));
     }
+
     // API SET PASSWORD
     @PutMapping(value = AUTH_SET_PASSWORD)
     public ResponseEntity<ApiResponse<String>> setPassword(
@@ -101,6 +96,6 @@ public class AuthenticationController {
         String response = forgotPassService.setPassword(setPasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
                 response,
-                null ));
+                null));
     }
 }

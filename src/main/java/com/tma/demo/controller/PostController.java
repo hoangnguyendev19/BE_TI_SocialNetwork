@@ -68,6 +68,16 @@ public class PostController {
                 .build());
     }
 
+    @GetMapping(value = "/{postId}")
+    public ResponseEntity<ApiResponse<PostDto>> getPost(@PathVariable("postId") String postId) {
+        return ResponseEntity.ok(ApiResponse.<PostDto>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.GET_POST_SUCCESS.getMessage())
+                .data(postService.getPostDto(postId))
+                .build());
+    }
+
+    @PostMapping("/news")
     @GetMapping(value = GET_POST_NEWS)
     public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestBody PagingRequest pagingRequest) {
         Page<PostDto> postsDto = postService.getNews(pagingRequest);
