@@ -1,7 +1,9 @@
 package com.tma.demo.service.boarding_house.imp;
 
+import com.tma.demo.common.ErrorCode;
 import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.entity.BoardingHouse;
+import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.BoardingHouseRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.user.UserService;
@@ -32,6 +34,9 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     @Override
     @Transactional
     public BoardingHouseDto register(BoardingHouseDto request) {
+        if(isBoardingHouseNameExists(request.getBoardingHouseName())){
+            throw new BaseException(ErrorCode.BOARDING_HOUSE_NAME_ALREADY_EXISTS);
+        }
         BoardingHouse boardingHouse = BoardingHouse.builder()
                 .boardingHouseName(request.getBoardingHouseName())
                 .user(userService.getUserDetails())
@@ -45,7 +50,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     }
 
     private Boolean isBoardingHouseNameExists(String boardingHouseName) {
-        return
+        return boardingHouseRepository.isBoardingHouseNameExists(boardingHouseName);
     }
 
     public BoardingHouse getBoardingHouse(String id){
