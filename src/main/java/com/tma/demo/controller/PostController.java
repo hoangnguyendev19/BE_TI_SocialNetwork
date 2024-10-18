@@ -30,9 +30,8 @@ import static com.tma.demo.common.APIConstant.*;
  * 11/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = "/api/v1/posts")
+@RequestMapping(value = POSTS)
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
@@ -58,7 +57,7 @@ public class PostController {
                 .build());
     }
 
-    @DeleteMapping(value = DELETE_POST)
+    @DeleteMapping(value = POST_ID)
     public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("postId") String postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
@@ -68,7 +67,7 @@ public class PostController {
                 .build());
     }
 
-    @GetMapping(value = "/{postId}")
+    @GetMapping(value = POST_ID)
     public ResponseEntity<ApiResponse<PostDto>> getPost(@PathVariable("postId") String postId) {
         return ResponseEntity.ok(ApiResponse.<PostDto>builder()
                 .code(HttpStatus.OK.value())
@@ -77,8 +76,7 @@ public class PostController {
                 .build());
     }
 
-    @PostMapping("/news")
-    @GetMapping(value = GET_POST_NEWS)
+    @PostMapping(value = GET_POST_NEWS)
     public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestBody PagingRequest pagingRequest) {
         Page<PostDto> postsDto = postService.getNews(pagingRequest);
         return ResponseEntity.ok(

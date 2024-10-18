@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.LikeDto;
@@ -24,9 +25,8 @@ import org.springframework.web.bind.annotation.*;
  * 18/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = "/api/v1/favourites")
+@RequestMapping(value = APIConstant.FAVOURITE)
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class FavouriteController {
     private final FavouriteService favouriteService;
 
@@ -34,7 +34,7 @@ public class FavouriteController {
     public ResponseEntity<ApiResponse<LikeDto>> createFavouritePost(@RequestBody LikeDto likeDto) {
         return ResponseEntity.ok(ApiResponse.<LikeDto>builder()
                 .code(HttpStatus.CREATED.value())
-                .message(SuccessMessage.CREATE_FAVOURITE_POST_SUCESS.getMessage())
+                .message(SuccessMessage.CREATE_FAVOURITE_POST_SUCCESS.getMessage())
                 .data(favouriteService.createFavouritePost(likeDto))
                 .build());
     }
@@ -44,17 +44,17 @@ public class FavouriteController {
         favouriteService.deleteFavouritePost(likeDto);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
-                .message(SuccessMessage.DELETE_FAVOURITE_POST_SUCESS.getMessage())
+                .message(SuccessMessage.DELETE_FAVOURITE_POST_SUCCESS.getMessage())
                 .data(null)
                 .build());
     }
 
-    @PostMapping(value = "/favourite-posts")
+    @PostMapping(value = APIConstant.FAVOURITE_POSTS)
     public ResponseEntity<ApiResponse<Page<PostDto>>> getFavouritePosts(@RequestBody PagingRequest pagingRequest) {
         Page<PostDto> favouritePosts = favouriteService.getFavouritePosts(pagingRequest);
         return ResponseEntity.ok(ApiResponse.<Page<PostDto>>builder()
                 .code(HttpStatus.OK.value())
-                .message(SuccessMessage.GET_FAVOURITE_POSTS_SUCESS.getMessage())
+                .message(SuccessMessage.GET_FAVOURITE_POSTS_SUCCESS.getMessage())
                 .data(favouritePosts)
                 .build());
     }
