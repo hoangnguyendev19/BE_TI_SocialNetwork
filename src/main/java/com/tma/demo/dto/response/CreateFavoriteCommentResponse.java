@@ -5,12 +5,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CreateCommentResponse {
+public class CreateFavoriteCommentResponse {
     private String id;
-    private String postId;
     private String userId;
-    private String parentCommentId;
-    private String content;
+    private String commentId;
+    private String postId;
     private String createdAt;
-    private String lastModified;
 }

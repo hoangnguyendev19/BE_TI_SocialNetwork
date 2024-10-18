@@ -27,7 +27,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "like")
+@Table(name = "like_comment")
 @EntityListeners(AuditingEntityListener.class)
 public class LikeComment {
     @Id

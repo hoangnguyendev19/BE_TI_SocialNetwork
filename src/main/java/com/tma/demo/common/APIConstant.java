@@ -5,6 +5,7 @@ public class APIConstant {
     public static final String POSTS = BASE_API + "/posts";
     public static final String USERS = BASE_API + "/users";
     public static final String COMMENTS = BASE_API + "/comment";
+    public static final String LIKE_COMMENTS = BASE_API + "/like-comment";
     public static final String AUTH = BASE_API + "/auth";
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
@@ -24,6 +25,7 @@ public class APIConstant {
     public static final String DELETE_COMMENT_POST = "/delete";
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
-
-
+    // Like Comment Post Endpoints
+    public static final String CREATE_LIKE_COMMENTS = "/create";
+    public static final String VIEW_LIST_LIKE_COMMENTS = "/view-list";
 }

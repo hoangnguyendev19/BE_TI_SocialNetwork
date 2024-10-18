@@ -12,21 +12,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewListCommentResponse {
-
     private String postId;
-
     private String commentId;
-
     private String userId;
-
     private String commentText;
-
     private LocalDateTime createdAt;
-
     private boolean isHidden;
-
     private LocalDateTime lastModified;
-
     private List<ViewListCommentResponse> childComments;
-
 }
