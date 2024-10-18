@@ -2,10 +2,12 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.LikeDto;
 import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.repository.PostRepository;
+import com.tma.demo.service.favourite.FavouriteService;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
 import com.tma.demo.util.PageUtil;
@@ -36,6 +38,7 @@ public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
     private final ReportService reportService;
+    private final FavouriteService favouriteService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<PostDto>> createPost(@RequestBody CreatePostRequest createPostRequest) {
@@ -77,6 +80,15 @@ public class PostController {
                         .data(postsDto)
                         .build()
         );
+    }
+
+    @PostMapping("/favourites")
+    public ResponseEntity<ApiResponse<LikeDto>> createFavouritePost(@RequestBody LikeDto likeDto){
+        return ResponseEntity.ok(ApiResponse.<LikeDto>builder()
+                        .code(HttpStatus.CREATED.value())
+                        .message(SuccessMessage.CREATE_FAVOURITE_POST_SUCESS.getMessage())
+                        .data(favouriteService.createFavouritePost(likeDto))
+                .build());
     }
 
 }
