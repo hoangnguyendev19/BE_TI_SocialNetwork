@@ -2,8 +2,13 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.request.CreatePostRequest;
+import com.tma.demo.dto.request.PagingRequest;
+import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
+import com.tma.demo.service.report.ReportService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.tma.demo.common.APIConstant.*;
 
 /**
  * PostController
@@ -62,11 +69,6 @@ public class PostController {
     }
 
     @GetMapping(value = GET_POST_NEWS)
-    public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "pageSize", defaultValue = "8") int pageSize) {
-        Page<PostDto> postsDto = postService.getNews(page, pageSize);
-    @PostMapping("/news")
     public ResponseEntity<ApiResponse<Page<PostDto>>> getNews(@RequestBody PagingRequest pagingRequest) {
         Page<PostDto> postsDto = postService.getNews(pagingRequest);
         return ResponseEntity.ok(

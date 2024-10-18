@@ -42,8 +42,4 @@ public class Comment extends BaseTimeEntity {
     private List<Comment> childComments;
     private boolean isHidden;
     private boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
 }

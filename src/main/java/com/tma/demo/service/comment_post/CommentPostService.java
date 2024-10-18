@@ -14,12 +14,14 @@ import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.CommentRepository;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.repository.UserRepository;
+import com.tma.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,18 +31,17 @@ public class CommentPostService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final UserService userService;
 
     //Create Comment
     public CreateCommentResponse createComment(CreateCommentRequest request) {
         // Find user by ID
-        User user = findUserById(request.getUserId());
+        User user = userService.getUserDetails();
         // Find post by ID
         Post post = findPostById(request.getPostId());
-        Comment parentComment = null;
-        // Java commons (Java Lang 3)
-        if (!StringUtils.isBlank(request.getParentCommentId())) {
-            parentComment = findCommentById(request.getParentCommentId());
-        }
+        Comment parentComment = StringUtils.isBlank(request.getParentCommentId())
+                ? null
+                : findCommentById(request.getParentCommentId());
         // Create a new comment
         Comment comment = new Comment();
         comment.setUser(user);
@@ -50,12 +51,15 @@ public class CommentPostService {
         comment.setCreatedAt(LocalDateTime.now());
         comment.setLastModified(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
+        String parentCommentString = parentComment != null
+                ? parentComment.getId().toString()
+                : "No parent comment";
         // Create response
         return new CreateCommentResponse(
                 savedComment.getId().toString(),
                 post.getId().toString(),
                 user.getId().toString(),
-                savedComment.getParentComment().toString(),
+                parentCommentString,
                 savedComment.getCommentText(),
                 savedComment.getCreatedAt().toString(),
                 savedComment.getLastModified().toString()
@@ -65,8 +69,9 @@ public class CommentPostService {
     public UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest) {
         //Find Cmt Id
         Comment comment = findCommentById(updateCommentRequest.getCommentId());
+        User user = userService.getUserDetails();
         //Check User
-        if (!comment.getUser().getId().equals(UUID.fromString(updateCommentRequest.getUserId()))) {
+        if (!comment.getUser().getId().equals(user.getId())){
             throw new BaseException(ErrorCode.UPDATE_COMMENT_ERROR);
         }
         comment.setCommentText(updateCommentRequest.getCommentText());
@@ -79,7 +84,8 @@ public class CommentPostService {
     //Delete Comment
     public String deleteComment(DeleteCommentRequest deleteCommentRequest) {
         Comment comment = findCommentById(deleteCommentRequest.getCommentId());
-        if (!comment.getUser().getId().equals(UUID.fromString(deleteCommentRequest.getUserId()))) {
+        User user = userService.getUserDetails();
+        if (!comment.getUser().getId().equals(user.getId())){
             throw new BaseException(ErrorCode.DELETE_COMMENT_ERROR);
         }
         commentRepository.delete(comment);
@@ -114,8 +120,9 @@ public class CommentPostService {
     //Hidden Comment
     public HiddenCommentResponse hideComment(HiddenCommentRequest hiddenCommentRequest) {
         Comment comment = findCommentById(hiddenCommentRequest.getCommentId());
+        User user = userService.getUserDetails();
         //CheckUser
-        if (!comment.getUser().getId().toString().equals(hiddenCommentRequest.getUserId())) {
+        if (!comment.getUser().getId().toString().equals(user.getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         comment.setHidden(true);
@@ -130,10 +137,6 @@ public class CommentPostService {
                 comment.getCreatedAt().toString(),
                 comment.getLastModified().toString()
         );
-    }
-    private User findUserById(String userId) {
-        return userRepository.findById(UUID.fromString(userId))
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
     private Post findPostById(String postId) {
         return postRepository.findById(UUID.fromString(postId))

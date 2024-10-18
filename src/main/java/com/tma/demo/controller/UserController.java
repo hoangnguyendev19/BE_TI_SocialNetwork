@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.tma.demo.common.APIConstant.*;
+
 /**
  * UserController
  * Version 1.0
@@ -53,7 +55,7 @@ public class UserController {
         ));
     }
 
-    @PutMapping(value = "/avatar")
+    @PutMapping(value = USER_AVATAR)
     public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile)  {
         String imgUrl = userService.changeAvatar(imageFile);
         return ResponseEntity.ok(new ApiResponse<>(

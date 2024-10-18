@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateCommentRequest {
 
-    @JsonProperty("user_id")
-    private String userId;
     @JsonProperty("post_id")
     private String postId;
     @JsonProperty("parent_comment_id")

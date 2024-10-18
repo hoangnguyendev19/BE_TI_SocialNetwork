@@ -12,10 +12,6 @@ public class UpdateCommentRequest {
 
     @JsonProperty("comment_id")
     private String commentId;
-
-    @JsonProperty("user_id")
-    private String userId;
-
     @JsonProperty("commentText")
     private String commentText;
 }
