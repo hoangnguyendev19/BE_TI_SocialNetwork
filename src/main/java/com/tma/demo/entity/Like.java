@@ -1,14 +1,12 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -26,18 +24,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "\"like\"")
-@EntityListeners(AuditingEntityListener.class)
-public class Like {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = TableName.LIKE)
+public class Like extends BaseTimeEntity {
     @ManyToOne
     private User user;
     @ManyToOne
     private Post post;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
 }

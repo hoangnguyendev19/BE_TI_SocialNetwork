@@ -1,5 +1,6 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,12 +29,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "comment")
-@EntityListeners(AuditingEntityListener.class)
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = TableName.COMMENT)
+public class Comment extends BaseTimeEntity {
     @ManyToOne
     private Post post;
     @ManyToOne

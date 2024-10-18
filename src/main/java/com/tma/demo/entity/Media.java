@@ -1,16 +1,13 @@
 package com.tma.demo.entity;
 
 import com.tma.demo.common.MediaType;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -28,20 +25,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "media")
-@EntityListeners(AuditingEntityListener.class)
-public class Media {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = TableName.MEDIA)
+public class Media extends BaseTimeEntity {
     @ManyToOne
     private Post post;
     @Enumerated(EnumType.STRING)
     private MediaType mediaType;
     private String mediaUrl;
-    private  boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
+    private boolean isDelete;
+
 }

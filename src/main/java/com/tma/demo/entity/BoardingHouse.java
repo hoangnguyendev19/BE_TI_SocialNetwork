@@ -5,12 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.tma.demo.constant.TableName.BOARDING_HOUSE;
 
 /**
  * BoardingHouse
@@ -27,12 +25,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "boarding_house")
-@EntityListeners(AuditingEntityListener.class)
-public class BoardingHouse {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = BOARDING_HOUSE)
+public class BoardingHouse extends BaseTimeEntity {
     @ManyToOne
     private User user;
     private String boardingHouseName;
@@ -40,9 +34,5 @@ public class BoardingHouse {
     private String ward;
     private String city;
     private boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
 
 }

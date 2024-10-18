@@ -1,15 +1,12 @@
 package com.tma.demo.entity;
 
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -27,19 +24,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "history_room")
-@EntityListeners(AuditingEntityListener.class)
-public class HistoryRoom {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = TableName.HISTORY_ROOM)
+public class HistoryRoom extends BaseTimeEntity {
     @ManyToOne
     private Room room;
     private int electricMeterNumber;
     private int waterMeterNumber;
     private boolean isDelete;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
 }

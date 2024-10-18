@@ -1,14 +1,12 @@
 package com.tma.demo.entity;
 
 import com.tma.demo.common.UserStatus;
+import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -33,12 +31,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@Table(name = TableName.USER)
+public class User extends BaseTimeEntity implements UserDetails {
     private String email;
     private String password;
     private String firstName;
@@ -56,11 +50,6 @@ public class User implements UserDetails {
     private String coverPictureUrl;
     private  boolean isDelete;
     private LocalDateTime lastLogin;
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    private LocalDateTime lastModified;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
