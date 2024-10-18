@@ -30,7 +30,7 @@ import static com.tma.demo.common.APIConstant.*;
  * 11/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = POSTS)
+@RequestMapping(value = "/api/v1/posts")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class PostController {

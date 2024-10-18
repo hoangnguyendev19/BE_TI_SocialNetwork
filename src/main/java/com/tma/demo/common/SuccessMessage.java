@@ -24,7 +24,8 @@ public enum SuccessMessage {
     VIEW_COMMENT_SUCCESS("view-comment-successfully"),
     REPORT_POST_SUCCESS("report-post-successfully"),
     CREATED_SETTING_SUCCESS("create-setting-successfully"),
-    UPDATE_SETTING_SUCCESS("update-setting-successfully");
+    UPDATE_SETTING_SUCCESS("update-setting-successfully"),
+    GET_POST_SUCCESS("get-post-successfully");
 
     private final String message;
 
