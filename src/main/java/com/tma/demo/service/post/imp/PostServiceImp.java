@@ -93,14 +93,19 @@ public class PostServiceImp implements PostService {
     public Page<PostDto> getNews(PagingRequest pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Post> posts = postRepository.getNews(pageable);
-        List<PostDto> postsDto = posts.stream().map(post -> {
-            List<Media> mediaList = getMediaByPostId(post.getId());
-            PostDto parentPost = getParentPost(post.getParentPost());
-            return postMapper.from(post, mediaList, parentPost);
-        }).toList();
+        List<PostDto> postsDto = posts.stream().map(
+                post -> getPostDto(post.getId().toString())
+        ).toList();
         return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
     }
 
+    @Override
+    public PostDto getPostDto(String postId) {
+        Post post = getPost(postId);
+        List<Media> mediaList = getMediaByPostId(post.getId());
+        PostDto parentPost = getParentPost(post.getParentPost());
+        return postMapper.from(post, mediaList, parentPost);
+    }
 
     @Override
     public Post getPost(String postId) {
