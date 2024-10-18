@@ -94,9 +94,7 @@ public class PostServiceImp implements PostService {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Post> posts = postRepository.getNews(pageable);
         List<PostDto> postsDto = posts.stream().map(
-                post -> {
-                    return getPostDto(post.getId().toString());
-                }
+                post -> getPostDto(post.getId().toString())
         ).toList();
         return new PageImpl<>(postsDto, pageable, posts.getTotalElements());
     }
