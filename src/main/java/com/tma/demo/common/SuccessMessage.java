@@ -24,7 +24,8 @@ public enum SuccessMessage {
     CREATED_SETTING_SUCCESS("create-setting-successfully"),
     UPDATE_SETTING_SUCCESS("update-setting-successfully"),
     CREATE_FAVOURITE_POST_SUCESS("create-favourite-post-successfully"),
-    ;
+    DELETE_FAVOURITE_POST_SUCESS("delete-favourite-post-successfully"),
+    GET_FAVOURITE_POSTS_SUCESS("get-favourite-posts-successfully"),;
 
     private final String message;
 
