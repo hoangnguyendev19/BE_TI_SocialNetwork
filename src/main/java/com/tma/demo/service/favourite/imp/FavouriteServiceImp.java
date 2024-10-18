@@ -13,6 +13,7 @@ import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.user.UserService;
 import com.tma.demo.util.PageUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +47,7 @@ public class FavouriteServiceImp implements FavouriteService {
         User user = userService.getUserDetails();
         Post post = postService.getPost(likeDto.getPostId());
         Like like = getLikeByUserAndPost(user.getId(), post.getId());
-        if (like == null) {
+        if (ObjectUtils.isEmpty(like)) {
             like = Like.builder()
                     .user(user)
                     .post(post)
@@ -61,7 +62,7 @@ public class FavouriteServiceImp implements FavouriteService {
         User user = userService.getUserDetails();
         Post post = postService.getPost(likeDto.getPostId());
         Like like = getLikeByUserAndPost(user.getId(), post.getId());
-        if (like != null) {
+        if (!ObjectUtils.isEmpty(like)) {
             likeRepository.delete(like);
         }
     }

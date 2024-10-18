@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * FvouriteController
  * Version 1.0
@@ -32,7 +30,7 @@ import java.util.List;
 public class FavouriteController {
     private final FavouriteService favouriteService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<ApiResponse<LikeDto>> createFavouritePost(@RequestBody LikeDto likeDto) {
         return ResponseEntity.ok(ApiResponse.<LikeDto>builder()
                 .code(HttpStatus.CREATED.value())
@@ -50,9 +48,10 @@ public class FavouriteController {
                 .data(null)
                 .build());
     }
+
     @PostMapping(value = "/favourite-posts")
     public ResponseEntity<ApiResponse<Page<PostDto>>> getFavouritePosts(@RequestBody PagingRequest pagingRequest) {
-        Page<PostDto> favouritePosts =  favouriteService.getFavouritePosts(pagingRequest);
+        Page<PostDto> favouritePosts = favouriteService.getFavouritePosts(pagingRequest);
         return ResponseEntity.ok(ApiResponse.<Page<PostDto>>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.GET_FAVOURITE_POSTS_SUCESS.getMessage())

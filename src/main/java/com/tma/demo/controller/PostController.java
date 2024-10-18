@@ -67,7 +67,7 @@ public class PostController {
 
     @GetMapping(value = "/{postId}")
     public ResponseEntity<ApiResponse<PostDto>> getPost(@PathVariable("postId") String postId) {
-        return ResponseEntity.ok(ApiResponse.<String>builder()
+        return ResponseEntity.ok(ApiResponse.<PostDto>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.GET_POST_SUCCESS.getMessage())
                 .data(postService.getPostDto(postId))
