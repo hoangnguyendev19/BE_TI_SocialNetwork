@@ -3,7 +3,8 @@ CREATE TABLE "setting"
     "id"            uuid PRIMARY KEY,
     "key"           varchar,
     "value"         varchar,
-    "last_modified" timestamp
+    "created_at"          timestamp,
+    "last_modified"       timestamp
 );
 CREATE TABLE "users"
 (
