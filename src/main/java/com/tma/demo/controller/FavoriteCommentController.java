@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.CreateFavoriteCommentRequest;
 import com.tma.demo.dto.request.ViewListFavoriteCommentRequest;
@@ -22,11 +23,11 @@ public class FavoriteCommentController {
     @PostMapping(value = CREATE_LIKE_COMMENTS)
     public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@RequestBody CreateFavoriteCommentRequest createFavoriteCommentRequest) {
         CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(createFavoriteCommentRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "OK",createFavoriteCommentResponse));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
     @GetMapping(value = VIEW_LIST_LIKE_COMMENTS)
     public ResponseEntity<ApiResponse<ViewListFavoriteCommentResponse>> viewListFavoriteComment (@RequestBody ViewListFavoriteCommentRequest viewListFavoriteCommentRequest) {
         ViewListFavoriteCommentResponse viewListFavoriteCommentResponse = favoriteCommentService.getLikedCommentsByUserId(viewListFavoriteCommentRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "OK",viewListFavoriteCommentResponse));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_FAVOURITE_COMMENT.getMessage(), viewListFavoriteCommentResponse));
     }
 }

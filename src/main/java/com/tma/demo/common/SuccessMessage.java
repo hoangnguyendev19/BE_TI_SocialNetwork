@@ -28,8 +28,11 @@ public enum SuccessMessage {
     CREATE_FAVOURITE_POST_SUCCESS("create-favourite-post-successfully"),
     DELETE_FAVOURITE_POST_SUCCESS("delete-favourite-post-successfully"),
     GET_FAVOURITE_POSTS_SUCCESS("get-favourite-posts-successfully"),
-    GET_POST_SUCCESS("get-post-successfully");
-
+    GET_POST_SUCCESS("get-post-successfully"),
+    CREATE_FAVOURITE_COMMENT("create-favourite-comment-successfully"),
+    UPDATE_FAVOURITE_COMMENT("update-favourite-comment-successfully"),
+    DELETE_FAVOURITE_COMMENT("delete-favourite-comment-successfully"),
+    VIEW_FAVOURITE_COMMENT("view-favourite-comment-successfully");
     private final String message;
 
     SuccessMessage(String s) {
