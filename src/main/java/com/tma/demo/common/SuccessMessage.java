@@ -25,10 +25,10 @@ public enum SuccessMessage {
     REPORT_POST_SUCCESS("report-post-successfully"),
     CREATED_SETTING_SUCCESS("create-setting-successfully"),
     UPDATE_SETTING_SUCCESS("update-setting-successfully"),
-    GET_POST_SUCCESS("get-post-successfully"),
-    CREATE_FAVOURITE_POST_SUCESS("create-favorite-post-successfully"),
-    GET_FAVOURITE_POSTS_SUCESS("get-favorite-post-successfully"),
-    DELETE_FAVOURITE_POST_SUCESS("delete-favorite-post-successfully");
+    CREATE_FAVOURITE_POST_SUCCESS("create-favourite-post-successfully"),
+    DELETE_FAVOURITE_POST_SUCCESS("delete-favourite-post-successfully"),
+    GET_FAVOURITE_POSTS_SUCCESS("get-favourite-posts-successfully"),
+    GET_POST_SUCCESS("get-post-successfully");
 
     private final String message;
 

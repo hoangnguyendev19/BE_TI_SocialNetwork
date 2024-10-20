@@ -1,6 +1,8 @@
 package com.tma.demo.service.auth;
 
 import com.tma.demo.exception.BaseException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.tma.demo.dto.request.RegisterRequest;
@@ -9,13 +11,10 @@ import com.tma.demo.entity.User;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.common.ErrorCode;
 @Service
+@RequiredArgsConstructor
 public class RegisterService {
     private final UserRepository userRepository;
-
-    public RegisterService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
+    private final PasswordEncoder passwordEncoder;
     public User registerDTOtoUser(RegisterRequest registerRequest) {
         // Check if email already exists
         if (isEmailExist(registerRequest.getEmail())) {
@@ -34,7 +33,11 @@ public class RegisterService {
         user.setPassword(registerRequest.getPassword());
         return user;
     }
-    public RegisterResponse saveUser(User user) {
+    public RegisterResponse saveUser(RegisterRequest registerRequest) {
+        User user = registerDTOtoUser(registerRequest);
+        // Encode password
+        String hashPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
         User savedUser = this.userRepository.save(user);  //save User
         return new RegisterResponse(  //Response Register
                 savedUser.getFirstName(),

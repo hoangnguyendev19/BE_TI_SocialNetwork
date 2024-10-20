@@ -2,16 +2,18 @@ package com.tma.demo.entity;
 
 
 import com.tma.demo.constant.TableName;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -20,13 +22,9 @@ import java.util.UUID;
 @Entity
 @Table(name = TableName.OTP)
 @EntityListeners(AuditingEntityListener.class)
-public class Otp {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Otp extends BaseTimeEntity {
     @ManyToOne
     private User user;
-  
     private String otp;
     @CreatedDate
     private LocalDateTime otpGeneratedTime;

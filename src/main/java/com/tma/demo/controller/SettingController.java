@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.SettingDto;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * 16/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping("/api/v1/settings")
+@RequestMapping(value = APIConstant.SETTING)
 @RequiredArgsConstructor
 public class SettingController {
     private final SettingService settingService;

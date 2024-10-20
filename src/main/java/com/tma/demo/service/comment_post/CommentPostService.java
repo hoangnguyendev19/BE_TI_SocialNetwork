@@ -29,10 +29,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentPostService {
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final UserService userService;
-
     //Create Comment
     public CreateCommentResponse createComment(CreateCommentRequest request) {
         // Find user by ID
@@ -72,13 +70,12 @@ public class CommentPostService {
         User user = userService.getUserDetails();
         //Check User
         if (!comment.getUser().getId().equals(user.getId())){
-            throw new BaseException(ErrorCode.UPDATE_COMMENT_ERROR);
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         comment.setCommentText(updateCommentRequest.getCommentText());
         comment.setLastModified(LocalDateTime.now());
         Comment saveComment = commentRepository.save(comment);
-        return new UpdateCommentResponse(
-                saveComment.getCommentText()
+        return new UpdateCommentResponse(saveComment.getCommentText()
         );
     }
     //Delete Comment
@@ -86,7 +83,7 @@ public class CommentPostService {
         Comment comment = findCommentById(deleteCommentRequest.getCommentId());
         User user = userService.getUserDetails();
         if (!comment.getUser().getId().equals(user.getId())){
-            throw new BaseException(ErrorCode.DELETE_COMMENT_ERROR);
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         commentRepository.delete(comment);
         return SuccessMessage.DELETE_COMMENT_SUCCESS.getMessage();
@@ -100,7 +97,6 @@ public class CommentPostService {
                 .collect(Collectors.toList());
         return responseList;
     }
-
     // Response
     private ViewListCommentResponse convertToResponse(Comment comment) {
         ViewListCommentResponse response = new ViewListCommentResponse();
@@ -122,12 +118,11 @@ public class CommentPostService {
         Comment comment = findCommentById(hiddenCommentRequest.getCommentId());
         User user = userService.getUserDetails();
         //CheckUser
-        if (!comment.getUser().getId().toString().equals(user.getId())) {
+        if (!comment.getUser().getId().equals(user.getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         comment.setHidden(true);
         commentRepository.save(comment);
-
         return new HiddenCommentResponse(
                 comment.getId().toString(),
                 comment.getPost().getId().toString(),

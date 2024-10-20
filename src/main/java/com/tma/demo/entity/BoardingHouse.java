@@ -11,7 +11,7 @@ import java.util.UUID;
 import static com.tma.demo.constant.TableName.BOARDING_HOUSE;
 
 /**
- * BoardingHouse
+ * BoardingHouseController
  * Version 1.0
  * Date: 07/10/2024
  * Copyright

@@ -33,4 +33,5 @@ public class Like extends BaseTimeEntity {
     private User user;
     @ManyToOne
     private Post post;
+
 }

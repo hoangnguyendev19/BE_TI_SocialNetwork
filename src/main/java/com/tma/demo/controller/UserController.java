@@ -31,7 +31,6 @@ import static com.tma.demo.common.APIConstant.*;
 @RestController
 @RequestMapping(value = USERS)
 @RequiredArgsConstructor
-@SecurityRequirement(name = "bearerAuth")
 public class UserController {
     private final UserService userService;
     private final ForgotPassService forgotPassService;

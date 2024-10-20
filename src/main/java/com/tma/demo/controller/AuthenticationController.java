@@ -45,58 +45,32 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<TokenDto>> login(
             @RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.OK.value(),
-                        SuccessMessage.LOGIN_SUCCESS.getMessage(),
-                        authService.authenticate(request)));
+                new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.LOGIN_SUCCESS.getMessage(), authService.authenticate(request)));
     }
-
     @PostMapping(value = AUTH_REGISTER)
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
             @Valid @RequestBody RegisterRequest registerRequest) {
-
-            User user = this.registerService.registerDTOtoUser(registerRequest);
-
-            String hashPassword = this.passwordEncoder.encode(user.getPassword());
-
-            user.setPassword(hashPassword);
-
-            RegisterResponse RegisterResponse = this.registerService.saveUser(user);
+            RegisterResponse RegisterResponse = this.registerService.saveUser(registerRequest);
         return ResponseEntity.ok(
-                new ApiResponse<>(HttpStatus.CREATED.value(),
-                        SuccessMessage.REGISTER_SUCCESS.getMessage(),
-                        RegisterResponse));
+                new ApiResponse<>(HttpStatus.CREATED.value(), SuccessMessage.REGISTER_SUCCESS.getMessage(), RegisterResponse));
     }
-
     // API VERIFY OTP
     @PutMapping(value = AUTH_VERIFY_OTP)
-    public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyAccount(
-            @RequestBody VerifyOTPRequest verifyOTPRequest) {
-        // String token = jwtService.generateToken(verifyOTPRequest.getEmail(),
-        // TokenType.ACCESS_TOKEN);
-        VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(
-                verifyOTPRequest.getEmail(),
-                verifyOTPRequest.getOtp());
+    public ResponseEntity<ApiResponse<VerifyOtpResponse>> verifyAccount(@RequestBody VerifyOTPRequest verifyOTPRequest) {
+        VerifyOtpResponse verifyOtpResponse = forgotPassService.verifyAccount(verifyOTPRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
                 SuccessMessage.OTP_VERIFY.getMessage(),
                 verifyOtpResponse));
     }
-
     // API FORGOT PASSWORD
     @PostMapping(value = AUTH_FORGOT_PASSWORD)
     public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-
         String otp = forgotPassService.generateOtp(request.getEmail());
-
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
-                otp,
-                null));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), otp, null));
     }
-
     // API SET PASSWORD
     @PutMapping(value = AUTH_SET_PASSWORD)
-    public ResponseEntity<ApiResponse<String>> setPassword(
-            @Valid @RequestBody SetPasswordRequest setPasswordRequest) {
-
+    public ResponseEntity<ApiResponse<String>> setPassword(@Valid @RequestBody SetPasswordRequest setPasswordRequest) {
         String response = forgotPassService.setPassword(setPasswordRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(),
                 response,
