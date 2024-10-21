@@ -28,7 +28,9 @@ public enum SuccessMessage {
     CREATE_FAVOURITE_POST_SUCCESS("create-favourite-post-successfully"),
     DELETE_FAVOURITE_POST_SUCCESS("delete-favourite-post-successfully"),
     GET_FAVOURITE_POSTS_SUCCESS("get-favourite-posts-successfully"),
-    GET_POST_SUCCESS("get-post-successfully");
+    GET_POST_SUCCESS("get-post-successfully"),
+    GET_LIST_BOARDING_HOUSES_SUCCESS("get-list-boarding-houses-successfully"),
+    ;
 
     private final String message;
 
