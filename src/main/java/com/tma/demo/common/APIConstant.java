@@ -46,5 +46,8 @@ public class APIConstant {
     public static final String VIEW_LIST = "/view-list";
     public static final String UPDATE_SETTING = "/update-setting";
 
+    //    room
+    public static final String RESET_ROOM = "/reset-room";
+
 
 }

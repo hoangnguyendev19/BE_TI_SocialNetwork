@@ -8,11 +8,9 @@ import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import static com.tma.demo.common.APIConstant.RESET_ROOM;
 import static com.tma.demo.common.APIConstant.ROOM;
 
 /**
@@ -30,6 +28,7 @@ import static com.tma.demo.common.APIConstant.ROOM;
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomService roomService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<RoomResponse>> createRoom(@RequestBody CreateRoomRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<RoomResponse>builder()
@@ -37,6 +36,18 @@ public class RoomController {
                 .message(SuccessMessage.CREATED_SUCCESS.getMessage())
                 .data(roomService.createRoom(request))
                 .build()
+        );
+    }
+
+    @PutMapping(value = RESET_ROOM)
+    public ResponseEntity<ApiResponse<RoomResponse>> resetRoom(
+            @RequestParam(value = "roomId", required = true) String roomId) {
+        return ResponseEntity.ok(
+                ApiResponse.<RoomResponse>builder()
+                        .code(HttpStatus.OK.value())
+                        .message(SuccessMessage.RESET_ROOM_SUCCESS.getMessage())
+                        .data(roomService.resetRoom(roomId))
+                        .build()
         );
     }
 }

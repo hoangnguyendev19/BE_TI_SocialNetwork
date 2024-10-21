@@ -17,4 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface RoomService {
     RoomResponse createRoom(CreateRoomRequest request);
+
+    RoomResponse resetRoom(String roomId);
 }

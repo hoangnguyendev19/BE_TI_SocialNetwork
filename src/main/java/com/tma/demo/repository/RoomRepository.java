@@ -4,6 +4,7 @@ import com.tma.demo.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,4 +20,6 @@ import java.util.UUID;
 public interface RoomRepository extends JpaRepository<Room, UUID> {
     @Query("SELECT exists (SELECT r FROM Room r WHERE r.roomName = :roomName AND r.isDelete != true )")
     boolean isRoomNameExist(String roomName);
+    @Query("SELECT r FROM Room r WHERE r.id = :id AND r.isDelete != true")
+    Optional<Room> findRoomById(UUID uuid);
 }
