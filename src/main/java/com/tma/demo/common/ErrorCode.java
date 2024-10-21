@@ -24,7 +24,7 @@ public enum ErrorCode {
     IMAGE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "image-upload-failed"),
     EMAIL_EXIST(HttpStatus.BAD_REQUEST.value(), "email-already-exists."),
     MATCH_PASSWORD(HttpStatus.BAD_REQUEST.value(), "passwords-do-not-match."),
-    UNABLE_SEND_OTP(HttpStatus.BAD_REQUEST.value(), "Unable to send otp please try again"),
+    UNABLE_SEND_OTP(HttpStatus.BAD_REQUEST.value(), "unable-to-send-otp"),
     OTP_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "otp-does-not-exist"),
     OTP_EXPIRED(HttpStatus.BAD_REQUEST.value(), "otp-expired"),
     POST_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "post-does-not-exist"),

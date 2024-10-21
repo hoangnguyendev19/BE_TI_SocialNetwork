@@ -51,7 +51,7 @@ public class CommentPostServiceImp implements CommentPostService {
         Comment savedComment = commentRepository.save(comment);
         String parentCommentString = parentComment != null
                 ? parentComment.getId().toString()
-                : "No parent comment";
+                : "no-parent-comment";
         // Create response
         return new CreateCommentResponse(
                 savedComment.getId().toString(),
