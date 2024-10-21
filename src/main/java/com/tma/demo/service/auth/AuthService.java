@@ -7,4 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AuthService {
     public TokenDto authenticate(LoginRequest request);
+
 }

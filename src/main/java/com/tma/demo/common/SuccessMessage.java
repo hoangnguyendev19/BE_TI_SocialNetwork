@@ -30,7 +30,6 @@ public enum SuccessMessage {
     GET_FAVOURITE_POSTS_SUCCESS("get-favourite-posts-successfully"),
     GET_POST_SUCCESS("get-post-successfully"),
     CREATE_FAVOURITE_COMMENT("create-favourite-comment-successfully"),
-    UPDATE_FAVOURITE_COMMENT("update-favourite-comment-successfully"),
     DELETE_FAVOURITE_COMMENT("delete-favourite-comment-successfully"),
     VIEW_FAVOURITE_COMMENT("view-favourite-comment-successfully");
     private final String message;

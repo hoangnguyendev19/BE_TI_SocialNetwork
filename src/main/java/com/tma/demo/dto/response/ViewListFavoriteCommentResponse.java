@@ -15,7 +15,6 @@ public class ViewListFavoriteCommentResponse {
     @AllArgsConstructor
     public static class LikedUserDetail {
         private String userId;
-        private String userName;
         private String createdAt;
     }
 }

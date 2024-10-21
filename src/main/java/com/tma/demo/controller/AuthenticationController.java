@@ -7,10 +7,11 @@ import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.RegisterResponse;
 import com.tma.demo.dto.response.TokenDto;
 import com.tma.demo.dto.response.VerifyOtpResponse;
-import com.tma.demo.entity.User;
 import com.tma.demo.service.auth.AuthService;
-import com.tma.demo.service.auth.ForgotPassService;
+import com.tma.demo.service.auth.ForgotPassServices;
 import com.tma.demo.service.auth.RegisterService;
+import com.tma.demo.service.auth.imp.ForgotPassServiceImp;
+import com.tma.demo.service.auth.imp.RegisterServiceImp;
 import com.tma.demo.service.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ import static com.tma.demo.common.APIConstant.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthService authService;
-    private final ForgotPassService forgotPassService;
+    private final ForgotPassServices forgotPassService;
     private final RegisterService registerService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;

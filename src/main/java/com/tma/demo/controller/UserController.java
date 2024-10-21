@@ -3,12 +3,10 @@ package com.tma.demo.controller;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ChangePasswordRequest;
-import com.tma.demo.dto.request.SetPasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
-import com.tma.demo.service.auth.ForgotPassService;
+import com.tma.demo.service.auth.imp.ForgotPassServiceImp;
 import com.tma.demo.service.user.UserService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,7 @@ import static com.tma.demo.common.APIConstant.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final ForgotPassService forgotPassService;
+    private final ForgotPassServiceImp forgotPassServiceImp;
     @PutMapping(value = USER_PASSWORD)
     public ResponseEntity<ApiResponse<Object>> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
