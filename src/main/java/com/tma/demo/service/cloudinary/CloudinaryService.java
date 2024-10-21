@@ -37,7 +37,7 @@ public class CloudinaryService {
                     AttributeConstant.CLOUDINARY_RESOURCE_TYPE, mediaType.toString().toLowerCase(),
                     AttributeConstant.CLOUDINARY_OVERWRITE, true));
         }catch (IOException io){
-            throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
+            throw new BaseException(ErrorCode.FILE_UPLOAD_FAILED);
         }
     }
     public String deleteFile(String publicId){
