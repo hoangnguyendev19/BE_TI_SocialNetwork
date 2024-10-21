@@ -46,7 +46,13 @@ public class SettingServiceImp implements SettingService {
 
     @Override
     public int getMaxReport() {
+
         return Integer.parseInt(getSetting(SettingKey.MAX_REPORTS).getValue());
+    }
+
+    @Override
+    public String getValue(SettingKey settingKey) {
+        return getSetting(settingKey).getValue();
     }
 
     private Setting getSetting(SettingKey key) {
