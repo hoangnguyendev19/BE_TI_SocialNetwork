@@ -34,6 +34,7 @@ import java.util.*;
 
 import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
 import static com.tma.demo.constant.CommonConstant.OLIDUS;
+import static com.tma.demo.constant.PrefixConstant.BASE64_DATA_TYPE_PREF;
 import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 
 /**
@@ -137,13 +138,19 @@ public class PostServiceImp implements PostService {
     private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (String mediaFile : mediaFiles) {
+            int index = mediaFile.indexOf(BASE64_DATA_TYPE_PREF);
+            if (index < 0) {
+                throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
+            }
+            index = index + 5;
+            MediaType mediaType = MediaType.valueOf(mediaFile.substring(index, index + 5).toUpperCase());
             Media media = Media.builder()
                     .isDelete(false)
-                    .mediaType(MediaType.IMAGE)
+                    .mediaType(mediaType)
                     .post(post)
                     .build();
             media = mediaRepository.saveAndFlush(media);
-            int index = mediaFile.indexOf(BASE64_PREF);
+            index = mediaFile.indexOf(BASE64_PREF);
             if (index < 0) {
                 throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
             }
@@ -151,7 +158,7 @@ public class PostServiceImp implements PostService {
             String fileWithoutHeader = mediaFile.substring(index);
             byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
-                    decodedBytes,
+                    decodedBytes, mediaType,
                     FolderNameConstant.POST,
                     String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), OLIDUS, media.getId()));
             media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());

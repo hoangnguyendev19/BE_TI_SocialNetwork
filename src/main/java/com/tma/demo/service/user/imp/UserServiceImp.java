@@ -1,6 +1,7 @@
 package com.tma.demo.service.user.imp;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.common.MediaType;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
@@ -24,9 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -91,7 +89,7 @@ public class UserServiceImp implements UserService {
 
         Map data = null;
         try {
-            data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
+            data = cloudinaryService.upload(imageFile.getBytes(), MediaType.IMAGE, FolderNameConstant.AVATAR, user.getId().toString());
         } catch (IOException e) {
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }

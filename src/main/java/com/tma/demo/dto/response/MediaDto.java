@@ -1,5 +1,6 @@
 package com.tma.demo.dto.response;
 
+import com.tma.demo.common.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MediaDto {
     private String id;
+    private MediaType mediaType;
     private String url;
 
 }

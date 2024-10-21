@@ -21,6 +21,7 @@ import java.util.List;
 @Builder
 public class PostDto {
     private String id;
+    private UserDto user;
     private String content;
     private long totalShares;
     private long totalLikes;

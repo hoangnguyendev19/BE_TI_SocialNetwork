@@ -2,12 +2,14 @@ package com.tma.demo.service.post;
 
 import com.tma.demo.dto.response.MediaDto;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
 import com.tma.demo.repository.CommentRepository;
 import com.tma.demo.repository.LikeRepository;
 import com.tma.demo.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class PostMapper {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
+    private final ModelMapper modelMapper;
 
     public PostDto from(Post post, List<Media> mediaList, PostDto parentPost) {
         List<MediaDto> mediaDtoList = getMediaDtoList(mediaList);
@@ -38,6 +41,7 @@ public class PostMapper {
         return PostDto.builder()
                 .id(post.getId().toString())
                 .content(post.getContent())
+                .userDto(modelMapper.map(post.getUser(), UserDto.class))
                 .totalLikes(totalLikes)
                 .totalComments(totalComments)
                 .totalShares(totalShares)
@@ -51,7 +55,7 @@ public class PostMapper {
     private static List<MediaDto> getMediaDtoList(List<Media> mediaList) {
         List<MediaDto> mediaDtoList = new ArrayList<>();
         for (Media media : mediaList) {
-            mediaDtoList.add(new MediaDto(media.getId().toString(), media.getMediaUrl()));
+            mediaDtoList.add(new MediaDto(media.getId().toString(), media.getMediaType(), media.getMediaUrl()));
         }
         return mediaDtoList;
     }

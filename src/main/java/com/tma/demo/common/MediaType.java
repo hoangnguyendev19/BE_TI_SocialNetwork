@@ -12,6 +12,7 @@ package com.tma.demo.common;
  */
 public enum MediaType {
     IMAGE,
+    VIDEO
 
 
 }
