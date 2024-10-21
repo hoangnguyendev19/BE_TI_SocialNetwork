@@ -3,7 +3,7 @@ package com.tma.demo.controller;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.CreateRoomRequest;
-import com.tma.demo.dto.response.RoomDto;
+import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,8 +31,8 @@ import static com.tma.demo.common.APIConstant.ROOM;
 public class RoomController {
     private final RoomService roomService;
     @PostMapping
-    public ResponseEntity<ApiResponse<RoomDto>> createRoom(@RequestBody CreateRoomRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<RoomDto>builder()
+    public ResponseEntity<ApiResponse<RoomResponse>> createRoom(@RequestBody CreateRoomRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<RoomResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .message(SuccessMessage.CREATED_SUCCESS.getMessage())
                 .data(roomService.createRoom(request))

@@ -81,8 +81,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
                     .waterBill(settingBoardingHouseDto.getWaterBill())
                     .build();
             roomSettingRepository.save(temp);
-        }
-        else {
+        } else {
             roomSetting.get().setWaterBill(settingBoardingHouseDto.getWaterBill());
             roomSetting.get().setElectricBill(settingBoardingHouseDto.getElectricityBill());
             roomSettingRepository.save(roomSetting.get());
@@ -94,6 +93,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
         return boardingHouseRepository.isBoardingHouseNameExists(boardingHouseName);
     }
 
+    @Override
     public BoardingHouse getBoardingHouse(String id) {
         return boardingHouseRepository.findBoardingHouseById(UUID.fromString(id));
     }

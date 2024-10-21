@@ -1,7 +1,7 @@
 package com.tma.demo.service.room;
 
 import com.tma.demo.dto.request.CreateRoomRequest;
-import com.tma.demo.dto.response.RoomDto;
+import com.tma.demo.dto.response.RoomResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +16,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface RoomService {
-    RoomDto createRoom(CreateRoomRequest request);
+    RoomResponse createRoom(CreateRoomRequest request);
 }

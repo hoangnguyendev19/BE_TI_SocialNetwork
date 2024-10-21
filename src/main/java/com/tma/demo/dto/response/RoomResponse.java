@@ -1,13 +1,14 @@
 package com.tma.demo.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 /**
- * RoomDto
+ * RoomResponse
  * Version 1.0
  * Date: 21/10/2024
  * Copyright
@@ -19,12 +20,15 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomDto {
+@Builder
+public class RoomResponse {
     private String id;
     private String boardingHouseId;
-    private String numberOfPeople;
-    private int roomRate;
-    private String electricityMeterNumber;
-    private String waterMeterNumber;
-    private LocalDateTime createdDate;
+    private String roomName;
+    private Integer roomRate;
+    private String roomStatus;
+    private Integer electricityMeterOldNumber;
+    private Integer waterMeterOldNumber;
+    private LocalDateTime createdAt;
+
 }

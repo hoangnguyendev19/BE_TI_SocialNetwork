@@ -1,5 +1,9 @@
 package com.tma.demo.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * CreateRoomRequest
  * Version 1.0
@@ -10,5 +14,11 @@ package com.tma.demo.dto.request;
  * ------------------------------------------------
  * 21/10/2024        NGUYEN             create
  */
-public class CreateRoomRequest {
+@Data
+public class CreateRoomRequest{
+    private String boardingHouseId;
+    private String roomName;
+    private String roomStatus;
+    private int electricityMeterOldNumber;
+    private int waterMeterOldNumber;
 }
