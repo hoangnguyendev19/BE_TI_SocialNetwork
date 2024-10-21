@@ -30,7 +30,7 @@ public enum SuccessMessage {
     GET_FAVOURITE_POSTS_SUCCESS("get-favourite-posts-successfully"),
     GET_POST_SUCCESS("get-post-successfully"),
     GET_LIST_BOARDING_HOUSES_SUCCESS("get-list-boarding-houses-successfully"),
-    ;
+    CREATED_SUCCESS("create-successfully");
 
     private final String message;
 
