@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,6 @@ public class PostMapper {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
-    private final ModelMapper modelMapper;
 
     public PostDto from(Post post, List<Media> mediaList, PostDto parentPost) {
         List<MediaDto> mediaDtoList = getMediaDtoList(mediaList);
@@ -41,7 +41,9 @@ public class PostMapper {
         return PostDto.builder()
                 .id(post.getId().toString())
                 .content(post.getContent())
-                .userDto(modelMapper.map(post.getUser(), UserDto.class))
+                .firstName(post.getUser().getFirstName())
+                .lastName(post.getUser().getLastName())
+                .profilePictureUrl(post.getUser().getProfilePictureUrl())
                 .totalLikes(totalLikes)
                 .totalComments(totalComments)
                 .totalShares(totalShares)

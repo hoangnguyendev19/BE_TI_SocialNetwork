@@ -2,6 +2,7 @@ package com.tma.demo.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,7 +22,9 @@ import java.util.List;
 @Builder
 public class PostDto {
     private String id;
-    private UserDto user;
+    private String firstName;
+    private String lastName;
+    private String profilePictureUrl;
     private String content;
     private long totalShares;
     private long totalLikes;

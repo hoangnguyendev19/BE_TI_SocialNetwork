@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MediaDto {
     private String id;
-    private MediaType mediaType;
+    private MediaType type;
     private String url;
 
 }
