@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             sendError(response, ErrorCode.TOKEN_INVALID);
         }
 
-        if ( SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             Optional<Token> token = tokenRepository.findByAccessToken(jwt);
             if (token.isEmpty()) {
