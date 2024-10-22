@@ -45,7 +45,6 @@ public class RoomServiceImp implements RoomService {
     private final RoomMapper roomMapper;
     private final UserService userService;
     private final PaymentRepository paymentRepository;
-    private final RoomService roomService;
     private final HistoryRoomRepository historyRoomRepository;
 
     @Override
@@ -130,7 +129,7 @@ public class RoomServiceImp implements RoomService {
     @Override
     @Transactional
     public PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest) {
-        Room room = roomService.getRoomById(createPaymentRequest.getRoomId());
+        Room room = getRoomById(createPaymentRequest.getRoomId());
         RoomSetting roomSetting = boardingHouseService.getSetting(room.getBoardingHouse().getId().toString());
         int totalAmount = calTotalAmount(createPaymentRequest, roomSetting, room);
         Payment payment = Payment.builder()
