@@ -6,8 +6,10 @@ import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
+import com.tma.demo.entity.Token;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.user.UserService;
@@ -25,9 +27,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Map;
+import java.util.*;
 
 /**
  * UserServiceImp
@@ -46,6 +46,7 @@ public class UserServiceImp implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
     private final CloudinaryService cloudinaryService;
+    private final TokenRepository tokenRepository;
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
@@ -58,8 +59,12 @@ public class UserServiceImp implements UserService {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
 //      TODO: revoked all tokens
-
+            revokeAllTokens(user.getId());
         } else throw new BaseException(ErrorCode.WRONG_PASSWORD);
+    }
+
+    private void revokeAllTokens(UUID id) {
+        tokenRepository.deleteAllByUserId(id);
     }
 
     @Override
