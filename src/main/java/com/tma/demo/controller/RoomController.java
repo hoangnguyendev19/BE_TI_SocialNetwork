@@ -3,7 +3,9 @@ package com.tma.demo.controller;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.CreateRoomRequest;
+import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.service.payment.PaymentService;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ import static com.tma.demo.common.APIConstant.ROOM;
 @RequiredArgsConstructor
 public class RoomController {
     private final RoomService roomService;
+    private final PaymentService paymentService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<RoomResponse>> createRoom(@RequestBody CreateRoomRequest request) {
@@ -50,4 +53,5 @@ public class RoomController {
                         .build()
         );
     }
+
 }

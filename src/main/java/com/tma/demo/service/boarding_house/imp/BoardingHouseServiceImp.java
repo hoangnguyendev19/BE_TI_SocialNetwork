@@ -9,6 +9,7 @@ import com.tma.demo.entity.RoomSetting;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.BoardingHouseRepository;
 import com.tma.demo.repository.RoomSettingRepository;
+import com.tma.demo.repository.SettingRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.user.UserService;
 import com.tma.demo.util.PageUtil;
@@ -40,6 +41,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     private final RoomSettingRepository roomSettingRepository;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final SettingRepository settingRepository;
 
     @Override
     @Transactional
@@ -96,5 +98,11 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     @Override
     public BoardingHouse getBoardingHouse(String id) {
         return boardingHouseRepository.findBoardingHouseById(UUID.fromString(id));
+    }
+
+    @Override
+    public RoomSetting getSetting(String boardingHouseId) {
+        return roomSettingRepository.findByBoardingHouseId(UUID.fromString(boardingHouseId))
+                .orElse(null);
     }
 }
