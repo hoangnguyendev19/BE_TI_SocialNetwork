@@ -138,24 +138,15 @@ public class PostServiceImp implements PostService {
     private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
         List<Media> mediaList = new ArrayList<>();
         for (String mediaFile : mediaFiles) {
-            int index = mediaFile.indexOf(BASE64_DATA_TYPE_PREF);
-            if (index < 0) {
-                throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
-            }
-            index = index + 5;
-            MediaType mediaType = MediaType.valueOf(mediaFile.substring(index, index + 5).toUpperCase());
+            MediaType mediaType = getMediaType(mediaFile);
+            int index;
             Media media = Media.builder()
                     .isDelete(false)
                     .mediaType(mediaType)
                     .post(post)
                     .build();
             media = mediaRepository.saveAndFlush(media);
-            index = mediaFile.indexOf(BASE64_PREF);
-            if (index < 0) {
-                throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
-            }
-            index = index + 7;
-            String fileWithoutHeader = mediaFile.substring(index);
+            String fileWithoutHeader = getBase64WithoutHeader(mediaFile);
             byte[] decodedBytes = Base64.getDecoder().decode(fileWithoutHeader);
             Map data = cloudinaryService.upload(
                     decodedBytes, mediaType,
@@ -165,6 +156,25 @@ public class PostServiceImp implements PostService {
             mediaList.add(mediaRepository.saveAndFlush(media));
         }
         return mediaList;
+    }
+
+    private static String getBase64WithoutHeader(String mediaFile) {
+        int index;
+        index = mediaFile.indexOf(BASE64_PREF);
+        if (index < 0) {
+            throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
+        }
+        index = index + 7;
+        return mediaFile.substring(index);
+    }
+
+    private static MediaType getMediaType(String mediaFile) {
+        int index = mediaFile.indexOf(BASE64_DATA_TYPE_PREF);
+        if (index < 0) {
+            throw new BaseException(ErrorCode.NOT_BASE64_FORMAT);
+        }
+        index = index + 5;
+        return MediaType.valueOf(mediaFile.substring(index, index + 5).toUpperCase());
     }
 
     private List<Media> getMediaByPostId(UUID postId) {

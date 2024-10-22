@@ -16,6 +16,7 @@ import com.tma.demo.service.setting.SettingService;
 import com.tma.demo.service.user.UserService;
 import com.tma.demo.util.PageUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -89,25 +91,26 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     @Transactional
     public SettingBoardingHouseDto saveSetting(SettingBoardingHouseDto settingBoardingHouseDto) {
         BoardingHouse boardingHouse = getBoardingHouse(settingBoardingHouseDto.getBoardingHouseId());
-        var roomSetting = roomSettingRepository.findByBoardingHouseId(UUID.fromString(settingBoardingHouseDto.getBoardingHouseId()));
-        if (roomSetting.isEmpty()) {
-            RoomSetting temp = RoomSetting.builder()
+        RoomSetting roomSetting = roomSettingRepository.findByBoardingHouseId(UUID.fromString(settingBoardingHouseDto.getBoardingHouseId()))
+                .orElse(null);
+        if (ObjectUtils.isEmpty(roomSetting)) {
+            roomSetting = RoomSetting.builder()
                     .boardingHouse(boardingHouse)
                     .electricBill(settingBoardingHouseDto.getElectricityBill())
                     .waterBill(settingBoardingHouseDto.getWaterBill())
                     .build();
-            roomSettingRepository.save(temp);
+            roomSettingRepository.save(roomSetting);
         }
         else {
-            roomSetting.get().setWaterBill(settingBoardingHouseDto.getWaterBill());
-            roomSetting.get().setElectricBill(settingBoardingHouseDto.getElectricityBill());
-            roomSettingRepository.save(roomSetting.get());
+            roomSetting.setWaterBill(settingBoardingHouseDto.getWaterBill());
+            roomSetting.setElectricBill(settingBoardingHouseDto.getElectricityBill());
+            roomSettingRepository.save(roomSetting);
         }
         return settingBoardingHouseDto;
     }
 
     private Boolean isBoardingHouseNameExists(String boardingHouseName) {
-        return boardingHouseRepository.isBoardingHouseNameExists(boardingHouseName);
+        return boardingHouseRepository.isBoardingHouseNameExists(boardingHouseName) > 0;
     }
 
     public BoardingHouse getBoardingHouse(String id) {
