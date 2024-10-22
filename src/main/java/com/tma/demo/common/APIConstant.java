@@ -25,10 +25,11 @@ public class APIConstant {
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
     public static final String USER_PASSWORD = "/password";
-
+    public static final String USER_COVER_PICTURE = "/cover-picture";
     // Post Endpoints
     public static final String POST_ID = "/{postId}";
     public static final String GET_POST_NEWS = "/news";
+    public static final String REPORT_POST = "/report";
 
     // Comment Post Endpoints
     public static final String CREATE_COMMENT_POST = "/create";
