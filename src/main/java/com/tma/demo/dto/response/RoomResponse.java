@@ -29,6 +29,7 @@ public class RoomResponse {
     private String roomStatus;
     private Integer electricityMeterOldNumber;
     private Integer waterMeterOldNumber;
+    private PaymentResponse payment;
     private LocalDateTime createdAt;
 
 }

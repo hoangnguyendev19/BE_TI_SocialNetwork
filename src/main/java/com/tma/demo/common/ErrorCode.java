@@ -40,7 +40,8 @@ public enum ErrorCode {
     NOT_BASE64_FORMAT(HttpStatus.BAD_REQUEST.value(), "not-base64-format"),
     BOARDING_HOUSE_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "boarding-name-already-exists"),
     ROOM_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "room-name-already-exists"),
-    ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"), ;
+    ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"),
+    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "payment-not-found"),;
     private final int code;
     private final String message;
 

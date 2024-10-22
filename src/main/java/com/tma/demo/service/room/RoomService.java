@@ -3,6 +3,7 @@ package com.tma.demo.service.room;
 import com.tma.demo.dto.request.CreateRoomRequest;
 import com.tma.demo.dto.request.UpdateRoomStatusRequest;
 import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.entity.Room;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +21,8 @@ public interface RoomService {
     RoomResponse createRoom(CreateRoomRequest request);
 
     RoomResponse resetRoom(String roomId);
+
+    Room getRoomById(String roomId);
 
     RoomResponse updateRoomStatus(UpdateRoomStatusRequest request);
 
