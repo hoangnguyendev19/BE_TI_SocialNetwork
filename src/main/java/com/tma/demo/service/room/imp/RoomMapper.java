@@ -1,5 +1,6 @@
 package com.tma.demo.service.room.imp;
 
+import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.Room;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RoomMapper {
-    RoomResponse from(Room room){
+    RoomResponse from(Room room, PaymentResponse paymentResponse){
         return RoomResponse.builder()
                 .id(room.getId().toString())
                 .boardingHouseId(room.getBoardingHouse().getId().toString())
                 .roomName(room.getRoomName())
                 .roomRate(room.getRoomRate())
                 .roomStatus(room.getRoomStatus().toString())
+                .payment(paymentResponse)
                 .waterMeterOldNumber(room.getWaterMeterOldNumber())
                 .electricityMeterOldNumber(room.getElectricMeterOldNumber())
                 .createdAt(room.getCreatedAt())

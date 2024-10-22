@@ -1,25 +1,28 @@
 package com.tma.demo.service.room.imp;
 
 import com.tma.demo.common.ErrorCode;
+import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.dto.request.CreatePaymentRequest;
 import com.tma.demo.dto.request.CreateRoomRequest;
+import com.tma.demo.dto.request.UpdatePaymentStatusRequest;
 import com.tma.demo.dto.request.UpdateRoomStatusRequest;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
-import com.tma.demo.entity.BoardingHouse;
-import com.tma.demo.entity.Room;
+import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.HistoryRoomRepository;
+import com.tma.demo.repository.PaymentRepository;
 import com.tma.demo.repository.RoomRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
-import com.tma.demo.service.payment.PaymentService;
 import com.tma.demo.service.room.RoomService;
 import com.tma.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -39,7 +42,9 @@ public class RoomServiceImp implements RoomService {
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
     private final UserService userService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
+    private final RoomService roomService;
+    private final HistoryRoomRepository historyRoomRepository;
 
     @Override
     @Transactional
@@ -59,8 +64,8 @@ public class RoomServiceImp implements RoomService {
         room = roomRepository.saveAndFlush(room);
         CreatePaymentRequest createPaymentRequest =
                 new CreatePaymentRequest(room.getId().toString(), room.getRoomRate(), room.getElectricMeterOldNumber(), room.getWaterMeterOldNumber());
-        PaymentResponse paymentResponse = paymentService.createPayment(createPaymentRequest);
-        return roomMapper.from(room);
+        PaymentResponse paymentResponse = createPayment(createPaymentRequest);
+        return roomMapper.from(room, paymentResponse);
     }
 
     @Override
@@ -72,7 +77,14 @@ public class RoomServiceImp implements RoomService {
         room.setRoomStatus(RoomStatus.ROOM_AVAILABLE);
         room.setElectricMeterOldNumber(0);
         room.setWaterMeterOldNumber(0);
-        return roomMapper.from(roomRepository.saveAndFlush(room));
+        Payment payment = Payment.builder()
+                .totalAmount(0)
+                .room(room)
+                .paymentStatus(PaymentStatus.UNPAID)
+                .build();
+        payment = paymentRepository.saveAndFlush(payment);
+        PaymentResponse paymentResponse = new PaymentResponse(payment.getId().toString(), payment.getPaymentStatus(), payment.getTotalAmount());
+        return roomMapper.from(roomRepository.saveAndFlush(room), paymentResponse);
     }
 
 
@@ -81,7 +93,7 @@ public class RoomServiceImp implements RoomService {
         Room room = getRoomById(request.getId());
         room.setRoomStatus(RoomStatus.valueOf(request.getStatus().toUpperCase()));
         room = roomRepository.saveAndFlush(room);
-        return roomMapper.from(room);
+        return roomMapper.from(room, getPaymentResponse(request.getId()));
     }
 
     @Override
@@ -112,4 +124,63 @@ public class RoomServiceImp implements RoomService {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
     }
+//PAYMENT
+    @Override
+    @Transactional
+    public PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest) {
+        Room room = roomService.getRoomById(createPaymentRequest.getRoomId());
+        RoomSetting roomSetting = boardingHouseService.getSetting(room.getBoardingHouse().getId().toString());
+        int totalAmount = calTotalAmount(createPaymentRequest, roomSetting, room);
+        Payment payment = Payment.builder()
+                .paymentStatus(PaymentStatus.UNPAID)
+                .room(room)
+                .totalAmount(totalAmount)
+                .build();
+        payment = paymentRepository.saveAndFlush(payment);
+        updateRoom(createPaymentRequest, room);
+        createHistoryRoom(room);
+        return new PaymentResponse(payment.getId().toString(), payment.getPaymentStatus(), payment.getTotalAmount());
+    }
+    private PaymentResponse getPaymentResponse(String roomId) {
+        Optional<Payment> payment = paymentRepository.findPaymentByRoomId(UUID.fromString(roomId));
+        return payment.map(value -> new PaymentResponse(value.getId().toString(), value.getPaymentStatus(), value.getTotalAmount()))
+                .orElseThrow(()-> new BaseException(ErrorCode.PAYMENT_NOT_FOUND));
+    }
+    private void updateRoom(CreatePaymentRequest createPaymentRequest, Room room) {
+        room.setRoomRate(createPaymentRequest.getRoomRate());
+        room.setWaterMeterOldNumber(createPaymentRequest.getWaterMeterNewNumber());
+        room.setElectricMeterOldNumber(createPaymentRequest.getElectricityMeterNewNumber());
+        roomRepository.save(room);
+    }
+
+    private void createHistoryRoom(Room room) {
+        HistoryRoom historyRoom = HistoryRoom.builder()
+                .room(room)
+                .electricMeterNumber(room.getElectricMeterOldNumber())
+                .waterMeterNumber(room.getWaterMeterOldNumber())
+                .isDelete(false)
+                .build();
+        historyRoomRepository.save(historyRoom);
+    }
+
+    @Override
+    @Transactional
+    public PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest) {
+        Payment payment = paymentRepository.findById(UUID.fromString(updatePaymentStatusRequest.getId()))
+                .orElseThrow(() -> new BaseException(ErrorCode.PAYMENT_NOT_FOUND));
+        payment.setPaymentStatus(PaymentStatus.valueOf(updatePaymentStatusRequest.getStatus().toUpperCase()));
+
+        payment = paymentRepository.saveAndFlush(payment);
+        return new PaymentResponse(payment.getId().toString(), payment.getPaymentStatus(), payment.getTotalAmount());
+    }
+
+    private int calTotalAmount(CreatePaymentRequest createPaymentRequest, RoomSetting roomSetting, Room room) {
+        if (ObjectUtils.isEmpty(roomSetting)) {
+            return 0;
+        }
+        return createPaymentRequest.getRoomRate()
+                + (createPaymentRequest.getElectricityMeterNewNumber() - room.getElectricMeterOldNumber()) * roomSetting.getElectricBill()
+                + (createPaymentRequest.getWaterMeterNewNumber() - room.getWaterMeterOldNumber()) * roomSetting.getWaterBill();
+    }
+
 }

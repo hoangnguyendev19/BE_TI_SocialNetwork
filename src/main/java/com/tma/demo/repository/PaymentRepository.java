@@ -2,7 +2,10 @@ package com.tma.demo.repository;
 
 import com.tma.demo.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -16,4 +19,6 @@ import java.util.UUID;
  * 22/10/2024        NGUYEN             create
  */
 public interface PaymentRepository extends JpaRepository<Payment, UUID> {
+    @Query("SELECT p FROM Payment p WHERE p.room.id = :id ORDER BY p.createdAt DESC limit 1")
+    Optional<Payment> findPaymentByRoomId(@Param("id") UUID roomId);
 }

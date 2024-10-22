@@ -2,12 +2,12 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
+import com.tma.demo.dto.request.CreatePaymentRequest;
 import com.tma.demo.dto.request.CreateRoomRequest;
 import com.tma.demo.dto.request.UpdatePaymentStatusRequest;
 import com.tma.demo.dto.request.UpdateRoomStatusRequest;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
-import com.tma.demo.service.payment.PaymentService;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -74,4 +74,21 @@ public class RoomController {
         );
     }
 
+    @PutMapping(value = UPDATE_PAYMENT_STATUS)
+    public ResponseEntity<ApiResponse<PaymentResponse>> updatePaymentStatus(@RequestBody UpdatePaymentStatusRequest request) {
+        return ResponseEntity.ok(ApiResponse.<PaymentResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.UPDATE_SUCCESS.getMessage())
+                .data(roomService.updatePaymentStatus(request))
+                .build());
+    }
+
+    @PostMapping(value = CREATE_PAYMENT)
+    public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(@RequestBody CreatePaymentRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PaymentResponse>builder()
+                .code(HttpStatus.CREATED.value())
+                .message(SuccessMessage.CREATED_SUCCESS.getMessage())
+                .data(roomService.createPayment(request))
+                .build());
+    }
 }
