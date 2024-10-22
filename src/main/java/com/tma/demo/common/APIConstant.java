@@ -22,6 +22,7 @@ public class APIConstant {
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
     public static final String USER_PASSWORD = "/password";
+    public static final String USER_COVER_PICTURE = "/cover-picture";
     // Post Endpoints
     public static final String POST_ID = "/{postId}";
     public static final String GET_POST_NEWS = "/news";
@@ -39,6 +40,5 @@ public class APIConstant {
 
     //   Favourite Endpoints
     public static final String FAVOURITE_POSTS = "/favorite-posts";
-
 
 }
