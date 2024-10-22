@@ -8,6 +8,7 @@ import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.user.UserService;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * UserServiceImp
@@ -52,7 +54,7 @@ public class UserServiceImp implements UserService {
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
             throw new BaseException(ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH);
         }
-        if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getCurrentPassword())){
+        if (changePasswordRequest.getNewPassword().equals(changePasswordRequest.getCurrentPassword())) {
             throw new BaseException(ErrorCode.NEW_PASSWORD_EQUALS_CURRENT_PASSWORD);
         }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
@@ -96,8 +98,7 @@ public class UserServiceImp implements UserService {
         if (folder.equals(FolderNameConstant.AVATAR)) {
             user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             url = user.getProfilePictureUrl();
-        }
-        else{
+        } else {
             user.setCoverPictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             url = user.getCoverPictureUrl();
         }
