@@ -2,6 +2,7 @@ package com.tma.demo.service.user.imp;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.constant.AttributeConstant;
+import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
@@ -78,20 +79,28 @@ public class UserServiceImp implements UserService {
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public String changePicture(MultipartFile imageFile, String folder) {
         User user = getUserDetails();
-        Map data = null;
+        String url;
+        Map data;
         try {
             data = cloudinaryService.upload(imageFile.getBytes(), folder, user.getId().toString());
         } catch (IOException e) {
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
-        user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+        if (folder.equals(FolderNameConstant.AVATAR)) {
+            user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            url = user.getProfilePictureUrl();
+        }
+        else{
+            user.setCoverPictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            url = user.getCoverPictureUrl();
+        }
         user = userRepository.saveAndFlush(user);
-        return user.getProfilePictureUrl();
+        return url;
     }
 
     @Override
     public UserDto getUser() {
-       User user = getUserDetails();
+        User user = getUserDetails();
         return mapper.map(user, UserDto.class);
     }
 
