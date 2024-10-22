@@ -176,7 +176,7 @@ public class RoomServiceImp implements RoomService {
 
     private int calTotalAmount(CreatePaymentRequest createPaymentRequest, RoomSetting roomSetting, Room room) {
         if (ObjectUtils.isEmpty(roomSetting)) {
-            return 0;
+            throw new BaseException(ErrorCode.PAYMENT_NOT_FOUND);
         }
         return createPaymentRequest.getRoomRate()
                 + (createPaymentRequest.getElectricityMeterNewNumber() - room.getElectricMeterOldNumber()) * roomSetting.getElectricBill()
