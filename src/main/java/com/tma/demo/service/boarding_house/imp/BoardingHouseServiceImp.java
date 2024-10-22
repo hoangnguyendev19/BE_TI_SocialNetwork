@@ -7,10 +7,10 @@ import com.tma.demo.dto.SettingBoardingHouseDto;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.entity.BoardingHouse;
 import com.tma.demo.entity.RoomSetting;
-import com.tma.demo.entity.Setting;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.BoardingHouseRepository;
 import com.tma.demo.repository.RoomSettingRepository;
+import com.tma.demo.repository.SettingRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.setting.SettingService;
 import com.tma.demo.service.user.UserService;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -47,6 +46,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     private final SettingService settingService;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final SettingRepository settingRepository;
 
     @Override
     @Transactional
@@ -99,13 +99,11 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
                     .electricBill(settingBoardingHouseDto.getElectricityBill())
                     .waterBill(settingBoardingHouseDto.getWaterBill())
                     .build();
-            roomSettingRepository.save(roomSetting);
-        }
-        else {
+        } else {
             roomSetting.setWaterBill(settingBoardingHouseDto.getWaterBill());
             roomSetting.setElectricBill(settingBoardingHouseDto.getElectricityBill());
-            roomSettingRepository.save(roomSetting);
         }
+        roomSettingRepository.save(roomSetting);
         return settingBoardingHouseDto;
     }
 
@@ -113,7 +111,14 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
         return boardingHouseRepository.isBoardingHouseNameExists(boardingHouseName) > 0;
     }
 
+    @Override
     public BoardingHouse getBoardingHouse(String id) {
         return boardingHouseRepository.findBoardingHouseById(UUID.fromString(id));
+    }
+
+    @Override
+    public RoomSetting getSetting(String boardingHouseId) {
+        return roomSettingRepository.findByBoardingHouseId(UUID.fromString(boardingHouseId))
+                .orElse(null);
     }
 }

@@ -11,6 +11,9 @@ public class APIConstant {
     public static final String SETTING = BASE_API + "/setting";
     public static final String FAVOURITE = BASE_API + "/favourite";
     public static final String BOARDING_HOUSE = BASE_API + "/boarding-house";
+    public static final String ROOM = BASE_API + "/room";
+    public static final String ID = "/{id}";
+    public static final String VIEW_LIST = "/view-list";
 
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
@@ -43,8 +46,14 @@ public class APIConstant {
     public static final String FAVOURITE_POSTS = "/favorite-posts";
 
     //    boarding house
-    public static final String VIEW_LIST = "/view-list";
+
     public static final String UPDATE_SETTING = "/update-setting";
 
+    //    room
+    public static final String RESET_ROOM = "/reset-room";
+    public static final String STATUS = "/status";
 
+    //    payment
+    public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
+    public static final String CREATE_PAYMENT = "/create_payment";
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 /**
- * Payment
+ * PaymentController
  * Version 1.0
  * Date: 07/10/2024
  * Copyright
