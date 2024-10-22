@@ -12,6 +12,7 @@ public class APIConstant {
     public static final String FAVOURITE = BASE_API + "/favourite";
     public static final String BOARDING_HOUSE = BASE_API + "/boarding-house";
     public static final String ROOM = BASE_API + "/room";
+    public static final String PAYMENT = BASE_API + "/payment";
     public static final String ID = "/{id}";
 
     // Auth Endpoints
@@ -51,5 +52,6 @@ public class APIConstant {
     public static final String RESET_ROOM = "/reset-room";
     public static final String STATUS = "/status";
 
-
+    //    payment
+    public static final String PAYMENT_STATUS = "/status";
 }
