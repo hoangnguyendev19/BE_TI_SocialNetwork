@@ -29,6 +29,7 @@ public enum SuccessMessage {
     DELETE_FAVOURITE_POST_SUCCESS("delete-favourite-post-successfully"),
     GET_FAVOURITE_POSTS_SUCCESS("get-favourite-posts-successfully"),
     GET_POST_SUCCESS("get-post-successfully"),
+    GET_LIST_BOARDING_HOUSES_SUCCESS("get-list-boarding-houses-successfully"),
     UPDATE_SUCCESS("update-successfully");
 
     private final String message;

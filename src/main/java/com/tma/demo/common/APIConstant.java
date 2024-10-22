@@ -26,6 +26,7 @@ public class APIConstant {
     // Post Endpoints
     public static final String POST_ID = "/{postId}";
     public static final String GET_POST_NEWS = "/news";
+    public static final String REPORT_POST = "/report";
 
     // Comment Post Endpoints
     public static final String CREATE_COMMENT_POST = "/create";
@@ -40,5 +41,10 @@ public class APIConstant {
 
     //   Favourite Endpoints
     public static final String FAVOURITE_POSTS = "/favorite-posts";
+
+    //    boarding house
+    public static final String VIEW_LIST = "/view-list";
+    public static final String UPDATE_SETTING = "/update-setting";
+
 
 }
