@@ -9,7 +9,6 @@ import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.BoardingHouse;
 import com.tma.demo.entity.Room;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.HistoryRoomRepository;
 import com.tma.demo.repository.RoomRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.payment.PaymentService;
@@ -74,6 +73,7 @@ public class RoomServiceImp implements RoomService {
         return roomMapper.from(roomRepository.saveAndFlush(room));
     }
 
+    @Override
     public Room getRoomById(String roomId) {
         return roomRepository.findRoomById(UUID.fromString(roomId)).orElseThrow(()
                 -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
