@@ -7,7 +7,7 @@ import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
 import com.tma.demo.dto.response.ViewListFavoriteCommentResponse;
 import org.springframework.stereotype.Service;
 
-@Service
+
 public interface FavoriteCommentService {
     CreateFavoriteCommentResponse createFavoriteComment(CreateFavoriteCommentRequest createFavoriteCommentRequest);
     ViewListFavoriteCommentResponse getLikedCommentsByUserId(ViewListFavoriteCommentRequest request);
