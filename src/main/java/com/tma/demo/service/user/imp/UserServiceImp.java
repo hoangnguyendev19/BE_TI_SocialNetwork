@@ -6,10 +6,8 @@ import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
-import com.tma.demo.entity.Token;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.user.UserService;
@@ -26,8 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Map;
 
 /**
  * UserServiceImp
@@ -87,22 +84,30 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public String changeAvatar(MultipartFile imageFile) {
+    public String changePicture(MultipartFile imageFile, String folder) {
         User user = getUserDetails();
-        Map data = null;
+        String url;
+        Map data;
         try {
-            data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
+            data = cloudinaryService.upload(imageFile.getBytes(), folder, user.getId().toString());
         } catch (IOException e) {
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
-        user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+        if (folder.equals(FolderNameConstant.AVATAR)) {
+            user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            url = user.getProfilePictureUrl();
+        }
+        else{
+            user.setCoverPictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            url = user.getCoverPictureUrl();
+        }
         user = userRepository.saveAndFlush(user);
-        return user.getProfilePictureUrl();
+        return url;
     }
 
     @Override
     public UserDto getUser() {
-       User user = getUserDetails();
+        User user = getUserDetails();
         return mapper.map(user, UserDto.class);
     }
 
