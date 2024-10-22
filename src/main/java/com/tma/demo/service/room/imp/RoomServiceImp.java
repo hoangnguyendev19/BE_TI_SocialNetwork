@@ -63,9 +63,7 @@ public class RoomServiceImp implements RoomService {
                 .isDelete(false)
                 .build();
         room = roomRepository.saveAndFlush(room);
-        CreatePaymentRequest createPaymentRequest =
-                new CreatePaymentRequest(room.getId().toString(), room.getRoomRate(), room.getElectricMeterOldNumber(), room.getWaterMeterOldNumber());
-        PaymentResponse paymentResponse = createPayment(createPaymentRequest);
+        PaymentResponse paymentResponse = createPayment(new CreatePaymentRequest(room.getId().toString(), room.getRoomRate(), room.getElectricMeterOldNumber(), room.getWaterMeterOldNumber()));
         return roomMapper.from(room, paymentResponse);
     }
 
@@ -116,7 +114,7 @@ public class RoomServiceImp implements RoomService {
     }
 
     private boolean isRoomNameExist(String roomName) {
-        return roomRepository.isRoomNameExist(roomName);
+        return roomRepository.isRoomNameExist(roomName) > 0;
     }
 
     private void checkAth(String userId) {

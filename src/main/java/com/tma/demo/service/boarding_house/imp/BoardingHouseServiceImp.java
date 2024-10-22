@@ -99,12 +99,11 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
                     .electricBill(settingBoardingHouseDto.getElectricityBill())
                     .waterBill(settingBoardingHouseDto.getWaterBill())
                     .build();
-            roomSettingRepository.save(roomSetting);
         } else {
             roomSetting.setWaterBill(settingBoardingHouseDto.getWaterBill());
             roomSetting.setElectricBill(settingBoardingHouseDto.getElectricityBill());
-            roomSettingRepository.save(roomSetting);
         }
+        roomSettingRepository.save(roomSetting);
         return settingBoardingHouseDto;
     }
 

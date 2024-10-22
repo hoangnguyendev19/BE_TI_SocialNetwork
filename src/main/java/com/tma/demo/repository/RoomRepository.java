@@ -21,8 +21,8 @@ import java.util.UUID;
  * 21/10/2024        NGUYEN             create
  */
 public interface RoomRepository extends JpaRepository<Room, UUID> {
-    @Query("SELECT exists (SELECT r FROM Room r WHERE r.roomName = :roomName AND r.isDelete != true )")
-    boolean isRoomNameExist(String roomName);
+    @Query("SELECT count (r.id)  FROM Room r WHERE r.roomName = :roomName AND r.isDelete != true ")
+    int isRoomNameExist(String roomName);
     @Query("SELECT r FROM Room r WHERE r.id = :id AND r.isDelete != true")
     Optional<Room> findRoomById(@Param("id") UUID uuid);
     @Query("SELECT r FROM Room r WHERE r.isDelete != true")
