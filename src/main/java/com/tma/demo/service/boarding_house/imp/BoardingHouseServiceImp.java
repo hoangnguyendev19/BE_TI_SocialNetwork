@@ -7,7 +7,6 @@ import com.tma.demo.dto.SettingBoardingHouseDto;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.entity.BoardingHouse;
 import com.tma.demo.entity.RoomSetting;
-import com.tma.demo.entity.Setting;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.BoardingHouseRepository;
 import com.tma.demo.repository.RoomSettingRepository;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -102,8 +100,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
                     .waterBill(settingBoardingHouseDto.getWaterBill())
                     .build();
             roomSettingRepository.save(roomSetting);
-        }
-        else {
+        } else {
             roomSetting.setWaterBill(settingBoardingHouseDto.getWaterBill());
             roomSetting.setElectricBill(settingBoardingHouseDto.getElectricityBill());
             roomSettingRepository.save(roomSetting);

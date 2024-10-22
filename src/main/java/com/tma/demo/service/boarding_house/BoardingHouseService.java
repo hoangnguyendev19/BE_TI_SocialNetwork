@@ -8,7 +8,6 @@ import com.tma.demo.entity.RoomSetting;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface BoardingHouseService {
     BoardingHouseDto register(BoardingHouseDto boardingHouse);
 

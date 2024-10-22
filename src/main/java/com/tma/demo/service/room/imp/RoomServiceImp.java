@@ -89,8 +89,6 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-
-    @Override
     public RoomResponse updateRoomStatus(UpdateRoomStatusRequest request) {
         Room room = getRoomById(request.getId());
         room.setRoomStatus(RoomStatus.valueOf(request.getStatus().toUpperCase()));
@@ -126,7 +124,8 @@ public class RoomServiceImp implements RoomService {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
     }
-//PAYMENT
+
+    //PAYMENT
     @Override
     @Transactional
     public PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest) {
@@ -143,11 +142,13 @@ public class RoomServiceImp implements RoomService {
         createHistoryRoom(room);
         return new PaymentResponse(payment.getId().toString(), payment.getPaymentStatus(), payment.getTotalAmount());
     }
+
     private PaymentResponse getPaymentResponse(String roomId) {
         Optional<Payment> payment = paymentRepository.findPaymentByRoomId(UUID.fromString(roomId));
         return payment.map(value -> new PaymentResponse(value.getId().toString(), value.getPaymentStatus(), value.getTotalAmount()))
-                .orElseThrow(()-> new BaseException(ErrorCode.PAYMENT_NOT_FOUND));
+                .orElseThrow(() -> new BaseException(ErrorCode.PAYMENT_NOT_FOUND));
     }
+
     private void updateRoom(CreatePaymentRequest createPaymentRequest, Room room) {
         room.setRoomRate(createPaymentRequest.getRoomRate());
         room.setWaterMeterOldNumber(createPaymentRequest.getWaterMeterNewNumber());

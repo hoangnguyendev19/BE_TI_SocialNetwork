@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
  * ------------------------------------------------
  * 21/10/2024        NGUYEN             create
  */
-@Service
 public interface RoomService {
     RoomResponse createRoom(CreateRoomRequest request);
 

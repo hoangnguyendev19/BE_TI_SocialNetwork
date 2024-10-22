@@ -4,7 +4,6 @@ import com.tma.demo.common.SettingKey;
 import com.tma.demo.dto.SettingDto;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface SettingService {
     SettingDto createSetting(SettingDto settingRequest);
 

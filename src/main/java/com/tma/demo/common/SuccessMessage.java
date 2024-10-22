@@ -33,11 +33,6 @@ public enum SuccessMessage {
     UPDATE_SUCCESS("update-successfully"),
     CREATED_SUCCESS("create-successfully"),
     RESET_ROOM_SUCCESS("reset-room-successfully"),
-    ;
-    UPDATE_SUCCESS("update-successfully");
-    CREATED_SUCCESS("create-successfully"),
-    RESET_ROOM_SUCCESS("reset-room-successfully"),
-    UPDATE_SUCCESS("update-successfully"),
     DELETE_SUCCESS("delete-successfully");
 
     private final String message;

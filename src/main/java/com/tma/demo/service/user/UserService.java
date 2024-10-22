@@ -21,7 +21,6 @@ import java.sql.SQLException;
  * 07/10/2024        NGUYEN             create
  */
 
-@Service
 public interface UserService {
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
