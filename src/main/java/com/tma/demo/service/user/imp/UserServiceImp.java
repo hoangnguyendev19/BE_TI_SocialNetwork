@@ -50,9 +50,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
-        String email = getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.WRONG_PASSWORD));
+        User user = getUserDetails();
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
             throw new BaseException(ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH);
         }
@@ -67,9 +65,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public UserDto updateProfile(UpdateProfileRequest request) {
-        String email = getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        User user = getUserDetails();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDateOfBirth(Date.valueOf(request.getDateOfBirth()));
@@ -85,10 +81,7 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public String changeAvatar(MultipartFile imageFile) {
-        String email = getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-
+        User user = getUserDetails();
         Map data = null;
         try {
             data = cloudinaryService.upload(imageFile.getBytes(), FolderNameConstant.AVATAR, user.getId().toString());
@@ -102,8 +95,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDto getUser() {
-        String email = getUserDetails().getUsername();
-        return getUserByEmail(email);
+       User user = getUserDetails();
+        return mapper.map(user, UserDto.class);
     }
 
     @Override
