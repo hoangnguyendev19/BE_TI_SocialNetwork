@@ -9,6 +9,7 @@ import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.user.UserService;
@@ -25,6 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -44,30 +48,33 @@ public class UserServiceImp implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
     private final CloudinaryService cloudinaryService;
+    private final TokenRepository tokenRepository;
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
-        String email = getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.WRONG_PASSWORD));
+        User user = getUserDetails();
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
             throw new BaseException(ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH);
+        }
+        if (changePasswordRequest.getNewPassword().equals(changePasswordRequest.getCurrentPassword())) {
+            throw new BaseException(ErrorCode.NEW_PASSWORD_EQUALS_CURRENT_PASSWORD);
         }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
-//      TODO: revoked all tokens
-
+            revokeAllTokens(user.getId());
         } else throw new BaseException(ErrorCode.WRONG_PASSWORD);
+    }
+
+    private void revokeAllTokens(UUID id) {
+        tokenRepository.deleteAllByUserId(id);
     }
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public UserDto updateProfile(UpdateProfileRequest request) {
-        String email = getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        User user = getUserDetails();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setDateOfBirth(Date.valueOf(request.getDateOfBirth()));
@@ -82,26 +89,30 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public String changeAvatar(MultipartFile imageFile) {
-        String email = getUserDetails().getUsername();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-
-        Map data = null;
+    public String changePicture(MultipartFile imageFile, String folder) {
+        User user = getUserDetails();
+        String url;
+        Map data;
         try {
-            data = cloudinaryService.upload(imageFile.getBytes(), MediaType.IMAGE, FolderNameConstant.AVATAR, user.getId().toString());
+            data = cloudinaryService.upload(imageFile.getBytes(), folder, user.getId().toString());
         } catch (IOException e) {
             throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
-        user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+        if (folder.equals(FolderNameConstant.AVATAR)) {
+            user.setProfilePictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            url = user.getProfilePictureUrl();
+        } else {
+            user.setCoverPictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            url = user.getCoverPictureUrl();
+        }
         user = userRepository.saveAndFlush(user);
-        return user.getProfilePictureUrl();
+        return url;
     }
 
     @Override
     public UserDto getUser() {
-        String email = getUserDetails().getUsername();
-        return getUserByEmail(email);
+        User user = getUserDetails();
+        return mapper.map(user, UserDto.class);
     }
 
     @Override
