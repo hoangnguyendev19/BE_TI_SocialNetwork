@@ -88,6 +88,7 @@ public class RoomServiceImp implements RoomService {
         return roomMapper.from(roomRepository.saveAndFlush(room), paymentResponse);
     }
 
+    @Override
 
     @Override
     public RoomResponse updateRoomStatus(UpdateRoomStatusRequest request) {

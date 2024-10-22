@@ -46,6 +46,11 @@ public enum ErrorCode {
     ROOM_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "room-name-already-exists"),
     ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"),
     PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "payment-not-found"),;
+    FILE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "file-upload-failed"),
+    ROOM_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "room-name-already-exists"),
+    ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"),
+    PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "payment-not-found"),
+    ;
     private final int code;
     private final String message;
 
