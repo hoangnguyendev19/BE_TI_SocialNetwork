@@ -13,6 +13,7 @@ public class APIConstant {
     public static final String BOARDING_HOUSE = BASE_API + "/boarding-house";
     public static final String ROOM = BASE_API + "/room";
     public static final String ID = "/{id}";
+    public static final String VIEW_LIST = "/view-list";
 
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
@@ -44,7 +45,7 @@ public class APIConstant {
     public static final String FAVOURITE_POSTS = "/favorite-posts";
 
     //    boarding house
-    public static final String VIEW_LIST = "/view-list";
+
     public static final String UPDATE_SETTING = "/update-setting";
 
     //    room

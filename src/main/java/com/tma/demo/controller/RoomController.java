@@ -1,15 +1,15 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
-import com.tma.demo.dto.request.CreatePaymentRequest;
-import com.tma.demo.dto.request.CreateRoomRequest;
-import com.tma.demo.dto.request.UpdatePaymentStatusRequest;
-import com.tma.demo.dto.request.UpdateRoomStatusRequest;
+import com.tma.demo.dto.BoardingHouseDto;
+import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -91,4 +91,15 @@ public class RoomController {
                 .data(roomService.createPayment(request))
                 .build());
     }
+
+    @PostMapping(value = APIConstant.VIEW_LIST)
+    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest pagingRequest) {
+
+        return ResponseEntity.ok(ApiResponse.<Page<RoomResponse>>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.GET_LIST_BOARDING_HOUSES_SUCCESS.getMessage())
+                .data(roomService.getListRooms(pagingRequest))
+                .build());
+    }
+
 }

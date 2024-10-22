@@ -1,12 +1,10 @@
 package com.tma.demo.service.room;
 
-import com.tma.demo.dto.request.CreatePaymentRequest;
-import com.tma.demo.dto.request.CreateRoomRequest;
-import com.tma.demo.dto.request.UpdatePaymentStatusRequest;
-import com.tma.demo.dto.request.UpdateRoomStatusRequest;
+import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.Room;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,4 +35,6 @@ public interface RoomService {
 
     @Transactional
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);
+
+    Page<RoomResponse> getListRooms(PagingRequest pagingRequest);
 }
