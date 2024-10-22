@@ -38,7 +38,8 @@ public enum ErrorCode {
     FORBIDDEN(HttpStatus.FORBIDDEN.value(), "forbidden"),
     SETTING_KEY_DOES_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), "setting-key-does-not-exist"),
     NOT_BASE64_FORMAT(HttpStatus.BAD_REQUEST.value(), "not-base64-format"),
-    BOARDING_HOUSE_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "boarding-name-already-exists"),;
+    BOARDING_HOUSE_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST.value(), "boarding-name-already-exists"),
+    NEW_PASSWORD_EQUALS_CURRENT_PASSWORD(HttpStatus.BAD_REQUEST.value(), "new-password-equals-current-password");
     private final int code;
     private final String message;
 
