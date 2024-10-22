@@ -3,6 +3,7 @@ package com.tma.demo.service.room.imp;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.dto.request.CreateRoomRequest;
+import com.tma.demo.dto.request.UpdateRoomStatusRequest;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.BoardingHouse;
 import com.tma.demo.entity.Room;
@@ -60,6 +61,21 @@ public class RoomServiceImp implements RoomService {
         room.setElectricMeterOldNumber(0);
         room.setWaterMeterOldNumber(0);
         return roomMapper.from(roomRepository.saveAndFlush(room));
+    }
+
+    @Override
+    public RoomResponse updateRoomStatus(UpdateRoomStatusRequest request) {
+        Room room = getRoomById(request.getId());
+        room.setRoomStatus(RoomStatus.valueOf(request.getStatus().toUpperCase()));
+        room = roomRepository.saveAndFlush(room);
+        return roomMapper.from(room);
+    }
+
+    @Override
+    public void deleteRoom(String id) {
+        Room room = getRoomById(id);
+        room.setDelete(true);
+        roomRepository.save(room);
     }
 
     private Room getRoomById(String roomId) {

@@ -3,6 +3,7 @@ package com.tma.demo.controller;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.CreateRoomRequest;
+import com.tma.demo.dto.request.UpdateRoomStatusRequest;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tma.demo.common.APIConstant.RESET_ROOM;
-import static com.tma.demo.common.APIConstant.ROOM;
+import static com.tma.demo.common.APIConstant.*;
 
 /**
  * RoomController
@@ -50,4 +50,25 @@ public class RoomController {
                         .build()
         );
     }
+
+    @PutMapping(value = STATUS)
+    public ResponseEntity<ApiResponse<RoomResponse>> updateRoomStatus(@RequestBody UpdateRoomStatusRequest request) {
+        return ResponseEntity.ok(ApiResponse.<RoomResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.UPDATE_SUCCESS.getMessage())
+                .data(roomService.updateRoomStatus(request))
+                .build());
+    }
+    @DeleteMapping(value = ID)
+    public ResponseEntity<ApiResponse<Object>> deleteRoom(@PathVariable String id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.ok(
+                ApiResponse.builder()
+                        .code(HttpStatus.OK.value())
+                        .message(SuccessMessage.DELETE_SUCCESS.getMessage())
+                        .data(null)
+                        .build()
+        );
+    }
+
 }

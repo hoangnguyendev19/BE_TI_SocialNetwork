@@ -31,7 +31,9 @@ public enum SuccessMessage {
     GET_POST_SUCCESS("get-post-successfully"),
     GET_LIST_BOARDING_HOUSES_SUCCESS("get-list-boarding-houses-successfully"),
     CREATED_SUCCESS("create-successfully"),
-    RESET_ROOM_SUCCESS("reset-room-successfully"),;
+    RESET_ROOM_SUCCESS("reset-room-successfully"),
+    UPDATE_SUCCESS("update-successfully"),
+    DELETE_SUCCESS("delete-successfully");
 
     private final String message;
 
