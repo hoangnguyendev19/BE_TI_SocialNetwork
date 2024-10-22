@@ -55,10 +55,12 @@ public class UserServiceImp implements UserService {
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
             throw new BaseException(ErrorCode.CONFIRM_PASSWORD_DOES_NOT_MATCH);
         }
+        if(changePasswordRequest.getNewPassword().equals(changePasswordRequest.getCurrentPassword())){
+            throw new BaseException(ErrorCode.NEW_PASSWORD_EQUALS_CURRENT_PASSWORD);
+        }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
             userRepository.save(user);
-//      TODO: revoked all tokens
             revokeAllTokens(user.getId());
         } else throw new BaseException(ErrorCode.WRONG_PASSWORD);
     }
