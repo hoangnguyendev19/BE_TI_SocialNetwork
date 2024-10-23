@@ -122,7 +122,7 @@ public class PostServiceImp implements PostService {
     public Page<UserResponse> getSharedList(PagingRequest<PostFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<User> pageUser =postRepository.getUsersSharedByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
-        List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName()))
+        List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))
                 .toList();
         return new PageImpl<>(userResponses, pageable, pageUser.getTotalElements());
     }
