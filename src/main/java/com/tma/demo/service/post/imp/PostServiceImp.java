@@ -23,6 +23,7 @@ import com.tma.demo.service.user.UserService;
 import com.tma.demo.util.PageUtil;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -63,15 +64,17 @@ public class PostServiceImp implements PostService {
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public PostDto createPost(CreatePostRequest createPostRequest) {
         User user = userService.getUserDetails();
+        Post parentPost = getParentPost(postRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
+                .orElse(null));
         Post post = Post.builder()
                 .content(createPostRequest.getContent())
                 .user(user)
                 .isDelete(false)
-                .parentPost(null)
+                .parentPost(parentPost)
                 .build();
-        post = postRepository.save(post);
+        post = postRepository.saveAndFlush(post);
         List<Media> mediaList = saveAllMediaFiles(createPostRequest.getFiles(), post);
-        return postMapper.from(post, mediaList, null);
+        return getPostDto(post.getId().toString());
     }
 
     @Override
@@ -85,9 +88,8 @@ public class PostServiceImp implements PostService {
         List<UUID> deletedFileIds = updatePostRequest.getDeleteFileIds().stream().map(UUID::fromString).toList();
         deleteMedia(deletedFileIds, UUID.fromString(updatePostRequest.getPostId()));
         deleteMediaInCloud(updatePostRequest.getDeleteFileIds(), updatePostRequest.getPostId(), FolderNameConstant.POST);
-        List<Media> mediaList = getMediaByPostId(UUID.fromString(updatePostRequest.getPostId()));
-        PostDto parentPost = getParentPost(post.getParentPost());
-        return postMapper.from(post, mediaList, parentPost);
+        post = postRepository.saveAndFlush(post);
+        return getPostDto(post.getId().toString());
     }
 
     @Override
@@ -104,8 +106,9 @@ public class PostServiceImp implements PostService {
     public PostDto getPostDto(String postId) {
         Post post = getPost(postId);
         List<Media> mediaList = getMediaByPostId(post.getId());
-        PostDto parentPost = getParentPost(post.getParentPost());
-        return postMapper.from(post, mediaList, parentPost);
+        PostDto parentDto = ObjectUtils.isEmpty(post.getParentPost()) ? null :
+                postMapper.from(post.getParentPost(), getMediaByPostId(post.getParentPost().getId()), null);
+        return postMapper.from(post, mediaList, parentDto);
     }
 
     @Override
@@ -114,12 +117,12 @@ public class PostServiceImp implements PostService {
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
     }
 
-    private PostDto getParentPost(Post post) {
-        if (post == null) {
+    private Post getParentPost(Post post) {
+        if (ObjectUtils.isEmpty(post)) {
             return null;
         }
-        if (post.getParentPost() == null) {
-            return postMapper.from(post, getMediaByPostId(post.getId()), null);
+        if (ObjectUtils.isEmpty(post.getParentPost())) {
+            return post;
         }
         return getParentPost(post.getParentPost());
     }
@@ -128,7 +131,7 @@ public class PostServiceImp implements PostService {
     public void deletePost(String postId) {
         Post post = postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
-        if (post.getId() != userService.getUserDetails().getId()) {
+        if (!post.getUser().getId().equals(userService.getUserDetails().getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);

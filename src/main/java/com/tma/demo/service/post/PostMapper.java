@@ -40,6 +40,7 @@ public class PostMapper {
         long totalShares = postRepository.getTotalShares(post.getId());
         return PostDto.builder()
                 .id(post.getId().toString())
+                .userId(post.getUser().getId().toString())
                 .content(post.getContent())
                 .firstName(post.getUser().getFirstName())
                 .lastName(post.getUser().getLastName())
