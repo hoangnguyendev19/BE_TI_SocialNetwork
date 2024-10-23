@@ -17,3 +17,4 @@ INSERT INTO public."like" (id, user_id, post_id, last_modified, created_at) VALU
 
 INSERT INTO public.setting (id, key, value, created_at, last_modified) VALUES ('a66aa00d-db57-41ce-a2e6-73699318d0a9', 'MAX_REPORTS', '5', '2024-10-21 13:48:55.034981', '2024-10-21 13:48:55.034981');
 INSERT INTO public.setting (id, key, value, created_at, last_modified) VALUES ('f362ab8c-af3e-47ff-9665-fd85eb046ddd', 'APPROVE_TIME', '100000', '2024-10-21 13:49:17.053450', '2024-10-21 13:49:17.053450');
+

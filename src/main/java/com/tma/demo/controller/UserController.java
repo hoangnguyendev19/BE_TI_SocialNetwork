@@ -1,6 +1,7 @@
 package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
+import com.tma.demo.constant.FolderNameConstant;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.ChangePasswordRequest;
 import com.tma.demo.dto.request.UpdateProfileRequest;
@@ -54,10 +55,18 @@ public class UserController {
 
     @PutMapping(value = USER_AVATAR)
     public ResponseEntity<ApiResponse<String>> changeAvatar(@RequestParam("imageFile") MultipartFile imageFile)  {
-        String imgUrl = userService.changeAvatar(imageFile);
+        String imgUrl = userService.changePicture(imageFile, FolderNameConstant.AVATAR);
         return ResponseEntity.ok(new ApiResponse<>(
                 HttpStatus.OK.value(),
                 SuccessMessage.CHANGE_AVATAR_SUCCESS.getMessage(),
+                imgUrl));
+    }
+    @PutMapping(value = USER_COVER_PICTURE)
+    public ResponseEntity<ApiResponse<String>> changeCoverPicture(@RequestParam("imageFile") MultipartFile imageFile)  {
+        String imgUrl = userService.changePicture(imageFile, FolderNameConstant.COVER);
+        return ResponseEntity.ok(new ApiResponse<>(
+                HttpStatus.OK.value(),
+                SuccessMessage.UPDATE_SUCCESS.getMessage(),
                 imgUrl));
     }
 
