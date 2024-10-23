@@ -48,6 +48,15 @@ public class AuthenticationController {
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.LOGIN_SUCCESS.getMessage(), authService.authenticate(request)));
     }
+
+    @PostMapping(value = AUTH_REFRESH_TOKEN)
+    public ResponseEntity<ApiResponse<TokenDto>> refreshToken(@RequestBody RefreshTokenRequest request){
+        return ResponseEntity.ok(ApiResponse.<TokenDto>builder()
+                        .code(HttpStatus.OK.value())
+                        .message(SuccessMessage.REFRESH_TOKEN_SUCCESS.getMessage())
+                .build());
+    }
+
     @PostMapping(value = AUTH_REGISTER)
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
             @Valid @RequestBody RegisterRequest registerRequest) {

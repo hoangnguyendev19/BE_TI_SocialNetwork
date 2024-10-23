@@ -21,6 +21,7 @@ public class APIConstant {
     public static final String AUTH_VERIFY_OTP = "/verify-otp";
     public static final String AUTH_FORGOT_PASSWORD = "/forgot-password";
     public static final String AUTH_SET_PASSWORD = "/set-password";
+    public static final String AUTH_REFRESH_TOKEN = "/refresh-token";
 
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
