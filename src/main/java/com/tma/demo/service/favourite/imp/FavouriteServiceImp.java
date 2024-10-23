@@ -72,7 +72,7 @@ public class FavouriteServiceImp implements FavouriteService {
     public Page<LikeResponse> getFavouritePosts(PagingRequest<PostFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<User> pageUser = likeRepository.getUsersByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
-        List<LikeResponse> likeResponses = pageUser.stream().map(user -> new LikeResponse(user.getId().toString(), user.getFirstName(), user.getLastName()))
+        List<LikeResponse> likeResponses = pageUser.stream().map(user -> new LikeResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))
         .toList();
         return new PageImpl<>(likeResponses, pageable, pageUser.getTotalElements());
     }

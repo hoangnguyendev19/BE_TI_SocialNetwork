@@ -54,7 +54,7 @@ public class FavouriteController {
                 .build());
     }
 
-    @PostMapping(value = APIConstant.FAVOURITE_POSTS)
+    @PostMapping(value = APIConstant.VIEW_LIST)
     public ResponseEntity<ApiResponse<Page<LikeResponse>>> getFavouritePosts(@RequestBody PagingRequest<PostFilter> pagingRequest) {
         Page<LikeResponse> likeResponses = favouriteService.getFavouritePosts(pagingRequest);
         return ResponseEntity.ok(ApiResponse.<Page<LikeResponse>>builder()

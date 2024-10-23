@@ -43,11 +43,7 @@ public class APIConstant {
     public static final String VIEW_LIST_LIKE_COMMENTS = "/view-list";
     public static final String DELETE_LIKE_COMMENTS = "/delete";
 
-    //   Favourite Endpoints
-    public static final String FAVOURITE_POSTS = "/favorite-posts";
-
     //    boarding house
-
     public static final String UPDATE_SETTING = "/update-setting";
 
     //    room
