@@ -13,4 +13,7 @@ public interface TokenRepository extends JpaRepository<Token, UUID> {
     Optional<Token> findByAccessToken(@Param("token") String token);
 
     void deleteAllByUserId(UUID id);
+
+    @Query("SELECT t FROM Token  t where t.refreshToken = :token and t.isRevoked != true")
+    Optional<Token> findByRefreshToken(@Param("token") String refreshToken);
 }

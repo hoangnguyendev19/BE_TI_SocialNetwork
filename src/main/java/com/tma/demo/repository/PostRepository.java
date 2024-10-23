@@ -1,6 +1,7 @@
 package com.tma.demo.repository;
 
 import com.tma.demo.entity.Post;
+import com.tma.demo.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,7 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
 
     @Query("SELECT COUNT(p.id) FROM Post p WHERE p.parentPost.id = :id and p.isDelete != true")
     long getTotalShares(@Param("id") UUID id);
+
+    @Query("SELECT p.user FROM Post p WHERE p.parentPost.id = :postId and p.isDelete != true")
+    Page<User> getUsersSharedByPost(Pageable pageable,@Param("postId") UUID uuid);
 }
