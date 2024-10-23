@@ -64,8 +64,12 @@ public class PostServiceImp implements PostService{
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public PostDto createPost(CreatePostRequest createPostRequest) {
         User user = userService.getUserDetails();
-        Post parentPost = getParentPost(postRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
-                .orElse(null));
+        Post parentPost = null;
+        if(!ObjectUtils.isEmpty(createPostRequest.getParentPostId())){
+            parentPost = getParentPost(postRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
+                    .orElse(null));
+        }
+
         Post post = Post.builder()
                 .content(createPostRequest.getContent())
                 .user(user)
