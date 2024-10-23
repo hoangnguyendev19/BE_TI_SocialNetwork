@@ -9,10 +9,12 @@ import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.filter.PostFilter;
 import com.tma.demo.repository.MediaRepository;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.repository.UserRepository;
@@ -114,6 +116,15 @@ public class PostServiceImp implements PostService{
         PostDto parentDto = ObjectUtils.isEmpty(post.getParentPost()) ? null :
                 postMapper.from(post.getParentPost(), getMediaByPostId(post.getParentPost().getId()), null, user);
         return postMapper.from(post, mediaList, parentDto, user);
+    }
+
+    @Override
+    public Page<UserResponse> getSharedList(PagingRequest<PostFilter> pagingRequest) {
+        Pageable pageable = PageUtil.getPageRequest(pagingRequest);
+        Page<User> pageUser =postRepository.getUsersSharedByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
+        List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName()))
+                .toList();
+        return new PageImpl<>(userResponses, pageable, pageUser.getTotalElements());
     }
 
     @Override

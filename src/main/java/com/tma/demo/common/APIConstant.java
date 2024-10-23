@@ -38,6 +38,7 @@ public class APIConstant {
     public static final String DELETE_COMMENT_POST = "/delete";
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
+    public static final String SHARE = "/share";
 
     // Like Comment Post Endpoints
     public static final String CREATE_LIKE_COMMENTS = "/create";
@@ -58,4 +59,5 @@ public class APIConstant {
     //    payment
     public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
     public static final String CREATE_PAYMENT = "/create_payment";
+
 }
