@@ -90,7 +90,7 @@ public class PostController {
     }
 
     @PostMapping(value = REPORT_POST)
-    public ResponseEntity<ApiResponse<Object>> getNews(@RequestBody ReportPostRequest reportPostRequest) {
+    public ResponseEntity<ApiResponse<Object>> report(@RequestBody ReportPostRequest reportPostRequest) {
         reportService.report(reportPostRequest);
         return ResponseEntity.ok(ApiResponse.<Object>builder()
                 .code(HttpStatus.OK.value())
@@ -100,7 +100,7 @@ public class PostController {
     }
 
     @PostMapping(value = SHARE)
-    public ResponseEntity<ApiResponse<Page<UserResponse>>> getNews(@RequestBody PagingRequest<PostFilter> pagingRequest) {
+    public ResponseEntity<ApiResponse<Page<UserResponse>>> getShare(@RequestBody PagingRequest<PostFilter> pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<UserResponse>>builder()
                 .code(HttpStatus.OK.value())
