@@ -79,7 +79,6 @@ public class PostServiceImp implements PostService {
                 .parentPost(parentPost)
                 .build();
         post = postRepository.saveAndFlush(post);
-        List<Media> mediaList = saveAllMediaFiles(createPostRequest.getFiles(), post);
         return getPostDto(post.getId().toString());
     }
 
@@ -154,11 +153,9 @@ public class PostServiceImp implements PostService {
         postRepository.save(post);
     }
 
-    private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
-        List<Media> mediaList = new ArrayList<>();
+    private void saveAllMediaFiles(List<String> mediaFiles, Post post) {
         for (String mediaFile : mediaFiles) {
             MediaType mediaType = getMediaType(mediaFile);
-            int index;
             Media media = Media.builder()
                     .isDelete(false)
                     .mediaType(mediaType)
@@ -171,10 +168,7 @@ public class PostServiceImp implements PostService {
                     decodedBytes, mediaType,
                     FolderNameConstant.POST,
                     String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), OLIDUS, media.getId()));
-            media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
-            mediaList.add(mediaRepository.saveAndFlush(media));
         }
-        return mediaList;
     }
 
     private static String getBase64WithoutHeader(String mediaFile) {
