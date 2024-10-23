@@ -7,7 +7,6 @@ import com.tma.demo.entity.Like;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.filter.PostFilter;
-import com.tma.demo.repository.FavouriteRepository;
 import com.tma.demo.repository.LikeRepository;
 import com.tma.demo.service.favourite.FavouriteService;
 import com.tma.demo.service.post.PostService;
@@ -41,7 +40,6 @@ import static java.util.stream.Collectors.toList;
 public class FavouriteServiceImp implements FavouriteService {
     private final UserService userService;
     private final PostService postService;
-    private final FavouriteRepository favouriteRepository;
     private final LikeRepository likeRepository;
 
     @Override
@@ -55,7 +53,7 @@ public class FavouriteServiceImp implements FavouriteService {
                     .user(user)
                     .post(post)
                     .build();
-            favouriteRepository.save(like);
+            likeRepository.save(like);
         }
         return new LikeDto(like.getPost().getId().toString());
     }

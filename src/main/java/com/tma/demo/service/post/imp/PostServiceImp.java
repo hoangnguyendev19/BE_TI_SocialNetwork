@@ -104,11 +104,12 @@ public class PostServiceImp implements PostService {
 
     @Override
     public PostDto getPostDto(String postId) {
+        User user = userService.getUserDetails();
         Post post = getPost(postId);
         List<Media> mediaList = getMediaByPostId(post.getId());
         PostDto parentDto = ObjectUtils.isEmpty(post.getParentPost()) ? null :
-                postMapper.from(post.getParentPost(), getMediaByPostId(post.getParentPost().getId()), null);
-        return postMapper.from(post, mediaList, parentDto);
+                postMapper.from(post.getParentPost(), getMediaByPostId(post.getParentPost().getId()), null, user);
+        return postMapper.from(post, mediaList, parentDto, user);
     }
 
     @Override

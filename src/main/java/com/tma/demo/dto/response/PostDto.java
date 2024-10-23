@@ -28,8 +28,9 @@ public class PostDto {
     private String profilePictureUrl;
     private String content;
     private long totalShares;
-    private List<String> likes;
+    private long totalLikes;
     private long totalComments;
+    private boolean isLiked;
     private PostDto parentPost;
     private List<MediaDto> mediaList;
     private LocalDateTime createdAt;
