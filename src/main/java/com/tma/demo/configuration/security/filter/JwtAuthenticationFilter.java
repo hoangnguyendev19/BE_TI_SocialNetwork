@@ -5,7 +5,6 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.CommonConstant;
 import com.tma.demo.entity.Token;
-import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.service.jwt.JwtService;
 import jakarta.servlet.FilterChain;
@@ -24,8 +23,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Optional;
-
-import static com.tma.demo.constant.CommonConstant.SHOULD_NOT_FILTER;
 
 /**
  * JwtAuthFilter
@@ -99,6 +96,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().write(errorCode.getMessage());
         response.getWriter().flush();
     }
-
-
 }

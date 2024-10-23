@@ -1,7 +1,5 @@
 package com.tma.demo.constant;
 
-import org.springframework.beans.factory.annotation.Value;
-
 /**
  * CommonConstant
  * Version 1.0
@@ -16,8 +14,6 @@ public class CommonConstant {
     public static final String PREFIX_TOKEN = "Bearer ";
     public static final String JSON_CONTENT_TYPE = "application/json";
     public static final String EMPTY_STRING = "";
-    public static final String OLIDUS =  "/";
+    public static final String OLIDUS = "/";
     public static final String COMMA = ",";
-
-    public static final String SHOULD_NOT_FILTER = "shouldNotFilter";
 }
