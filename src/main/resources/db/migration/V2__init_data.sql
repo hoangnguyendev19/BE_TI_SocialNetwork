@@ -1,3 +1,4 @@
+
 INSERT INTO public.users (id, email, password, status, first_name, last_name, date_of_birth, present_address, permanent_address, phone_number, city, country, state, profile_picture_url, cover_picture_url, is_delete, last_login, created_at, last_modified) VALUES ('e1930b0b-1bdf-40b6-8185-c7f27686ca2d', 'john.doe@example.com', '$2a$10$80U1Fbv7nFrd0Bfkssab8OWZvUrZ3peuAa6VxLK0B9YzQIDZb68.u', null, 'string', 'string', null, null, null, '635261389202', null, null, null, 'http://res.cloudinary.com/dunemoydy/image/upload/v1729500533/avatar/e1930b0b-1bdf-40b6-8185-c7f27686ca2d.jpg', null, false, '2024-10-21 15:48:17.445331', '2024-10-21 08:32:06.081967', '2024-10-21 15:49:38.194418');
 
 INSERT INTO public.post (id, user_id, content, parent_post_id, is_delete, created_at, last_modified) VALUES ('7e765113-27a5-47d5-b20d-5b24328104a8', 'e1930b0b-1bdf-40b6-8185-c7f27686ca2d', 'asdksadkasjdklasd', null, false, '2024-10-21 15:17:16.058031', '2024-10-21 15:17:16.058031');

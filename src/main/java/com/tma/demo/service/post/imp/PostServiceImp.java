@@ -50,7 +50,7 @@ import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 @Data
 @RequiredArgsConstructor
 @Service
-public class PostServiceImp implements PostService {
+public class PostServiceImp implements PostService{
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CloudinaryService cloudinaryService;

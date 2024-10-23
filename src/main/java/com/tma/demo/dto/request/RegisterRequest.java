@@ -15,17 +15,17 @@ public class RegisterRequest {
     private String lastName;
     @Pattern(
             regexp = Forgot_Register_Constant.EMAIL_PATTERN ,
-            message = "Email not correct format."
+            message = "email-not-correct-format"
     )
     private String email;
     @Pattern(
             regexp = Forgot_Register_Constant.PHONE_NUMBER_PATTERN ,
-            message = "Invalid  PhoneNumber."
+            message = "invalid-phone-number."
     )
     private String phoneNumber;
     @Pattern(
             regexp = Forgot_Register_Constant.PASSWORD_PATTERN ,
-            message = "Password must be at least 8 characters long, contain upper and lower case letters, a number, and a special character."
+            message = "password-invalid"
     )
     private String password;
     

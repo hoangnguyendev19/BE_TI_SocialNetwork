@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HiddenCommentRequest {
+public class DeleteFavoriteCommentRequest {
     @JsonProperty("comment_id")
     private String commentId;
 }

@@ -11,6 +11,4 @@ import lombok.NoArgsConstructor;
 public class CreateFavoriteCommentRequest {
     @JsonProperty("comment_id")
     private String commentId;
-    @JsonProperty("user_id")
-    private String userId;
 }

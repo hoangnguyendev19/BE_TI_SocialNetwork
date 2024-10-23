@@ -1,10 +1,12 @@
-package com.tma.demo.service.auth;
+package com.tma.demo.service.auth.imp;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 import com.tma.demo.common.SuccessMessage;
+import com.tma.demo.dto.request.VerifyOTPRequest;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.service.auth.ForgotPassServices;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.tma.demo.dto.request.SetPasswordRequest;
@@ -21,13 +23,13 @@ import com.tma.demo.common.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
-public class ForgotPassService {
+public class ForgotPassServiceImp implements ForgotPassServices {
     private final OtpRepository otpRepository;
     private final OtpUtil otpUtil;
     private final EmailUtil emailUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    @Override
     public String generateOtp(String email) {
         // Find User
         User user = userRepository.findByEmail(email)
@@ -50,14 +52,14 @@ public class ForgotPassService {
         }
         return SuccessMessage.OTP_SEND.getMessage();
     }
-
-    public VerifyOtpResponse verifyAccount(String email, String otp) {
-        User user = userRepository.findByEmail(email)
+    @Override
+    public VerifyOtpResponse verifyAccount(VerifyOTPRequest verifyOTPRequest) {
+        User user = userRepository.findByEmail(verifyOTPRequest.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-        Otp geotp = otpRepository.findByUserAndOtp(user, otp)
+        Otp geotp = otpRepository.findByUserAndOtp(user, verifyOTPRequest.getOtp())
                 .orElseThrow(() -> new BaseException(ErrorCode.OTP_DOES_NOT_EXIST));
         // Expired OTP
-        if (geotp.getOtp().equals(otp) && Duration.between(
+        if (geotp.getOtp().equals(verifyOTPRequest.getOtp()) && Duration.between(
                 geotp.getOtpGeneratedTime(),
                 LocalDateTime.now()).getSeconds() < (1 * 10000)) {
             // UpdateOTP
@@ -68,7 +70,7 @@ public class ForgotPassService {
         // OTP Had Expired
         throw new BaseException(ErrorCode.OTP_EXPIRED);
     }
-
+@Override
     public String setPassword(SetPasswordRequest setPasswordRequest) {
         String password = setPasswordRequest.getNewPassword();
         String confirmPassword = setPasswordRequest.getConfirmNewPassword();
@@ -85,6 +87,4 @@ public class ForgotPassService {
         userRepository.save(user);
         return SuccessMessage.UPDATE_PASSWORD_SUCCESS.getMessage();
     }
-
-
 }

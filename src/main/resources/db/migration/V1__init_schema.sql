@@ -185,7 +185,6 @@ CREATE TABLE "otp"
     "otp"                varchar,
     "created_at"    timestamp,
     "last_modified" timestamp
-
 );
 ALTER TABLE "otp"
     ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");

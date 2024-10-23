@@ -41,6 +41,7 @@ public class APIConstant {
     // Like Comment Post Endpoints
     public static final String CREATE_LIKE_COMMENTS = "/create";
     public static final String VIEW_LIST_LIKE_COMMENTS = "/view-list";
+    public static final String DELETE_LIKE_COMMENTS = "/delete";
 
     //   Favourite Endpoints
     public static final String FAVOURITE_POSTS = "/favorite-posts";
