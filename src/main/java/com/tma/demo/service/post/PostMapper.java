@@ -35,7 +35,7 @@ public class PostMapper {
 
     public PostDto from(Post post, List<Media> mediaList, PostDto parentPost) {
         List<MediaDto> mediaDtoList = getMediaDtoList(mediaList);
-        long totalLikes = likeRepository.getTotalLikes(post.getId());
+        List<String> totalLikes = likeRepository.getTotalLikes(post.getId());
         long totalComments = commentRepository.getTotalComments(post.getId());
         long totalShares = postRepository.getTotalShares(post.getId());
         return PostDto.builder()
@@ -45,7 +45,7 @@ public class PostMapper {
                 .firstName(post.getUser().getFirstName())
                 .lastName(post.getUser().getLastName())
                 .profilePictureUrl(post.getUser().getProfilePictureUrl())
-                .totalLikes(totalLikes)
+                .likes(totalLikes)
                 .totalComments(totalComments)
                 .totalShares(totalShares)
                 .parentPost(parentPost)

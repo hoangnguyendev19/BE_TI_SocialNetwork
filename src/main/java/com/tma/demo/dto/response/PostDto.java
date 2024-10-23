@@ -28,7 +28,7 @@ public class PostDto {
     private String profilePictureUrl;
     private String content;
     private long totalShares;
-    private long totalLikes;
+    private List<String> likes;
     private long totalComments;
     private PostDto parentPost;
     private List<MediaDto> mediaList;

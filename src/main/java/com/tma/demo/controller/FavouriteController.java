@@ -5,7 +5,10 @@ import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.LikeDto;
 import com.tma.demo.dto.request.PagingRequest;
+import com.tma.demo.dto.response.LikeResponse;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.entity.Post;
+import com.tma.demo.filter.PostFilter;
 import com.tma.demo.service.favourite.FavouriteService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * FvouriteController
@@ -39,9 +44,9 @@ public class FavouriteController {
                 .build());
     }
 
-    @DeleteMapping
-    public ResponseEntity<ApiResponse<String>> deleteFavouritePost(@RequestBody LikeDto likeDto) {
-        favouriteService.deleteFavouritePost(likeDto);
+    @DeleteMapping(value = APIConstant.ID)
+    public ResponseEntity<ApiResponse<String>> deleteFavouritePost( @PathVariable String id) {
+        favouriteService.deleteFavouritePost(id);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.DELETE_FAVOURITE_POST_SUCCESS.getMessage())
@@ -50,12 +55,12 @@ public class FavouriteController {
     }
 
     @PostMapping(value = APIConstant.FAVOURITE_POSTS)
-    public ResponseEntity<ApiResponse<Page<PostDto>>> getFavouritePosts(@RequestBody PagingRequest pagingRequest) {
-        Page<PostDto> favouritePosts = favouriteService.getFavouritePosts(pagingRequest);
-        return ResponseEntity.ok(ApiResponse.<Page<PostDto>>builder()
+    public ResponseEntity<ApiResponse<Page<LikeResponse>>> getFavouritePosts(@RequestBody PagingRequest<PostFilter> pagingRequest) {
+        Page<LikeResponse> likeResponses = favouriteService.getFavouritePosts(pagingRequest);
+        return ResponseEntity.ok(ApiResponse.<Page<LikeResponse>>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.GET_FAVOURITE_POSTS_SUCCESS.getMessage())
-                .data(favouritePosts)
+                .data(likeResponses)
                 .build());
     }
 
