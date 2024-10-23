@@ -3,8 +3,8 @@ package com.tma.demo.service.auth.imp;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.TokenType;
 import com.tma.demo.dto.request.LoginRequest;
+import com.tma.demo.dto.request.RefreshTokenRequest;
 import com.tma.demo.dto.response.TokenDto;
-import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.Token;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -39,6 +40,7 @@ public class AuthServiceImp implements AuthService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public TokenDto authenticate(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
@@ -46,19 +48,39 @@ public class AuthServiceImp implements AuthService {
             throw new BaseException(ErrorCode.WRONG_PASSWORD);
 
         }
+        user.setLastLogin(LocalDateTime.now());
+        user = userRepository.save(user);
+        return getTokenDto(user);
+    }
+
+    @Override
+    @Transactional
+    public TokenDto refreshToken(RefreshTokenRequest request) {
+        if (jwtService.isExpired(request.getRefreshToken())) {
+            throw new BaseException(ErrorCode.TOKEN_EXPIRED);
+        }
+        Token token = tokenRepository.findByRefreshToken(request.getRefreshToken())
+                .orElseThrow(() -> new BaseException(ErrorCode.TOKEN_INVALID));
+        User user = userRepository.findByEmail(jwtService.extractEmail(request.getRefreshToken()))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        return getTokenDto(user);
+    }
+
+    private TokenDto getTokenDto(User user) {
         String accessToken = jwtService.generateToken(user.getEmail(), TokenType.ACCESS_TOKEN);
         String refreshToken = jwtService.generateToken(user.getEmail(), TokenType.REFRESH_TOKEN);
         Token token = Token.builder()
+                .user(user)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .isRevoked(false)
                 .build();
         tokenRepository.save(token);
-        user.setLastLogin(LocalDateTime.now());
-        user = userRepository.save(user);
         return TokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
+
+
 }

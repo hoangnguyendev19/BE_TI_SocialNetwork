@@ -54,6 +54,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(ApiResponse.<TokenDto>builder()
                         .code(HttpStatus.OK.value())
                         .message(SuccessMessage.REFRESH_TOKEN_SUCCESS.getMessage())
+                        .data(authService.refreshToken(request))
                 .build());
     }
 
