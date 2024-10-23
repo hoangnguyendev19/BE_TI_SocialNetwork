@@ -6,7 +6,6 @@ public interface JwtService {
 
     public String extractEmail(String token);
 
-
     boolean isExpired(String jwt);
 
     String generateToken(String email, TokenType tokenType);

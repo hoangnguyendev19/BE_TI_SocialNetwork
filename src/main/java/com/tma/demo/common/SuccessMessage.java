@@ -31,7 +31,13 @@ public enum SuccessMessage {
     GET_POST_SUCCESS("get-post-successfully"),
     CREATE_FAVOURITE_COMMENT("create-favourite-comment-successfully"),
     DELETE_FAVOURITE_COMMENT("delete-favourite-comment-successfully"),
-    VIEW_FAVOURITE_COMMENT("view-favourite-comment-successfully");
+    VIEW_FAVOURITE_COMMENT("view-favourite-comment-successfully"),
+    GET_LIST_BOARDING_HOUSES_SUCCESS("get-list-boarding-houses-successfully"),
+    UPDATE_SUCCESS("update-successfully"),
+    CREATED_SUCCESS("create-successfully"),
+    RESET_ROOM_SUCCESS("reset-room-successfully"),
+    DELETE_SUCCESS("delete-successfully");
+
     private final String message;
 
     SuccessMessage(String s) {

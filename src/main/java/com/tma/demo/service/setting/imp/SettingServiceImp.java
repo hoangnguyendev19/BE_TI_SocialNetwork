@@ -27,6 +27,9 @@ public class SettingServiceImp implements SettingService {
 
     @Override
     public SettingDto createSetting(SettingDto settingRequest) {
+        if(isSettingKeyExist(SettingKey.valueOf(settingRequest.getKey()))){
+            throw new BaseException(ErrorCode.SETTING_KEY_ALREADY_EXISTS);
+        }
         Setting setting = Setting.builder()
                 .key(SettingKey.valueOf(settingRequest.getKey()))
                 .value(settingRequest.getValue())
@@ -47,6 +50,15 @@ public class SettingServiceImp implements SettingService {
     @Override
     public int getMaxReport() {
         return Integer.parseInt(getSetting(SettingKey.MAX_REPORTS).getValue());
+    }
+
+    @Override
+    public String getValue(SettingKey settingKey) {
+        return getSetting(settingKey).getValue();
+    }
+
+    private Boolean isSettingKeyExist(SettingKey key) {
+            return settingRepository.findByKey(key).isPresent();
     }
 
     private Setting getSetting(SettingKey key) {

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
  * ------------------------------------------------
  * 16/10/2024        NGUYEN             create
  */
-@Service
 public interface ReportService {
     void report(ReportPostRequest reportPostRequest);
 }

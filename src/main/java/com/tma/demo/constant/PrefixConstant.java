@@ -15,4 +15,5 @@ import lombok.Data;
 @Data
 public class PrefixConstant {
     public static final String BASE64_PREF = "base64,";
+    public static final String BASE64_DATA_TYPE_PREF = "data:";
 }

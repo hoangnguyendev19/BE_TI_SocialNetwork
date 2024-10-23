@@ -8,7 +8,6 @@ import com.tma.demo.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface PostService {
     PostDto createPost(CreatePostRequest createPostRequest);
 

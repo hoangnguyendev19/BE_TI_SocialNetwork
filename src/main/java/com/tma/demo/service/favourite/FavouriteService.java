@@ -6,7 +6,6 @@ import com.tma.demo.dto.response.PostDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface FavouriteService {
     LikeDto createFavouritePost(LikeDto likeDto);
 
