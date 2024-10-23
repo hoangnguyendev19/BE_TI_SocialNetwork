@@ -1,5 +1,6 @@
 package com.tma.demo.configuration.security.filter;
 
+import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.CommonConstant;
@@ -24,6 +25,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.tma.demo.constant.CommonConstant.SHOULD_NOT_FILTER;
+
 /**
  * JwtAuthFilter
  * Version 1.0
@@ -40,12 +43,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final TokenRepository tokenRepository;
+    ;
 
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+        if (request.getServletPath().contains(APIConstant.AUTH)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader(AttributeConstant.HEADER_AUTHORIZATION);
         String jwt;
         String userEmail = null;
@@ -54,7 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-
         try {
             userEmail = jwtService.extractEmail(jwt);
         } catch (Exception e) {

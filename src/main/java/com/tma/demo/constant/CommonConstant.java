@@ -18,4 +18,6 @@ public class CommonConstant {
     public static final String EMPTY_STRING = "";
     public static final String OLIDUS =  "/";
     public static final String COMMA = ",";
+
+    public static final String SHOULD_NOT_FILTER = "shouldNotFilter";
 }

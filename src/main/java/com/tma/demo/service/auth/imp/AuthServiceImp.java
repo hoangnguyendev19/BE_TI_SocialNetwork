@@ -1,9 +1,11 @@
 package com.tma.demo.service.auth.imp;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.TokenType;
+import com.tma.demo.constant.AttributeConstant;
+import com.tma.demo.constant.CommonConstant;
 import com.tma.demo.dto.request.LoginRequest;
-import com.tma.demo.dto.request.RefreshTokenRequest;
 import com.tma.demo.dto.response.TokenDto;
 import com.tma.demo.entity.Token;
 import com.tma.demo.entity.User;
@@ -12,12 +14,15 @@ import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.auth.AuthService;
 import com.tma.demo.service.jwt.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
@@ -55,15 +60,19 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     @Transactional
-    public TokenDto refreshToken(RefreshTokenRequest request) {
-        if (jwtService.isExpired(request.getRefreshToken())) {
-            throw new BaseException(ErrorCode.TOKEN_EXPIRED);
+    public TokenDto refreshToken(HttpServletRequest request) {
+        String authHeader = request.getHeader(AttributeConstant.HEADER_AUTHORIZATION);
+        String refreshToken;
+        String userEmail = null;
+        if (authHeader == null || !authHeader.startsWith(CommonConstant.PREFIX_TOKEN)) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
-        Token token = tokenRepository.findByRefreshToken(request.getRefreshToken())
+        refreshToken = authHeader.substring(7);
+        Token token = tokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new BaseException(ErrorCode.TOKEN_INVALID));
-        User user = userRepository.findByEmail(jwtService.extractEmail(request.getRefreshToken()))
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+        User user = token.getUser();
         return getTokenDto(user);
+
     }
 
     private TokenDto getTokenDto(User user) {
