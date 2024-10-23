@@ -2,11 +2,11 @@ package com.tma.demo.service.favourite.imp;
 
 import com.tma.demo.dto.LikeDto;
 import com.tma.demo.dto.request.PagingRequest;
-import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.dto.response.LikeResponse;
 import com.tma.demo.entity.Like;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
-import com.tma.demo.repository.FavouriteRepository;
+import com.tma.demo.filter.PostFilter;
 import com.tma.demo.repository.LikeRepository;
 import com.tma.demo.service.favourite.FavouriteService;
 import com.tma.demo.service.post.PostService;
@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * FavouriteServiceImp
  * Version 1.0
@@ -38,7 +40,6 @@ import java.util.UUID;
 public class FavouriteServiceImp implements FavouriteService {
     private final UserService userService;
     private final PostService postService;
-    private final FavouriteRepository favouriteRepository;
     private final LikeRepository likeRepository;
 
     @Override
@@ -52,15 +53,15 @@ public class FavouriteServiceImp implements FavouriteService {
                     .user(user)
                     .post(post)
                     .build();
-            favouriteRepository.save(like);
+            likeRepository.save(like);
         }
         return new LikeDto(like.getPost().getId().toString());
     }
 
     @Override
-    public void deleteFavouritePost(LikeDto likeDto) {
+    public void deleteFavouritePost(String postId) {
         User user = userService.getUserDetails();
-        Post post = postService.getPost(likeDto.getPostId());
+        Post post = postService.getPost(postId);
         Like like = getLikeByUserAndPost(user.getId(), post.getId());
         if (!ObjectUtils.isEmpty(like)) {
             likeRepository.delete(like);
@@ -68,18 +69,12 @@ public class FavouriteServiceImp implements FavouriteService {
     }
 
     @Override
-    public Page<PostDto> getFavouritePosts(PagingRequest pagingRequest) {
+    public Page<LikeResponse> getFavouritePosts(PagingRequest<PostFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        User user = userService.getUserDetails();
-        Page<Like> likes = getLikeByUser(pageable, user.getId());
-        List<PostDto> postDtoList = likes.stream().map(
-                like -> postService.getPostDto(like.getPost().getId().toString())
-        ).toList();
-        return new PageImpl<>(postDtoList, pageable, likes.getTotalElements());
-    }
-
-    private Page<Like> getLikeByUser(Pageable pageable, UUID userId) {
-        return likeRepository.getLikeByUser(pageable, userId);
+        Page<User> pageUser = likeRepository.getUsersByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
+        List<LikeResponse> likeResponses = pageUser.stream().map(user -> new LikeResponse(user.getId().toString(), user.getFirstName(), user.getLastName()))
+        .toList();
+        return new PageImpl<>(likeResponses, pageable, pageUser.getTotalElements());
     }
 
     private Like getLikeByUserAndPost(UUID userId, UUID postId) {

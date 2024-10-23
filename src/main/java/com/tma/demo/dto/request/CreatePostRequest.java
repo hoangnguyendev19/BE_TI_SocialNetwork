@@ -23,4 +23,5 @@ import java.util.List;
 public class CreatePostRequest {
     private List<String> files;
     private String content;
+    private String parentPostId;
 }
