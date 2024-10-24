@@ -9,6 +9,7 @@ import com.tma.demo.dto.response.UpdateCommentResponse;
 import com.tma.demo.dto.response.ViewListCommentResponse;
 import com.tma.demo.service.comment_post.CommentPostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,21 +36,21 @@ public class CommentPostController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
 }
 //Delete
-    @DeleteMapping()
-    public ResponseEntity<ApiResponse<String>> deleteComment(@RequestBody DeleteCommentRequest deleteCommentRequest) {
-        String response = commentPostService.deleteComment(deleteCommentRequest);
+    @DeleteMapping(value = COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("commentId") String commentId) {
+        String response = commentPostService.deleteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
 //View
-    @GetMapping()
-    public ResponseEntity<ApiResponse<List<ViewListCommentResponse>>> getAllComments(@RequestBody ViewListCommentRequest viewListCommentRequest) {
-        List<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(viewListCommentRequest);
+    @PostMapping(value = VIEW_LIST_COMMENT_POST)
+    public ResponseEntity<ApiResponse<Page<ViewListCommentResponse>>> getAllComments(@RequestBody PagingRequest<CommentFilter> pagingRequest) {
+        Page<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(pagingRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_COMMENT_SUCCESS.getMessage(), comments));
     }
 //Hidden
     @PutMapping(value = HIDDEN_LIST_COMMENT_POST)
-    public ResponseEntity<ApiResponse<HiddenCommentResponse>> hideComent(@RequestBody HiddenCommentRequest hiddenCommentRequest){
-        HiddenCommentResponse hiddenCommentResponse = commentPostService.hideComment(hiddenCommentRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), hiddenCommentResponse));
+    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable("commentId")String commentId){
+        commentPostService.hideComment(commentId);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), null));
     }
 }

@@ -2,11 +2,7 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
-import com.tma.demo.dto.request.CreateFavoriteCommentRequest;
-import com.tma.demo.dto.request.DeleteFavoriteCommentRequest;
-import com.tma.demo.dto.request.ViewListFavoriteCommentRequest;
 import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
-import com.tma.demo.dto.response.ViewListFavoriteCommentResponse;
 import com.tma.demo.service.comment_post.FavoriteCommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,19 +16,14 @@ import static com.tma.demo.common.APIConstant.*;
 @RestController
 public class FavoriteCommentController {
     private final FavoriteCommentService favoriteCommentService;
-    @PostMapping()
-    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@RequestBody CreateFavoriteCommentRequest createFavoriteCommentRequest) {
-        CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(createFavoriteCommentRequest);
+    @PostMapping(COMMENT_ID)
+    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@PathVariable("commentId") String commentId) {
+        CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
-    @GetMapping()
-    public ResponseEntity<ApiResponse<ViewListFavoriteCommentResponse>> viewListFavoriteComment (@RequestBody ViewListFavoriteCommentRequest viewListFavoriteCommentRequest) {
-        ViewListFavoriteCommentResponse viewListFavoriteCommentResponse = favoriteCommentService.getLikedCommentsByUserId(viewListFavoriteCommentRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_FAVOURITE_COMMENT.getMessage(), viewListFavoriteCommentResponse));
-    }
-    @DeleteMapping()
-    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@RequestBody DeleteFavoriteCommentRequest deleteFavoriteCommentRequest) {
-        String response = favoriteCommentService.deleteFavoriteComment(deleteFavoriteCommentRequest);
+    @DeleteMapping(LIKE_COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable("likeCommentId") String likeCommentId) {
+        String response = favoriteCommentService.deleteFavoriteComment(likeCommentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response, null));
     }
 }

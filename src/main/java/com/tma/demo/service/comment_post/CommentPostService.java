@@ -6,6 +6,7 @@ import com.tma.demo.dto.response.HiddenCommentResponse;
 import com.tma.demo.dto.response.UpdateCommentResponse;
 import com.tma.demo.dto.response.ViewListCommentResponse;
 import com.tma.demo.entity.Comment;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,8 @@ import java.util.List;
 public interface CommentPostService {
     CreateCommentResponse createComment(CreateCommentRequest request);
     UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest);
-    String deleteComment(DeleteCommentRequest deleteCommentRequest);
-    List<ViewListCommentResponse> fetchAllCommentsByPostId(ViewListCommentRequest viewListCommentRequest);
-    HiddenCommentResponse hideComment(HiddenCommentRequest hiddenCommentRequest);
+    String deleteComment(String commentId);
+    Page<ViewListCommentResponse> fetchAllCommentsByPostId(PagingRequest<CommentFilter> pagingRequest);
+    String hideComment(String commentId);
     Comment findCommentById(String commentId);
 }
