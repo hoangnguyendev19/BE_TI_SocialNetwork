@@ -22,7 +22,7 @@ import static com.tma.demo.common.APIConstant.*;
 public class CommentPostController {
     private final CommentPostService commentPostService;
 //Create
-    @PostMapping(value = CREATE_COMMENT_POST)
+    @PostMapping()
     public ResponseEntity<ApiResponse<CreateCommentResponse>> createComment(@RequestBody CreateCommentRequest request) {
         CreateCommentResponse commentResponse = commentPostService.createComment(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.CREATED.value(),
@@ -36,8 +36,8 @@ public class CommentPostController {
 }
 //Delete
     @DeleteMapping(value= DELETE_COMMENT_POST)
-    public ResponseEntity<ApiResponse<String>> deleteComment(@RequestBody DeleteCommentRequest deleteCommentRequest) {
-        String response = commentPostService.deleteComment(deleteCommentRequest);
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("commentId") String commentId) {
+        String response = commentPostService.deleteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
 //View

@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCommentRequest {
-
-    @JsonProperty("post_id")
     private String postId;
-    @JsonProperty("parent_comment_id")
     private String parentCommentId;
-    @JsonProperty("commentText")
     private String commentText;
 }
