@@ -49,8 +49,8 @@ public class CommentPostController {
     }
 //Hidden
     @PutMapping(value = HIDDEN_LIST_COMMENT_POST)
-    public ResponseEntity<ApiResponse<HiddenCommentResponse>> hideComent(@PathVariable("commentId")String commentId ){
-        HiddenCommentResponse hiddenCommentResponse = commentPostService.hideComment(commentId);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), hiddenCommentResponse));
+    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable("commentId")String commentId){
+        commentPostService.hideComment(commentId);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), null));
     }
 }
