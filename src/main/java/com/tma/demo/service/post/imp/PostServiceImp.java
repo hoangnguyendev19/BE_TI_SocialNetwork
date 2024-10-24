@@ -79,6 +79,7 @@ public class PostServiceImp implements PostService {
                 .parentPost(parentPost)
                 .build();
         post = postRepository.saveAndFlush(post);
+        saveAllMediaFiles(createPostRequest.getFiles(), post);
         return getPostDto(post.getId().toString());
     }
 
