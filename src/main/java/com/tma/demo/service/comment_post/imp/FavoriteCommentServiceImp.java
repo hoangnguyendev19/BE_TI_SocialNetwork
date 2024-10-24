@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,10 +36,14 @@ public class FavoriteCommentServiceImp implements FavoriteCommentService {
     private final CommentPostService commentPostService;
 
     @Override
-    public CreateFavoriteCommentResponse createFavoriteComment(CreateFavoriteCommentRequest createFavoriteCommentRequest) {
+    public CreateFavoriteCommentResponse createFavoriteComment(String commentId) {
 
         User user = userService.getUserDetails();
-        Comment comment = commentPostService.findCommentById(createFavoriteCommentRequest.getCommentId());
+        Comment comment = commentPostService.findCommentById(commentId);
+        Optional<LikeComment> existingLike = likeCommentRepository.findByUserAndComment(user, comment);
+        if (existingLike.isPresent()) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
         LikeComment likeComment = new LikeComment();
         likeComment.setUser(user);
         likeComment.setComment(comment);
@@ -53,27 +58,15 @@ public class FavoriteCommentServiceImp implements FavoriteCommentService {
         );
     }
     @Override
-    public ViewListFavoriteCommentResponse getLikedCommentsByUserId(ViewListFavoriteCommentRequest request) {
-
-        Comment comment = commentPostService.findCommentById(request.getCommentId());
-        List<LikeComment> likedComments = likeCommentRepository.findByCommentId(UUID.fromString(request.getCommentId()));
-        List<ViewListFavoriteCommentResponse.LikedUserDetail> likedUserDetails = likedComments.stream()
-                .map(likeComment -> {
-                    String userId = likeComment.getUser().getId().toString();
-                    String createdAt = likeComment.getCreatedAt().toString();
-                    return new ViewListFavoriteCommentResponse.LikedUserDetail(userId, createdAt);
-                })
-                .collect(Collectors.toList());
-        return new ViewListFavoriteCommentResponse(request.getCommentId(), likedUserDetails);
-    }
-    @Override
-    public String deleteFavoriteComment(DeleteFavoriteCommentRequest deleteFavoriteCommentRequest) {
+    public String deleteFavoriteComment(String likeCommentId) {
         User user = userService.getUserDetails();
-        Comment comment = commentPostService.findCommentById(deleteFavoriteCommentRequest.getCommentId());
-        LikeComment likeComment = likeCommentRepository.findByUserAndComment(user, comment)
+        LikeComment likeComment = likeCommentRepository.findById(UUID.fromString(likeCommentId))
                 .orElseThrow(() -> new BaseException(ErrorCode.LIKE_DOES_NOT_EXIST));
+
+        if (!likeComment.getUser().getId().equals(user.getId())) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
         likeCommentRepository.delete(likeComment);
         return SuccessMessage.DELETE_FAVOURITE_POST_SUCCESS.getMessage();
     }
-
 }

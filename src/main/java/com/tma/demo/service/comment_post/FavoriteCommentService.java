@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 
 public interface FavoriteCommentService {
-    CreateFavoriteCommentResponse createFavoriteComment(CreateFavoriteCommentRequest createFavoriteCommentRequest);
-    ViewListFavoriteCommentResponse getLikedCommentsByUserId(ViewListFavoriteCommentRequest request);
-    String deleteFavoriteComment(DeleteFavoriteCommentRequest deleteFavoriteCommentRequest);
+    CreateFavoriteCommentResponse createFavoriteComment(String commentId);
+    String deleteFavoriteComment(String likeCommentId);
 }

@@ -20,19 +20,14 @@ import static com.tma.demo.common.APIConstant.*;
 @RestController
 public class FavoriteCommentController {
     private final FavoriteCommentService favoriteCommentService;
-    @PostMapping(value = CREATE_LIKE_COMMENTS)
-    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@RequestBody CreateFavoriteCommentRequest createFavoriteCommentRequest) {
-        CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(createFavoriteCommentRequest);
+    @PostMapping(COMMENT_ID)
+    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@PathVariable("commentId") String commentId) {
+        CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
-    @GetMapping(value = VIEW_LIST_LIKE_COMMENTS)
-    public ResponseEntity<ApiResponse<ViewListFavoriteCommentResponse>> viewListFavoriteComment (@RequestBody ViewListFavoriteCommentRequest viewListFavoriteCommentRequest) {
-        ViewListFavoriteCommentResponse viewListFavoriteCommentResponse = favoriteCommentService.getLikedCommentsByUserId(viewListFavoriteCommentRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_FAVOURITE_COMMENT.getMessage(), viewListFavoriteCommentResponse));
-    }
-    @DeleteMapping(value = DELETE_LIKE_COMMENTS)
-    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@RequestBody DeleteFavoriteCommentRequest deleteFavoriteCommentRequest) {
-        String response = favoriteCommentService.deleteFavoriteComment(deleteFavoriteCommentRequest);
+    @DeleteMapping(LIKE_COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable("likeCommentId") String likeCommentId) {
+        String response = favoriteCommentService.deleteFavoriteComment(likeCommentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response, null));
     }
 }

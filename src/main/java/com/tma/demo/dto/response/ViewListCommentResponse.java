@@ -23,7 +23,7 @@ public class ViewListCommentResponse {
     private boolean ownedPost;
     private boolean ownedComment;
     private boolean liked;
-    private int totalLikes;
+    private long totalLikes;
     private LocalDateTime createdAt;
     private LocalDateTime lastModified;
     private List<ViewListCommentResponse> childComments;

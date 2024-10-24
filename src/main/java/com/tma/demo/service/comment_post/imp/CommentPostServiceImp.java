@@ -8,6 +8,7 @@ import com.tma.demo.dto.response.HiddenCommentResponse;
 import com.tma.demo.dto.response.UpdateCommentResponse;
 import com.tma.demo.dto.response.ViewListCommentResponse;
 import com.tma.demo.entity.Comment;
+import com.tma.demo.entity.LikeComment;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
@@ -118,12 +119,16 @@ public class CommentPostServiceImp implements CommentPostService {
         response.setCreatedAt(comment.getCreatedAt());
         response.setHidden(comment.isHidden());
         response.setLastModified(comment.getLastModified());
-        response.setLiked(likeCommentRepository.findByUserAndComment(user, comment).isPresent());
+        boolean isLiked = likeCommentRepository.findByUserAndComment(user, comment).isPresent();
+        response.setLiked(isLiked);
         response.setOwnedPost(post.getUser().getId().equals(user.getId()));
         response.setOwnedComment(comment.getUser().getId().equals(user.getId()));
         response.setFirstName(comment.getUser().getFirstName());
         response.setLastName(comment.getUser().getLastName());
         response.setProfilePictureUrl(comment.getUser().getProfilePictureUrl());
+        long totalLikes = likeCommentRepository.countDistinctLikesByCommentId(comment.getId());
+        response.setTotalLikes(totalLikes);
+
         if (comment.getParentComment() == null) {
             response.setCommentId(comment.getId().toString());
         }
