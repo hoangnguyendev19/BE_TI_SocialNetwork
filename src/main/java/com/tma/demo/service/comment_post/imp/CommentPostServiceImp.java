@@ -97,7 +97,7 @@ public class CommentPostServiceImp implements CommentPostService {
     public Page<ViewListCommentResponse> fetchAllCommentsByPostId(PagingRequest<CommentFilter> pagingRequest) {
         User user = userService.getUserDetails();
         CommentFilter filter = pagingRequest.getFilter();
-        String postId = filter.getPostId();
+        String postId = filter.getId();
         Post post = findPostById(postId);
         Pageable pageable = PageRequest.of(pagingRequest.getPage(), pagingRequest.getSize(),
                 Sort.by(pagingRequest.getSortBy(), pagingRequest.getSortField()));
