@@ -15,9 +15,17 @@ public class ViewListCommentResponse {
     private String postId;
     private String commentId;
     private String userId;
+    private String firstName;
+    private String lastName;
+    private String profilePictureUrl;
     private String commentText;
+    private boolean hidden;
+    private boolean ownedPost;
+    private boolean ownedComment;
+    private boolean liked;
+    private int totalLikes;
     private LocalDateTime createdAt;
-    private boolean isHidden;
     private LocalDateTime lastModified;
     private List<ViewListCommentResponse> childComments;
 }
+

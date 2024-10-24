@@ -9,6 +9,7 @@ import com.tma.demo.dto.response.UpdateCommentResponse;
 import com.tma.demo.dto.response.ViewListCommentResponse;
 import com.tma.demo.service.comment_post.CommentPostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +42,9 @@ public class CommentPostController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
 //View
-    @GetMapping(value = VIEW_LIST_COMMENT_POST)
-    public ResponseEntity<ApiResponse<List<ViewListCommentResponse>>> getAllComments(@RequestBody ViewListCommentRequest viewListCommentRequest) {
-        List<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(viewListCommentRequest);
+    @GetMapping()
+    public ResponseEntity<ApiResponse<Page<ViewListCommentResponse>>> getAllComments(@RequestParam String postId,@RequestBody PagingRequest<?> pagingRequest) {
+        Page<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(postId,pagingRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_COMMENT_SUCCESS.getMessage(), comments));
     }
 //Hidden
