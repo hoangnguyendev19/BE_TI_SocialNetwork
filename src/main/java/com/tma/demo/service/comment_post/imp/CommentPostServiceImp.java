@@ -138,8 +138,8 @@ public class CommentPostServiceImp implements CommentPostService {
 
     @Override
     //Hidden Comment
-    public HiddenCommentResponse hideComment(HiddenCommentRequest hiddenCommentRequest) {
-        Comment comment = findCommentById(hiddenCommentRequest.getCommentId());
+    public String hideComment(String commentId) {
+        Comment comment = findCommentById(commentId);
         User user = userService.getUserDetails();
         //CheckUser
         if (!comment.getUser().getId().equals(user.getId())) {
@@ -147,15 +147,7 @@ public class CommentPostServiceImp implements CommentPostService {
         }
         comment.setHidden(true);
         commentRepository.save(comment);
-        return new HiddenCommentResponse(
-                comment.getId().toString(),
-                comment.getPost().getId().toString(),
-                comment.getUser().getId().toString(),
-                comment.getCommentText(),
-                comment.isHidden(),
-                comment.getCreatedAt().toString(),
-                comment.getLastModified().toString()
-        );
+        return SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage();
     }
     private Post findPostById(String postId) {
         return postRepository.findById(UUID.fromString(postId))
