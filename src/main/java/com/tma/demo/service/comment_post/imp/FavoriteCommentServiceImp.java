@@ -2,11 +2,7 @@ package com.tma.demo.service.comment_post.imp;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.SuccessMessage;
-import com.tma.demo.dto.request.CreateFavoriteCommentRequest;
-import com.tma.demo.dto.request.DeleteFavoriteCommentRequest;
-import com.tma.demo.dto.request.ViewListFavoriteCommentRequest;
 import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
-import com.tma.demo.dto.response.ViewListFavoriteCommentResponse;
 import com.tma.demo.entity.Comment;
 import com.tma.demo.entity.LikeComment;
 import com.tma.demo.entity.User;
@@ -21,10 +17,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor

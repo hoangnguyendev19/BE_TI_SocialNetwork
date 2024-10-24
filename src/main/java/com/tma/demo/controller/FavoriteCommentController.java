@@ -2,11 +2,7 @@ package com.tma.demo.controller;
 
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
-import com.tma.demo.dto.request.CreateFavoriteCommentRequest;
-import com.tma.demo.dto.request.DeleteFavoriteCommentRequest;
-import com.tma.demo.dto.request.ViewListFavoriteCommentRequest;
 import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
-import com.tma.demo.dto.response.ViewListFavoriteCommentResponse;
 import com.tma.demo.service.comment_post.FavoriteCommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

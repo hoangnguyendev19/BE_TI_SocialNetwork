@@ -32,7 +32,6 @@ public class APIConstant {
     public static final String REPORT_POST = "/report";
 
     // Comment Post Endpoints
-    public static final String CREATE_COMMENT_POST = "/create";
     public static final String UPDATE_COMMENT_POST = "/update";
     public static final String COMMENT_ID = "/{commentId}";
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
