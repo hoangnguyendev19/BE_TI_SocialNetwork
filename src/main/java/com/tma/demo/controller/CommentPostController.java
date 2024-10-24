@@ -42,9 +42,9 @@ public class CommentPostController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
 //View
-    @GetMapping()
-    public ResponseEntity<ApiResponse<Page<ViewListCommentResponse>>> getAllComments(@RequestParam String postId,@RequestBody PagingRequest<?> pagingRequest) {
-        Page<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(postId,pagingRequest);
+    @PostMapping(value = VIEW_LIST_COMMENT_POST)
+    public ResponseEntity<ApiResponse<Page<ViewListCommentResponse>>> getAllComments(@RequestBody PagingRequest<CommentFilter> pagingRequest) {
+        Page<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(pagingRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_COMMENT_SUCCESS.getMessage(), comments));
     }
 //Hidden
