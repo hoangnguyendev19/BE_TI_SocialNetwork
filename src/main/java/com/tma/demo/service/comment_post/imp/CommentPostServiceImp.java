@@ -65,7 +65,7 @@ public class CommentPostServiceImp implements CommentPostService {
     //Update Comment
     public UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest) {
         //Find Cmt Id
-        Comment comment = findCommentById(updateCommentRequest.getCommentId());
+        Comment comment = findCommentById(updateCommentRequest.getId());
         User user = userService.getUserDetails();
         //Check User
         if (!comment.getUser().getId().equals(user.getId())){

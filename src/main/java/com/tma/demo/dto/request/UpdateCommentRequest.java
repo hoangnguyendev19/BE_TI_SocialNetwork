@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCommentRequest {
 
-    @JsonProperty("comment_id")
-    private String commentId;
-    @JsonProperty("commentText")
+    private String id;
     private String commentText;
 }
