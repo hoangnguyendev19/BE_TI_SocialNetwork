@@ -33,9 +33,7 @@ public class CommentPostServiceImp implements CommentPostService {
     @Override
     //Create Comment
     public CreateCommentResponse createComment(CreateCommentRequest request) {
-        // Find user by ID
         User user = userService.getUserDetails();
-        // Find post by ID
         Post post = findPostById(request.getPostId());
         Comment parentComment = StringUtils.isBlank(request.getParentCommentId())
                 ? null
@@ -51,8 +49,7 @@ public class CommentPostServiceImp implements CommentPostService {
         Comment savedComment = commentRepository.save(comment);
         String parentCommentString = parentComment != null
                 ? parentComment.getId().toString()
-                : "no-parent-comment"; // Fix doan nay
-
+                : "";
         // Create response
         return new CreateCommentResponse(
                 savedComment.getId().toString(),
@@ -68,7 +65,7 @@ public class CommentPostServiceImp implements CommentPostService {
     //Update Comment
     public UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest) {
         //Find Cmt Id
-        Comment comment = findCommentById(updateCommentRequest.getCommentId());
+        Comment comment = findCommentById(updateCommentRequest.getId());
         User user = userService.getUserDetails();
         //Check User
         if (!comment.getUser().getId().equals(user.getId())){
@@ -82,8 +79,8 @@ public class CommentPostServiceImp implements CommentPostService {
     }
     @Override
     //Delete Comment
-    public String deleteComment(DeleteCommentRequest deleteCommentRequest) {
-        Comment comment = findCommentById(deleteCommentRequest.getCommentId());
+    public String deleteComment(String commentId) {
+        Comment comment = findCommentById(commentId);
         User user = userService.getUserDetails();
         if (!comment.getUser().getId().equals(user.getId())){
             throw new BaseException(ErrorCode.UNAUTHORIZED);
