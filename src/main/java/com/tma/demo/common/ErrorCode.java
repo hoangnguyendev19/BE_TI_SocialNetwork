@@ -45,6 +45,7 @@ public enum ErrorCode {
     FILE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST.value(), "file-upload-failed"),
     ROOM_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), "room-name-already-exists"),
     ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"),
+    USER_ALREADY_IN_ROOM(HttpStatus.BAD_REQUEST.value(), "user-already-in-room"),
     PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "payment-not-found"),
 
     ;

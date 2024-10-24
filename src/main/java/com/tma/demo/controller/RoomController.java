@@ -106,6 +106,7 @@ public class RoomController {
     @PostMapping(value = ADD_PEOPLE_IN_ROOM)
     public ResponseEntity<ApiResponse<AddPeopleResponse>> addPeopleInRoom(@RequestBody AddPeopleRequest addPeopleRequest) {
         AddPeopleResponse addPeopleResponse = roomService.addPeopleToRoom(addPeopleRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "ok", addPeopleResponse));
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), addPeopleResponse));
     }
+
 }

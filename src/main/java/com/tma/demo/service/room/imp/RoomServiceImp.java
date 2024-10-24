@@ -203,14 +203,16 @@ public class RoomServiceImp implements RoomService {
         for (AddPeopleRequest.PeopleRequest person : request.getPeople()) {
             User user = userRepository.findByEmail(person.getEmail())
                     .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-
+            boolean isAlreadyInRoom = roomUserRepository.existsByRoomAndUser(room, user);
+            if (isAlreadyInRoom) {
+                throw new BaseException(ErrorCode.USER_ALREADY_IN_ROOM);
+            }
             RoomUser roomUser = new RoomUser();
             roomUser.setRoom(room);
             roomUser.setUser(user);
             roomUserRepository.save(roomUser);
             userResponses.add(new AddPeopleResponse.UserResponse(user.getFirstName() + " " + user.getLastName(), user.getEmail()));
         }
-
         return new AddPeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
 }
