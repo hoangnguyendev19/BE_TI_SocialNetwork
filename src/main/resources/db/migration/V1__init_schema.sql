@@ -225,7 +225,7 @@ ALTER TABLE "like_comment"
     ADD FOREIGN KEY ("comment_id") REFERENCES "comment" ("id");
 
 ALTER TABLE "room_user"
-    ADD FOREIGN KEY ("room_id") REFERENCES "users" ("id");
+    ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "room_user"
     ADD FOREIGN KEY ("room_id") REFERENCES "room" ("id");

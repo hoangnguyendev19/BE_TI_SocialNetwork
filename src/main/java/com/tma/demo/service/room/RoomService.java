@@ -1,12 +1,14 @@
 package com.tma.demo.service.room;
 
 import com.tma.demo.dto.request.*;
+import com.tma.demo.dto.response.AddPeopleResponse;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * RoomService
@@ -36,4 +38,6 @@ public interface RoomService {
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);
 
     Page<RoomResponse> getListRooms(PagingRequest pagingRequest);
+
+    AddPeopleResponse addPeopleToRoom(AddPeopleRequest request);
 }

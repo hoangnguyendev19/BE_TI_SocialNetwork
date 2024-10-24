@@ -20,17 +20,17 @@ import static com.tma.demo.common.APIConstant.*;
 @RestController
 public class FavoriteCommentController {
     private final FavoriteCommentService favoriteCommentService;
-    @PostMapping(value = CREATE_LIKE_COMMENTS)
+    @PostMapping()
     public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@RequestBody CreateFavoriteCommentRequest createFavoriteCommentRequest) {
         CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(createFavoriteCommentRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
-    @GetMapping(value = VIEW_LIST_LIKE_COMMENTS)
+    @GetMapping()
     public ResponseEntity<ApiResponse<ViewListFavoriteCommentResponse>> viewListFavoriteComment (@RequestBody ViewListFavoriteCommentRequest viewListFavoriteCommentRequest) {
         ViewListFavoriteCommentResponse viewListFavoriteCommentResponse = favoriteCommentService.getLikedCommentsByUserId(viewListFavoriteCommentRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_FAVOURITE_COMMENT.getMessage(), viewListFavoriteCommentResponse));
     }
-    @DeleteMapping(value = DELETE_LIKE_COMMENTS)
+    @DeleteMapping()
     public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@RequestBody DeleteFavoriteCommentRequest deleteFavoriteCommentRequest) {
         String response = favoriteCommentService.deleteFavoriteComment(deleteFavoriteCommentRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response, null));

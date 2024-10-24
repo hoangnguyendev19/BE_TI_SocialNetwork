@@ -5,6 +5,8 @@ import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.dto.request.*;
+import com.tma.demo.dto.response.AddPeopleResponse;
+import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.service.room.RoomService;
@@ -101,5 +103,9 @@ public class RoomController {
                 .data(roomService.getListRooms(pagingRequest))
                 .build());
     }
-
+    @PostMapping(value = ADD_PEOPLE_IN_ROOM)
+    public ResponseEntity<ApiResponse<AddPeopleResponse>> addPeopleInRoom(@RequestBody AddPeopleRequest addPeopleRequest) {
+        AddPeopleResponse addPeopleResponse = roomService.addPeopleToRoom(addPeopleRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "ok", addPeopleResponse));
+    }
 }

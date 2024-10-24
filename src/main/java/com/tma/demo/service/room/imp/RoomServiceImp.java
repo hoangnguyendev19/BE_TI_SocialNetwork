@@ -4,13 +4,12 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.dto.request.*;
+import com.tma.demo.dto.response.AddPeopleResponse;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.HistoryRoomRepository;
-import com.tma.demo.repository.PaymentRepository;
-import com.tma.demo.repository.RoomRepository;
+import com.tma.demo.repository.*;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.room.RoomService;
 import com.tma.demo.service.user.UserService;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +46,8 @@ public class RoomServiceImp implements RoomService {
     private final UserService userService;
     private final PaymentRepository paymentRepository;
     private final HistoryRoomRepository historyRoomRepository;
+    private final UserRepository userRepository;
+    private final RoomUserRepository roomUserRepository;
 
     @Override
     @Transactional
@@ -192,5 +194,24 @@ public class RoomServiceImp implements RoomService {
                 + (createPaymentRequest.getElectricityMeterNewNumber() - room.getElectricMeterOldNumber()) * roomSetting.getElectricBill()
                 + (createPaymentRequest.getWaterMeterNewNumber() - room.getWaterMeterOldNumber()) * roomSetting.getWaterBill();
     }
+    @Override
+    public AddPeopleResponse addPeopleToRoom(AddPeopleRequest request) {
+        Room room = roomRepository.findById(UUID.fromString(request.getRoomId()))
+                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
+        List<AddPeopleResponse.UserResponse> userResponses = new ArrayList<>();
 
+        for (AddPeopleRequest.PeopleRequest person : request.getPeople()) {
+            User user = userRepository.findByEmail(person.getEmail())
+                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+
+            RoomUser roomUser = new RoomUser();
+            roomUser.setRoom(room);
+            roomUser.setUser(user);
+            roomUserRepository.save(roomUser);
+            userResponses.add(new AddPeopleResponse.UserResponse(user.getFirstName() + " " + user.getLastName(), user.getEmail()));
+        }
+
+        return new AddPeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
+    }
 }
+

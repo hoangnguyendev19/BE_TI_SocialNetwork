@@ -38,10 +38,6 @@ public class APIConstant {
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
 
-    // Like Comment Post Endpoints
-    public static final String CREATE_LIKE_COMMENTS = "/create";
-    public static final String VIEW_LIST_LIKE_COMMENTS = "/view-list";
-    public static final String DELETE_LIKE_COMMENTS = "/delete";
 
     //   Favourite Endpoints
     public static final String FAVOURITE_POSTS = "/favorite-posts";
@@ -57,4 +53,10 @@ public class APIConstant {
     //    payment
     public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
     public static final String CREATE_PAYMENT = "/create_payment";
+
+    //people
+    public static final String ADD_PEOPLE_IN_ROOM = "/add-people";
+    public static final String UPDATE_PEOPLE_IN_ROOM = "/update-people";
+    public static final String DELETE_LIKE_COMMENTS = "/delete-people";
+    public static final String ROOM_DETAIL = "/room-detail";
 }
