@@ -140,10 +140,10 @@ public class CommentPostServiceImp implements CommentPostService {
     public String hideComment(String commentId) {
         Comment comment = findCommentById(commentId);
         User user = userService.getUserDetails();
-//        //CheckUser
-//        if (!comment.getUser().getId().equals(user.getId())) {
-//            throw new BaseException(ErrorCode.UNAUTHORIZED);
-//        }
+        //CheckUser
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED);
+        }
         comment.setHidden(true);
         commentRepository.save(comment);
         return SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage();
