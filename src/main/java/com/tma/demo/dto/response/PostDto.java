@@ -22,7 +22,6 @@ import java.util.List;
 @Builder
 public class PostDto {
     private String id;
-    private String userId;
     private String firstName;
     private String lastName;
     private String profilePictureUrl;
@@ -31,6 +30,7 @@ public class PostDto {
     private long totalLikes;
     private long totalComments;
     private boolean isLiked;
+    private boolean isOwner;
     private PostDto parentPost;
     private List<MediaDto> mediaList;
     private LocalDateTime createdAt;

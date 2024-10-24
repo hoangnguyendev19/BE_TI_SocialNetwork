@@ -42,9 +42,9 @@ public class PostMapper {
         long totalComments = commentRepository.getTotalComments(post.getId());
         long totalShares = postRepository.getTotalShares(post.getId());
         boolean isLiked = likeRepository.findByUserAndPost(user.getId(), post.getId()) > 0;
+        boolean isOwner = post.getUser().getId().equals(user.getId());
         return PostDto.builder()
                 .id(post.getId().toString())
-                .userId(post.getUser().getId().toString())
                 .content(post.getContent())
                 .firstName(post.getUser().getFirstName())
                 .lastName(post.getUser().getLastName())
@@ -52,6 +52,7 @@ public class PostMapper {
                 .totalLikes(totalLikes)
                 .totalComments(totalComments)
                 .isLiked(isLiked)
+                .isOwner(isOwner)
                 .totalShares(totalShares)
                 .parentPost(parentPost)
                 .mediaList(mediaDtoList)

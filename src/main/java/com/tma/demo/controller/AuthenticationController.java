@@ -2,6 +2,7 @@ package com.tma.demo.controller;
 
 
 import com.tma.demo.common.SuccessMessage;
+import com.tma.demo.constant.CommonConstant;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.RegisterResponse;
@@ -13,6 +14,8 @@ import com.tma.demo.service.auth.RegisterService;
 import com.tma.demo.service.auth.imp.ForgotPassServiceImp;
 import com.tma.demo.service.auth.imp.RegisterServiceImp;
 import com.tma.demo.service.jwt.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,6 +51,17 @@ public class AuthenticationController {
         return ResponseEntity.ok(
                 new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.LOGIN_SUCCESS.getMessage(), authService.authenticate(request)));
     }
+
+    @PostMapping(value = AUTH_REFRESH_TOKEN)
+    public ResponseEntity<ApiResponse<TokenDto>> refreshToken(HttpServletRequest request){
+        TokenDto token = authService.refreshToken(request);
+        return ResponseEntity.ok(ApiResponse.<TokenDto>builder()
+                        .code(HttpStatus.OK.value())
+                        .message(SuccessMessage.REFRESH_TOKEN_SUCCESS.getMessage())
+                        .data(token)
+                .build());
+    }
+
     @PostMapping(value = AUTH_REGISTER)
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(
             @Valid @RequestBody RegisterRequest registerRequest) {

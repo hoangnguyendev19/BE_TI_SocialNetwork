@@ -9,10 +9,12 @@ import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.filter.PostFilter;
 import com.tma.demo.repository.MediaRepository;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.repository.UserRepository;
@@ -51,7 +53,7 @@ import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 @Data
 @RequiredArgsConstructor
 @Service
-public class PostServiceImp implements PostService{
+public class PostServiceImp implements PostService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CloudinaryService cloudinaryService;
@@ -64,8 +66,12 @@ public class PostServiceImp implements PostService{
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public PostDto createPost(CreatePostRequest createPostRequest) {
         User user = userService.getUserDetails();
-        Post parentPost = getParentPost(postRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
-                .orElse(null));
+        Post parentPost = null;
+        if(!ObjectUtils.isEmpty(createPostRequest.getParentPostId())){
+            parentPost = getParentPost(postRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
+                    .orElse(null));
+        }
+
         Post post = Post.builder()
                 .content(createPostRequest.getContent())
                 .user(user)
@@ -73,7 +79,7 @@ public class PostServiceImp implements PostService{
                 .parentPost(parentPost)
                 .build();
         post = postRepository.saveAndFlush(post);
-        List<Media> mediaList = saveAllMediaFiles(createPostRequest.getFiles(), post);
+        saveAllMediaFiles(createPostRequest.getFiles(), post);
         return getPostDto(post.getId().toString());
     }
 
@@ -113,6 +119,15 @@ public class PostServiceImp implements PostService{
     }
 
     @Override
+    public Page<UserResponse> getSharedList(PagingRequest<PostFilter> pagingRequest) {
+        Pageable pageable = PageUtil.getPageRequest(pagingRequest);
+        Page<User> pageUser =postRepository.getUsersSharedByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
+        List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))
+                .toList();
+        return new PageImpl<>(userResponses, pageable, pageUser.getTotalElements());
+    }
+
+    @Override
     public Post getPost(String postId) {
         return postRepository.findPostById(UUID.fromString(postId))
                 .orElseThrow(() -> new BaseException(ErrorCode.POST_DOES_NOT_EXIST));
@@ -139,11 +154,9 @@ public class PostServiceImp implements PostService{
         postRepository.save(post);
     }
 
-    private List<Media> saveAllMediaFiles(List<String> mediaFiles, Post post) {
-        List<Media> mediaList = new ArrayList<>();
+    private void saveAllMediaFiles(List<String> mediaFiles, Post post) {
         for (String mediaFile : mediaFiles) {
             MediaType mediaType = getMediaType(mediaFile);
-            int index;
             Media media = Media.builder()
                     .isDelete(false)
                     .mediaType(mediaType)
@@ -156,10 +169,7 @@ public class PostServiceImp implements PostService{
                     decodedBytes, mediaType,
                     FolderNameConstant.POST,
                     String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), OLIDUS, media.getId()));
-            media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
-            mediaList.add(mediaRepository.saveAndFlush(media));
         }
-        return mediaList;
     }
 
     private static String getBase64WithoutHeader(String mediaFile) {

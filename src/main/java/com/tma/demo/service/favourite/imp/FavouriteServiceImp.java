@@ -2,7 +2,7 @@ package com.tma.demo.service.favourite.imp;
 
 import com.tma.demo.dto.LikeDto;
 import com.tma.demo.dto.request.PagingRequest;
-import com.tma.demo.dto.response.LikeResponse;
+import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.entity.Like;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * FavouriteServiceImp
@@ -69,12 +67,12 @@ public class FavouriteServiceImp implements FavouriteService {
     }
 
     @Override
-    public Page<LikeResponse> getFavouritePosts(PagingRequest<PostFilter> pagingRequest) {
+    public Page<UserResponse> getFavouritePosts(PagingRequest<PostFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<User> pageUser = likeRepository.getUsersByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
-        List<LikeResponse> likeResponses = pageUser.stream().map(user -> new LikeResponse(user.getId().toString(), user.getFirstName(), user.getLastName()))
+        List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))
         .toList();
-        return new PageImpl<>(likeResponses, pageable, pageUser.getTotalElements());
+        return new PageImpl<>(userResponses, pageable, pageUser.getTotalElements());
     }
 
     private Like getLikeByUserAndPost(UUID userId, UUID postId) {

@@ -21,6 +21,7 @@ public class APIConstant {
     public static final String AUTH_VERIFY_OTP = "/verify-otp";
     public static final String AUTH_FORGOT_PASSWORD = "/forgot-password";
     public static final String AUTH_SET_PASSWORD = "/set-password";
+    public static final String AUTH_REFRESH_TOKEN = "/refresh-token";
 
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
@@ -37,17 +38,14 @@ public class APIConstant {
     public static final String DELETE_COMMENT_POST = "/delete";
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
+    public static final String SHARE = "/share";
 
     // Like Comment Post Endpoints
     public static final String CREATE_LIKE_COMMENTS = "/create";
     public static final String VIEW_LIST_LIKE_COMMENTS = "/view-list";
     public static final String DELETE_LIKE_COMMENTS = "/delete";
 
-    //   Favourite Endpoints
-    public static final String FAVOURITE_POSTS = "/favorite-posts";
-
     //    boarding house
-
     public static final String UPDATE_SETTING = "/update-setting";
 
     //    room
@@ -57,4 +55,5 @@ public class APIConstant {
     //    payment
     public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
     public static final String CREATE_PAYMENT = "/create_payment";
+
 }
