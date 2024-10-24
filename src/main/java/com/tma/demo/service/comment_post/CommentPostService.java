@@ -17,6 +17,6 @@ public interface CommentPostService {
     UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest);
     String deleteComment(String commentId);
     Page<ViewListCommentResponse> fetchAllCommentsByPostId(String postId, PagingRequest<?> pagingRequest);
-    HiddenCommentResponse hideComment(HiddenCommentRequest hiddenCommentRequest);
+    HiddenCommentResponse hideComment(String commentId);
     Comment findCommentById(String commentId);
 }

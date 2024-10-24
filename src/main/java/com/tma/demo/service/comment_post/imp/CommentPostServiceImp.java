@@ -136,8 +136,8 @@ public class CommentPostServiceImp implements CommentPostService {
 
     @Override
     //Hidden Comment
-    public HiddenCommentResponse hideComment(HiddenCommentRequest hiddenCommentRequest) {
-        Comment comment = findCommentById(hiddenCommentRequest.getCommentId());
+    public HiddenCommentResponse hideComment(String commentId) {
+        Comment comment = findCommentById(commentId);
         User user = userService.getUserDetails();
         //CheckUser
         if (!comment.getUser().getId().equals(user.getId())) {
