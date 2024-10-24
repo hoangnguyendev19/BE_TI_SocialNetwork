@@ -54,7 +54,7 @@ public class CommentPostServiceImp implements CommentPostService {
         Comment savedComment = commentRepository.save(comment);
         String parentCommentString = parentComment != null
                 ? parentComment.getId().toString()
-                : "";
+                : null;
         // Create response
         return new CreateCommentResponse(
                 savedComment.getId().toString(),
@@ -126,7 +126,9 @@ public class CommentPostServiceImp implements CommentPostService {
         response.setFirstName(comment.getUser().getFirstName());
         response.setLastName(comment.getUser().getLastName());
         response.setProfilePictureUrl(comment.getUser().getProfilePictureUrl());
-
+        if (comment.getParentComment() == null) {
+            response.setCommentId(comment.getId().toString());
+        }
         List<ViewListCommentResponse> childComments = commentRepository.findByParentCommentId(comment.getId())
                 .stream()
                 .map(childComment -> convertToResponse(childComment, user, post))
