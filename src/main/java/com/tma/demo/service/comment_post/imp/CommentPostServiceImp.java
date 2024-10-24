@@ -17,6 +17,7 @@ import com.tma.demo.repository.PostRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.comment_post.CommentPostService;
 import com.tma.demo.service.user.UserService;
+import com.tma.demo.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.*;
@@ -96,11 +97,8 @@ public class CommentPostServiceImp implements CommentPostService {
     @Override
     public Page<ViewListCommentResponse> fetchAllCommentsByPostId(PagingRequest<CommentFilter> pagingRequest) {
         User user = userService.getUserDetails();
-        CommentFilter filter = pagingRequest.getFilter();
-        String postId = filter.getId();
-        Post post = findPostById(postId);
-        Pageable pageable = PageRequest.of(pagingRequest.getPage(), pagingRequest.getSize(),
-                Sort.by(pagingRequest.getSortBy(), pagingRequest.getSortField()));
+        Post post = findPostById(pagingRequest.getFilter().getId());
+        Pageable pageable = PageUtil.getPageRequest(pagingRequest);
 
         Page<Comment> comments = commentRepository.findByPostIdAndParentCommentIsNull(post.getId(), pageable);
 
