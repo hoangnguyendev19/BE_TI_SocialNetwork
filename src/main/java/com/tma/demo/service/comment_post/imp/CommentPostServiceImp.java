@@ -94,8 +94,10 @@ public class CommentPostServiceImp implements CommentPostService {
         return SuccessMessage.DELETE_COMMENT_SUCCESS.getMessage();
     }
     @Override
-    public Page<ViewListCommentResponse> fetchAllCommentsByPostId(String postId, PagingRequest<?> pagingRequest) {
+    public Page<ViewListCommentResponse> fetchAllCommentsByPostId(PagingRequest<CommentFilter> pagingRequest) {
         User user = userService.getUserDetails();
+        CommentFilter filter = pagingRequest.getFilter();
+        String postId = filter.getPostId();
         Post post = findPostById(postId);
         Pageable pageable = PageRequest.of(pagingRequest.getPage(), pagingRequest.getSize(),
                 Sort.by(pagingRequest.getSortBy(), pagingRequest.getSortField()));
