@@ -21,10 +21,10 @@ import java.util.UUID;
  * 21/10/2024        NGUYEN             create
  */
 public interface RoomRepository extends JpaRepository<Room, UUID> {
-    @Query("SELECT count (r.id)  FROM Room r WHERE r.roomName = :roomName AND r.isDelete != true ")
-    int isRoomNameExist(String roomName);
+    @Query("SELECT count (r.id)  FROM Room r WHERE r.roomName = :roomName AND r.boardingHouse.id = :id AND r.isDelete != true ")
+    int isRoomNameExist(@Param("roomName") String roomName, @Param("id") UUID id);
     @Query("SELECT r FROM Room r WHERE r.id = :id AND r.isDelete != true")
     Optional<Room> findRoomById(@Param("id") UUID uuid);
-    @Query("SELECT r FROM Room r WHERE r.isDelete != true")
-    Page<Room> getAllRooms(Pageable pageable);
+    @Query("SELECT r FROM Room r WHERE r.boardingHouse.id = :id AND r.isDelete != true")
+    Page<Room> getAllRooms(Pageable pageable, @Param("id") UUID boardingHouseId);
 }

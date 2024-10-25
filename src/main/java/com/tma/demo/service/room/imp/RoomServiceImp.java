@@ -8,6 +8,7 @@ import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.repository.HistoryRoomRepository;
 import com.tma.demo.repository.PaymentRepository;
 import com.tma.demo.repository.RoomRepository;
@@ -108,13 +109,13 @@ public class RoomServiceImp implements RoomService {
     }
 
     private void checkRoomName(CreateRoomRequest request) {
-        if (isRoomNameExist(request.getRoomName())) {
+        if (isRoomNameExist(request.getRoomName(), UUID.fromString(request.getBoardingHouseId()))) {
             throw new BaseException(ErrorCode.ROOM_NAME_ALREADY_EXIST);
         }
     }
 
-    private boolean isRoomNameExist(String roomName) {
-        return roomRepository.isRoomNameExist(roomName) > 0;
+    private boolean isRoomNameExist(String roomName, UUID id) {
+        return roomRepository.isRoomNameExist(roomName, id) > 0;
     }
 
     private void checkAth(String userId) {
@@ -176,9 +177,9 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getListRooms(PagingRequest pagingRequest) {
+    public Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        Page<Room> pageRoom = roomRepository.getAllRooms(pageable);
+        Page<Room> pageRoom = roomRepository.getAllRooms(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
         List<RoomResponse> roomResponses = pageRoom.stream()
                 .map(room -> roomMapper.from(room, getPaymentResponse(room.getId().toString()))).toList();
         return new PageImpl<>(roomResponses, pageable, pageRoom.getTotalElements());

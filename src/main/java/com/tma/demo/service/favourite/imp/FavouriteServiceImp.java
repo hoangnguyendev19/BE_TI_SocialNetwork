@@ -6,7 +6,7 @@ import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.entity.Like;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
-import com.tma.demo.filter.PostFilter;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.repository.LikeRepository;
 import com.tma.demo.service.favourite.FavouriteService;
 import com.tma.demo.service.post.PostService;
@@ -67,7 +67,7 @@ public class FavouriteServiceImp implements FavouriteService {
     }
 
     @Override
-    public Page<UserResponse> getFavouritePosts(PagingRequest<PostFilter> pagingRequest) {
+    public Page<UserResponse> getFavouritePosts(PagingRequest<IdFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<User> pageUser = likeRepository.getUsersByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
         List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))

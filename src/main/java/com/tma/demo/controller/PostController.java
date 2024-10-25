@@ -8,7 +8,7 @@ import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.dto.response.PostDto;
-import com.tma.demo.filter.PostFilter;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
@@ -100,7 +100,7 @@ public class PostController {
     }
 
     @PostMapping(value = SHARE)
-    public ResponseEntity<ApiResponse<Page<UserResponse>>> getShare(@RequestBody PagingRequest<PostFilter> pagingRequest) {
+    public ResponseEntity<ApiResponse<Page<UserResponse>>> getShare(@RequestBody PagingRequest<IdFilter> pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<UserResponse>>builder()
                 .code(HttpStatus.OK.value())

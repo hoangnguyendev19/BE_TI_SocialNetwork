@@ -7,6 +7,7 @@ import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -93,7 +94,7 @@ public class RoomController {
     }
 
     @PostMapping(value = APIConstant.VIEW_LIST)
-    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest pagingRequest) {
+    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest<IdFilter> pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<RoomResponse>>builder()
                 .code(HttpStatus.OK.value())

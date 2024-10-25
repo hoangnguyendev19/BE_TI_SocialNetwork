@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * PostFilter
+ * IdFilter
  * Version 1.0
  * Date: 23/10/2024
  * Copyright
@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostFilter {
+public class IdFilter {
     private String id;
 }
