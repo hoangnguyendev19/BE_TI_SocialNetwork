@@ -232,6 +232,17 @@ public class RoomServiceImp implements RoomService {
         }
         return new UpdatePeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
-    
+    @Override
+    public void removePeopleFromRoom(DeletePeopleRequest request) {
+        Room room = roomRepository.findById(UUID.fromString(request.getRoomId()))
+                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
+        for (String email : request.getEmail()) {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+            RoomUser roomUser = roomUserRepository.findByRoomAndUser(room, user)
+                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+            roomUserRepository.delete(roomUser);
+        }
+    }
 }
 

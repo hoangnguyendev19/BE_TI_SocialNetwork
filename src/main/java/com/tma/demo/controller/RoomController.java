@@ -110,5 +110,10 @@ public class RoomController {
         UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(updatePeopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
+    @DeleteMapping(value = DELETE_PEOPLE)
+    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@RequestBody DeletePeopleRequest removePeopleRequest) {
+        roomService.removePeopleFromRoom(removePeopleRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
+    }
 
 }
