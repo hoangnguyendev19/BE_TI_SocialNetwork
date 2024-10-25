@@ -169,6 +169,8 @@ public class PostServiceImp implements PostService {
                     decodedBytes, mediaType,
                     FolderNameConstant.POST,
                     String.format(FormatConstant.CLOUDINARY_PUBLIC_ID_SAVE_FORMAT, post.getId(), OLIDUS, media.getId()));
+            media.setMediaUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
+            mediaRepository.save(media);
         }
     }
 
