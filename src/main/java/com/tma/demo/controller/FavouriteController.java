@@ -6,7 +6,7 @@ import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.LikeDto;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.dto.response.UserResponse;
-import com.tma.demo.filter.PostFilter;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.service.favourite.FavouriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -50,7 +50,7 @@ public class FavouriteController {
     }
 
     @PostMapping(value = APIConstant.VIEW_LIST)
-    public ResponseEntity<ApiResponse<Page<UserResponse>>> getFavouritePosts(@RequestBody PagingRequest<PostFilter> pagingRequest) {
+    public ResponseEntity<ApiResponse<Page<UserResponse>>> getFavouritePosts(@RequestBody PagingRequest<IdFilter> pagingRequest) {
         Page<UserResponse> likeResponses = favouriteService.getFavouritePosts(pagingRequest);
         return ResponseEntity.ok(ApiResponse.<Page<UserResponse>>builder()
                 .code(HttpStatus.OK.value())

@@ -14,7 +14,7 @@ import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.filter.PostFilter;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.repository.MediaRepository;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.repository.UserRepository;
@@ -119,7 +119,7 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Page<UserResponse> getSharedList(PagingRequest<PostFilter> pagingRequest) {
+    public Page<UserResponse> getSharedList(PagingRequest<IdFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<User> pageUser =postRepository.getUsersSharedByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
         List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))
