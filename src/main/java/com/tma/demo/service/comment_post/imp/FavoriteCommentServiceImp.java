@@ -52,14 +52,11 @@ public class FavoriteCommentServiceImp implements FavoriteCommentService {
         );
     }
     @Override
-    public String deleteFavoriteComment(String likeCommentId) {
+    public String deleteFavoriteComment(String CommentId) {
         User user = userService.getUserDetails();
-        LikeComment likeComment = likeCommentRepository.findById(UUID.fromString(likeCommentId))
-                .orElseThrow(() -> new BaseException(ErrorCode.LIKE_DOES_NOT_EXIST));
-
-        if (!likeComment.getUser().getId().equals(user.getId())) {
-            throw new BaseException(ErrorCode.UNAUTHORIZED);
-        }
+        Comment comment = commentPostService.findCommentById(CommentId);
+        LikeComment likeComment = likeCommentRepository.findByUserAndComment(user, comment)
+                .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHORIZED));
         likeCommentRepository.delete(likeComment);
         return SuccessMessage.DELETE_FAVOURITE_POST_SUCCESS.getMessage();
     }

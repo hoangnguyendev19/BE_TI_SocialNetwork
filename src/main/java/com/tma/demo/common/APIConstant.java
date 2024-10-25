@@ -38,7 +38,7 @@ public class APIConstant {
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden/{commentId}";
 
     // Like Comment Post Endpoints
-    public static final String LIKE_COMMENT_ID = "/{likeCommentId}";
+    public static final String LIKE_COMMENT_ID = "/{CommentId}";
 
     //   Favourite Endpoints
     public static final String FAVOURITE_POSTS = "/favorite-posts";

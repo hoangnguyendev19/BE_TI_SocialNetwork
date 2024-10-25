@@ -22,8 +22,8 @@ public class FavoriteCommentController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
     @DeleteMapping(LIKE_COMMENT_ID)
-    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable("likeCommentId") String likeCommentId) {
-        String response = favoriteCommentService.deleteFavoriteComment(likeCommentId);
+    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable("CommentId") String CommentId) {
+        String response = favoriteCommentService.deleteFavoriteComment(CommentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response, null));
     }
 }
