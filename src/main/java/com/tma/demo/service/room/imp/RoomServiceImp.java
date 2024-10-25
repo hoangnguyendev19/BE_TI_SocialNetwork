@@ -4,10 +4,7 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.dto.request.*;
-import com.tma.demo.dto.response.AddPeopleResponse;
-import com.tma.demo.dto.response.PaymentResponse;
-import com.tma.demo.dto.response.RoomResponse;
-import com.tma.demo.dto.response.UpdatePeopleResponse;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.*;
@@ -27,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * RoomServiceImp
@@ -243,6 +241,26 @@ public class RoomServiceImp implements RoomService {
                     .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
             roomUserRepository.delete(roomUser);
         }
+    }
+    @Override
+    public RoomDetailResponse getRoomDetail(String roomId) {
+        Room room = roomRepository.findById(UUID.fromString(roomId))
+                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
+
+        List<RoomDetailResponse.UserResponse> userResponses = roomUserRepository.findByRoom(room)
+                .stream()
+                .map(roomUser -> new RoomDetailResponse.UserResponse(roomUser.getUser().getFirstName() + " " + roomUser.getUser().getLastName(), roomUser.getUser().getEmail()))
+                .collect(Collectors.toList());
+
+        return new RoomDetailResponse(
+                room.getRoomName(),
+                room.getRoomRate(),
+                room.getElectricMeterOldNumber(),
+                room.getWaterMeterOldNumber(),
+                room.getRoomStatus(),
+                room.isDelete(),
+                userResponses
+        );
     }
 }
 

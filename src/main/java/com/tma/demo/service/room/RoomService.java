@@ -1,10 +1,7 @@
 package com.tma.demo.service.room;
 
 import com.tma.demo.dto.request.*;
-import com.tma.demo.dto.response.AddPeopleResponse;
-import com.tma.demo.dto.response.PaymentResponse;
-import com.tma.demo.dto.response.RoomResponse;
-import com.tma.demo.dto.response.UpdatePeopleResponse;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -45,4 +42,6 @@ public interface RoomService {
     UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest request);
 
     void removePeopleFromRoom(DeletePeopleRequest request);
+
+    RoomDetailResponse getRoomDetail(String roomId);
 }

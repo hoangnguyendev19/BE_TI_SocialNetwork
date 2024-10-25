@@ -38,6 +38,7 @@ public enum SuccessMessage {
     RESET_ROOM_SUCCESS("reset-room-successfully"),
     ADD_PEOPLE_ROOM_SUCCESS("add-people-room-successfully"),
     UPDATE_PEOPLE_ROOM_SUCCESS("update-people-room-successfully"),
+    GET_ROOM_DETAIL_SUCCESS("get-room-detail-successfully"),
     DELETE_SUCCESS("delete-successfully");
 
     private final String message;

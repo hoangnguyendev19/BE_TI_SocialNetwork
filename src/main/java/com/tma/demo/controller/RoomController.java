@@ -115,5 +115,10 @@ public class RoomController {
         roomService.removePeopleFromRoom(removePeopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
     }
+    @GetMapping(value = ROOM_DETAIL)
+    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable("roomId") String roomId) {
+        RoomDetailResponse roomDetailResponse = roomService.getRoomDetail(roomId);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.GET_ROOM_DETAIL_SUCCESS.getMessage(), roomDetailResponse));
+    }
 
 }
