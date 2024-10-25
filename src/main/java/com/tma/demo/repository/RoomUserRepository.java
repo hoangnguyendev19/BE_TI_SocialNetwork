@@ -5,8 +5,10 @@ import com.tma.demo.entity.RoomUser;
 import com.tma.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
     boolean existsByRoomAndUser(Room room, User user);
+    Optional<RoomUser> findByRoomAndUser(Room room, User user);
 }

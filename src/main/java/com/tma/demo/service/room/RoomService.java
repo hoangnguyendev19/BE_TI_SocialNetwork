@@ -4,6 +4,7 @@ import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.AddPeopleResponse;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.dto.response.UpdatePeopleResponse;
 import com.tma.demo.entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -40,4 +41,6 @@ public interface RoomService {
     Page<RoomResponse> getListRooms(PagingRequest pagingRequest);
 
     AddPeopleResponse addPeopleToRoom(AddPeopleRequest request);
+
+    UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest request);
 }

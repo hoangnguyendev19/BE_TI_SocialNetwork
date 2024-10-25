@@ -5,10 +5,7 @@ import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.dto.request.*;
-import com.tma.demo.dto.response.AddPeopleResponse;
-import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
-import com.tma.demo.dto.response.PaymentResponse;
-import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -107,6 +104,11 @@ public class RoomController {
     public ResponseEntity<ApiResponse<AddPeopleResponse>> addPeopleInRoom(@RequestBody AddPeopleRequest addPeopleRequest) {
         AddPeopleResponse addPeopleResponse = roomService.addPeopleToRoom(addPeopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), addPeopleResponse));
+    }
+    @PutMapping(value = UPDATE_PEOPLE_IN_ROOM)
+    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest updatePeopleRequest) {
+        UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(updatePeopleRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
 
 }

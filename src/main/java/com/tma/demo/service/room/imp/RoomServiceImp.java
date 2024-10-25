@@ -7,6 +7,7 @@ import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.AddPeopleResponse;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.dto.response.UpdatePeopleResponse;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.*;
@@ -211,9 +212,26 @@ public class RoomServiceImp implements RoomService {
             roomUser.setRoom(room);
             roomUser.setUser(user);
             roomUserRepository.save(roomUser);
-            userResponses.add(new AddPeopleResponse.UserResponse(user.getFirstName() + " " + user.getLastName(), user.getEmail()));
+            userResponses.add(new AddPeopleResponse.UserResponse(user.getPhoneNumber(), user.getEmail()));
         }
         return new AddPeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
+    @Override
+    public UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest request) {
+        Room room = roomRepository.findById(UUID.fromString(request.getRoomId()))
+                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
+        List<UpdatePeopleResponse.PeopleResponse> userResponses = new ArrayList<>();
+        for (UpdatePeopleRequest.PeopleRequest person : request.getPeople()) {
+            User user = userRepository.findByEmail(person.getEmail())
+                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+            RoomUser roomUser = roomUserRepository.findByRoomAndUser(room, user)
+                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+            user.setPhoneNumber(person.getPhoneNumber());
+            userRepository.save(user);
+            userResponses.add(new UpdatePeopleResponse.PeopleResponse(user.getPhoneNumber(), user.getEmail()));
+        }
+        return new UpdatePeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
+    }
+    
 }
 
