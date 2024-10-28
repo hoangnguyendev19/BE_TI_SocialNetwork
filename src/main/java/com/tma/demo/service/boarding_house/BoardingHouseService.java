@@ -8,14 +8,16 @@ import com.tma.demo.entity.RoomSetting;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.security.cert.CertPathBuilder;
+
 public interface BoardingHouseService {
     BoardingHouseDto register(BoardingHouseDto boardingHouse);
-
-    Page<BoardingHouseDto> getListBoardingHouses(PagingRequest pagingRequest);
 
     SettingBoardingHouseDto saveSetting(SettingBoardingHouseDto settingBoardingHouseDto);
 
     BoardingHouse getBoardingHouse(String boardingHouseId);
 
     RoomSetting getSetting(String boardingHouseId);
+
+    BoardingHouseDto getBoardingHouses();
 }

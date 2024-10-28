@@ -47,7 +47,7 @@ public enum ErrorCode {
     ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"),
     PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "payment-not-found"),
     ROOM_SETTING_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-setting-not-found"),
-    ;
+    USER_REGISTERED(HttpStatus.BAD_REQUEST.value(), "user-registered"),;
     private final int code;
     private final String message;
 
