@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface CommentPostService {
     CreateCommentResponse createComment(CreateCommentRequest request);
-    UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest);
+    String updateComment(UpdateCommentRequest updateCommentRequest);
     String deleteComment(String commentId);
     Page<ViewListCommentResponse> fetchAllCommentsByPostId(PagingRequest<CommentFilter> pagingRequest);
     String hideComment(String commentId);

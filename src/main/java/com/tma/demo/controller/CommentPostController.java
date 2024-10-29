@@ -31,8 +31,8 @@ public class CommentPostController {
     }
 //Update
     @PutMapping(value = UPDATE_COMMENT_POST)
-    public ResponseEntity<ApiResponse<UpdateCommentResponse>> updateComment(@RequestBody UpdateCommentRequest request) {
-        UpdateCommentResponse updateresponse = commentPostService.updateComment(request);
+    public ResponseEntity<ApiResponse<?>> updateComment(@RequestBody UpdateCommentRequest request) {
+        String updateresponse = commentPostService.updateComment(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
 }
 //Delete

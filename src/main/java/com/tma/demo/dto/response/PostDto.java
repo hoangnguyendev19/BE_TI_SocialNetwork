@@ -29,6 +29,8 @@ public class PostDto {
     private long totalShares;
     private long totalLikes;
     private long totalComments;
+    private boolean isLiked;
+    private boolean isOwner;
     private PostDto parentPost;
     private List<MediaDto> mediaList;
     private LocalDateTime createdAt;

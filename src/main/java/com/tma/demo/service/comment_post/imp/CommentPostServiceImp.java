@@ -57,8 +57,8 @@ public class CommentPostServiceImp implements CommentPostService {
         String parentCommentString = parentComment != null
                 ? parentComment.getId().toString()
                 : null;
-        // Create response
         return new CreateCommentResponse(
+        // Create response
                 savedComment.getId().toString(),
                 post.getId().toString(),
                 user.getId().toString(),
@@ -70,7 +70,7 @@ public class CommentPostServiceImp implements CommentPostService {
     }
     @Override
     //Update Comment
-    public UpdateCommentResponse updateComment(UpdateCommentRequest updateCommentRequest) {
+    public String updateComment(UpdateCommentRequest updateCommentRequest) {
         //Find Cmt Id
         Comment comment = findCommentById(updateCommentRequest.getId());
         User user = userService.getUserDetails();
@@ -81,8 +81,7 @@ public class CommentPostServiceImp implements CommentPostService {
         comment.setCommentText(updateCommentRequest.getCommentText());
         comment.setLastModified(LocalDateTime.now());
         Comment saveComment = commentRepository.save(comment);
-        return new UpdateCommentResponse(saveComment.getCommentText()
-        );
+        return saveComment.getCommentText();
     }
     @Override
     //Delete Comment
@@ -100,13 +99,12 @@ public class CommentPostServiceImp implements CommentPostService {
         User user = userService.getUserDetails();
         Post post = findPostById(pagingRequest.getFilter().getId());
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-
         Page<Comment> comments = commentRepository.findByPostIdAndParentCommentIsNull(post.getId(), pageable);
 
-        List<ViewListCommentResponse> responseList = comments.stream()
+        List<ViewListCommentResponse> responseList = comments
+                .stream()
                 .map(comment -> convertToResponse(comment, user, post))
                 .collect(Collectors.toList());
-
         return new PageImpl<>(responseList, pageable, comments.getTotalElements());
     }
 
@@ -136,7 +134,6 @@ public class CommentPostServiceImp implements CommentPostService {
                 .stream()
                 .map(childComment -> convertToResponse(childComment, user, post))
                 .collect(Collectors.toList());
-
         response.setChildComments(childComments);
         return response;
     }

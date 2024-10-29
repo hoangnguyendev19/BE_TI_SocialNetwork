@@ -21,6 +21,7 @@ public class APIConstant {
     public static final String AUTH_VERIFY_OTP = "/verify-otp";
     public static final String AUTH_FORGOT_PASSWORD = "/forgot-password";
     public static final String AUTH_SET_PASSWORD = "/set-password";
+    public static final String AUTH_REFRESH_TOKEN = "/refresh-token";
 
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
@@ -36,15 +37,12 @@ public class APIConstant {
     public static final String COMMENT_ID = "/{commentId}";
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden/{commentId}";
+    public static final String SHARE = "/share";
 
     // Like Comment Post Endpoints
     public static final String LIKE_COMMENT_ID = "/{likeCommentId}";
 
-    //   Favourite Endpoints
-    public static final String FAVOURITE_POSTS = "/favorite-posts";
-
     //    boarding house
-
     public static final String UPDATE_SETTING = "/update-setting";
 
     //    room
@@ -60,4 +58,5 @@ public class APIConstant {
     public static final String UPDATE_PEOPLE_IN_ROOM = "/update-people";
     public static final String DELETE_PEOPLE = "/delete-people";
     public static final String ROOM_DETAIL = "/detail/{roomId}";
+
 }

@@ -8,6 +8,10 @@ import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.*;
+import com.tma.demo.filter.IdFilter;
+import com.tma.demo.repository.HistoryRoomRepository;
+import com.tma.demo.repository.PaymentRepository;
+import com.tma.demo.repository.RoomRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.room.RoomService;
 import com.tma.demo.service.user.UserService;
@@ -109,13 +113,13 @@ public class RoomServiceImp implements RoomService {
     }
 
     private void checkRoomName(CreateRoomRequest request) {
-        if (isRoomNameExist(request.getRoomName())) {
+        if (isRoomNameExist(request.getRoomName(), UUID.fromString(request.getBoardingHouseId()))) {
             throw new BaseException(ErrorCode.ROOM_NAME_ALREADY_EXIST);
         }
     }
 
-    private boolean isRoomNameExist(String roomName) {
-        return roomRepository.isRoomNameExist(roomName) > 0;
+    private boolean isRoomNameExist(String roomName, UUID id) {
+        return roomRepository.isRoomNameExist(roomName, id) > 0;
     }
 
     private void checkAth(String userId) {
@@ -177,9 +181,9 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getListRooms(PagingRequest pagingRequest) {
+    public Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        Page<Room> pageRoom = roomRepository.getAllRooms(pageable);
+        Page<Room> pageRoom = roomRepository.getAllRooms(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
         List<RoomResponse> roomResponses = pageRoom.stream()
                 .map(room -> roomMapper.from(room, getPaymentResponse(room.getId().toString()))).toList();
         return new PageImpl<>(roomResponses, pageable, pageRoom.getTotalElements());
@@ -187,7 +191,7 @@ public class RoomServiceImp implements RoomService {
 
     private int calTotalAmount(CreatePaymentRequest createPaymentRequest, RoomSetting roomSetting, Room room) {
         if (ObjectUtils.isEmpty(roomSetting)) {
-            throw new BaseException(ErrorCode.PAYMENT_NOT_FOUND);
+            throw new BaseException(ErrorCode.ROOM_SETTING_NOT_FOUND);
         }
         return createPaymentRequest.getRoomRate()
                 + (createPaymentRequest.getElectricityMeterNewNumber() - room.getElectricMeterOldNumber()) * roomSetting.getElectricBill()
@@ -263,4 +267,3 @@ public class RoomServiceImp implements RoomService {
         );
     }
 }
-

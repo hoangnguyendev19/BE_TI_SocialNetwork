@@ -6,17 +6,17 @@ import com.tma.demo.dto.request.CreatePostRequest;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.dto.request.UpdatePostRequest;
+import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.dto.response.PostDto;
+import com.tma.demo.filter.IdFilter;
 import com.tma.demo.repository.PostRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import static com.tma.demo.common.APIConstant.*;
 
@@ -90,7 +90,7 @@ public class PostController {
     }
 
     @PostMapping(value = REPORT_POST)
-    public ResponseEntity<ApiResponse<Object>> getNews(@RequestBody ReportPostRequest reportPostRequest) {
+    public ResponseEntity<ApiResponse<Object>> report(@RequestBody ReportPostRequest reportPostRequest) {
         reportService.report(reportPostRequest);
         return ResponseEntity.ok(ApiResponse.<Object>builder()
                 .code(HttpStatus.OK.value())
@@ -98,5 +98,16 @@ public class PostController {
                 .data(null)
                 .build());
     }
+
+    @PostMapping(value = SHARE)
+    public ResponseEntity<ApiResponse<Page<UserResponse>>> getShare(@RequestBody PagingRequest<IdFilter> pagingRequest) {
+
+        return ResponseEntity.ok(ApiResponse.<Page<UserResponse>>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.GET_DATA_SUCCESS.getMessage())
+                .data(postService.getSharedList(pagingRequest))
+                .build());
+    }
+
 
 }

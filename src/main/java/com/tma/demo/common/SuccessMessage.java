@@ -39,7 +39,10 @@ public enum SuccessMessage {
     ADD_PEOPLE_ROOM_SUCCESS("add-people-room-successfully"),
     UPDATE_PEOPLE_ROOM_SUCCESS("update-people-room-successfully"),
     GET_ROOM_DETAIL_SUCCESS("get-room-detail-successfully"),
-    DELETE_SUCCESS("delete-successfully");
+    DELETE_SUCCESS("delete-successfully"),
+    REFRESH_TOKEN_SUCCESS("refresh-token-successfully"),
+    GET_DATA_SUCCESS("get-data-successfully"),
+    ;
 
     private final String message;
 
