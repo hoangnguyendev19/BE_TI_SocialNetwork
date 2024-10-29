@@ -26,6 +26,7 @@ public class RoomResponse {
     private String boardingHouseId;
     private String roomName;
     private Integer roomRate;
+    private Integer numberOfPeople;
     private String roomStatus;
     private Integer electricityMeterOldNumber;
     private Integer waterMeterOldNumber;

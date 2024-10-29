@@ -8,7 +8,7 @@ import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.filter.IdFilter;
+import com.tma.demo.filter.RoomFilter;
 import com.tma.demo.repository.HistoryRoomRepository;
 import com.tma.demo.repository.PaymentRepository;
 import com.tma.demo.repository.RoomRepository;
@@ -18,6 +18,7 @@ import com.tma.demo.service.user.UserService;
 import com.tma.demo.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -177,9 +178,13 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest) {
+    public Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        Page<Room> pageRoom = roomRepository.getAllRooms(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
+        Page<Room> pageRoom = roomRepository.getAllRooms(pageable,
+                UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus())? null : pagingRequest.getFilter().getPaymentStatus().toUpperCase(),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : pagingRequest.getFilter().getRoomStatus().toUpperCase(),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? null : pagingRequest.getFilter().getDate());
         List<RoomResponse> roomResponses = pageRoom.stream()
                 .map(room -> roomMapper.from(room, getPaymentResponse(room.getId().toString()))).toList();
         return new PageImpl<>(roomResponses, pageable, pageRoom.getTotalElements());

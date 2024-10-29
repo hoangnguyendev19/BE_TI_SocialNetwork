@@ -5,6 +5,7 @@ import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.Room;
 import com.tma.demo.filter.IdFilter;
+import com.tma.demo.filter.RoomFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,5 +37,5 @@ public interface RoomService {
     @Transactional
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);
 
-    Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest);
+    Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest);
 }

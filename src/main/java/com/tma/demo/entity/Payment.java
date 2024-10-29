@@ -30,6 +30,7 @@ public class Payment extends BaseTimeEntity {
     @ManyToOne
     private Room room;
     private int totalAmount;
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
 }
