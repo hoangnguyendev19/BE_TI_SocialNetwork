@@ -243,7 +243,7 @@ public class RoomServiceImp implements RoomService {
                     .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
             RoomUser roomUser = roomUserRepository.findByRoomAndUser(room, user)
                     .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-            roomUserRepository.delete(roomUser);
+            room.setDelete(true);
         }
     }
     @Override
