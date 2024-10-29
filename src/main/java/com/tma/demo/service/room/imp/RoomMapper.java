@@ -4,8 +4,11 @@ import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.entity.Room;
 import com.tma.demo.entity.RoomUser;
+import com.tma.demo.repository.RoomUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 /**
  * RoomMapper
@@ -20,13 +23,16 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RoomMapper {
-    private final RoomUserRepository userRepository;
+    private final RoomUserRepository roomUserRepository;
     RoomResponse from(Room room, PaymentResponse paymentResponse){
+        int totalPeople = roomUserRepository.getTotalPeople(room.getId());
+
         return RoomResponse.builder()
                 .id(room.getId().toString())
                 .boardingHouseId(room.getBoardingHouse().getId().toString())
                 .roomName(room.getRoomName())
                 .roomRate(room.getRoomRate())
+                .numberOfPeople(totalPeople)
                 .roomStatus(room.getRoomStatus().toString())
                 .payment(paymentResponse)
                 .waterMeterOldNumber(room.getWaterMeterOldNumber())

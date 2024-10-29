@@ -18,7 +18,6 @@ import com.tma.demo.service.user.UserService;
 import com.tma.demo.util.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -74,7 +73,7 @@ public class RoomServiceImp implements RoomService {
     public RoomResponse resetRoom(String roomId) {
         Room room = getRoomById(roomId);
         checkAth(room.getBoardingHouse().getUser().getId().toString());
-        room.setRoomRate(null);
+        room.setRoomRate(0);
         room.setRoomStatus(RoomStatus.ROOM_AVAILABLE);
         room.setElectricMeterOldNumber(0);
         room.setWaterMeterOldNumber(0);
@@ -182,7 +181,7 @@ public class RoomServiceImp implements RoomService {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Room> pageRoom = roomRepository.getAllRooms(pageable,
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus())? null : pagingRequest.getFilter().getPaymentStatus().toUpperCase(),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : pagingRequest.getFilter().getPaymentStatus().toUpperCase(),
                 ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : pagingRequest.getFilter().getRoomStatus().toUpperCase(),
                 ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? null : pagingRequest.getFilter().getDate());
         List<RoomResponse> roomResponses = pageRoom.stream()
