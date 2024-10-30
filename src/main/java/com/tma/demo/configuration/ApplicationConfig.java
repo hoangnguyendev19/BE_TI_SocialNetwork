@@ -1,19 +1,19 @@
 package com.tma.demo.configuration;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -31,11 +31,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
     private final UserRepository userRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -43,13 +46,20 @@ public class ApplicationConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHENTICATED));
+    }
+
+    @Bean
+    public JPAQueryFactory queryFactory(EntityManager entityManager) {
+        return new JPAQueryFactory(entityManager);
     }
 }

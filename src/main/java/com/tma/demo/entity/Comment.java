@@ -2,10 +2,7 @@ package com.tma.demo.entity;
 
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +21,7 @@ import java.util.UUID;
  * ------------------------------------------------
  * 07/10/2024        NGUYEN             create
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -3,10 +3,7 @@ package com.tma.demo.entity;
 import com.tma.demo.common.UserStatus;
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,6 +23,7 @@ import java.util.UUID;
  * ------------------------------------------------
  * 06/10/2024        NGUYEN             create
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

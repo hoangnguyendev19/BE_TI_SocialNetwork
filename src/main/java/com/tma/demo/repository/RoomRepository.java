@@ -1,5 +1,7 @@
 package com.tma.demo.repository;
 
+import com.tma.demo.common.PaymentStatus;
+import com.tma.demo.common.RoomStatus;
 import com.tma.demo.entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,21 +31,26 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
     Optional<Room> findRoomById(@Param("id") UUID uuid);
 
 
-    @Query(value = """
-            SELECT *
-            FROM Room r
-            WHERE r.boarding_house_id = :boardingHouseId AND r.is_delete != true
-            AND (r.room_status = :roomStatus or :roomStatus is NULL )
-            AND ((select p.payment_status
-                        from Payment p
-                        where p.room_id = r.id
-                        order by p.created_at desc LIMIT 1 ) = :paymentStatus or :paymentStatus is null)
-            AND (:date is null or DATE(r.created_at) = DATE(:date))
-            """, nativeQuery = true)
+    @Query(""" 
+            SELECT r
+            FROM Room r LEFT JOIN (
+                     SELECT p.room.id as rid, p.paymentStatus as status
+                     FROM Payment p
+                     WHERE p.createdAt = (
+                         SELECT MAX(p2.createdAt)
+                         FROM Payment p2
+                         WHERE p2.room.id = p.room.id
+                     )
+                 ) latest_payment ON latest_payment.rid = r.id
+                 WHERE r.boardingHouse.id = :boardingHouseId
+                 AND (r.roomStatus = :roomStatus or :roomStatus is null)
+                 AND (latest_payment.status = :paymentStatus or :paymentStatus is null)
+                 AND (Date(r.createdAt) = Date(:createdAt) or :createdAt = '')
+            """)
     Page<Room> getAllRooms(Pageable pageable,
                            @Param("boardingHouseId") UUID boardingHouseId,
-                           @Param("paymentStatus") String paymentStatus,
-                           @Param("roomStatus") String roomStatus,
-                           @Param("date") String date
+                           @Param("paymentStatus") PaymentStatus paymentStatus,
+                           @Param("roomStatus") RoomStatus roomStatus,
+                           @Param("createdAt") String createdAt
     );
 }

@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -179,11 +180,17 @@ public class RoomServiceImp implements RoomService {
     @Override
     public Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        Page<Room> pageRoom = roomRepository.getAllRooms(pageable,
+
+        Page<Room> pageRoom;
+
+        pageRoom = roomRepository.getAllRooms(pageable,
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : pagingRequest.getFilter().getPaymentStatus().toUpperCase(),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : pagingRequest.getFilter().getRoomStatus().toUpperCase(),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? null : pagingRequest.getFilter().getDate());
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase()),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : RoomStatus.valueOf(pagingRequest.getFilter().getRoomStatus().toUpperCase()),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? "" : pagingRequest.getFilter().getDate()
+        );
+
+
         List<RoomResponse> roomResponses = pageRoom.stream()
                 .map(room -> roomMapper.from(room, getPaymentResponse(room.getId().toString()))).toList();
         return new PageImpl<>(roomResponses, pageable, pageRoom.getTotalElements());
