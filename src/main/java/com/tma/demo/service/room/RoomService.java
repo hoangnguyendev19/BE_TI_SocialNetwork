@@ -38,9 +38,9 @@ public interface RoomService {
 
     PeopleResponse addPeopleToRoom(PeopleRequest request);
 
-    PeopleResponse updatePeopleInRoom(PeopleRequest request);
+    UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest);
 
-    void removePeopleFromRoom(DeletePeopleRequest request);
+    void removePeopleFromRoom(String roomUserId);
 
     RoomDetailResponse getRoomDetail(String roomId);
 

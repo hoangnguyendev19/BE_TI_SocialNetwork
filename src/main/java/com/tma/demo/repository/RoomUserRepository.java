@@ -10,7 +10,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
-    boolean existsByRoomAndUser(Room room, User user);
-    Optional<RoomUser> findByRoomAndUser(Room room, User user);
+    boolean existsByFullName(String fullName);
+    boolean existsByPhoneNumber(String phoneNumber);
+    Optional<RoomUser> findByRoomAndFullName(Room room, String fullName);
+    Optional<RoomUser> findByRoomAndPhoneNumber(Room room, String phoneNumber);
     List<RoomUser> findByRoom(Room room);
 }

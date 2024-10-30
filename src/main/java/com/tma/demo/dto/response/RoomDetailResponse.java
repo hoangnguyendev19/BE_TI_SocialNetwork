@@ -16,8 +16,8 @@ public class RoomDetailResponse {
     private Integer roomRate;
     private Integer electricMeterOldNumber;
     private Integer waterMeterOldNumber;
-    private List<HistoryRoomResponse> historyRooms;
-    private RoomStatus roomStatus;
+    private Integer electricMeterNewNumber;
+    private Integer waterMeterNewNumber;
     private boolean isDelete;
     private List<UserReponseRoom> users;
 }

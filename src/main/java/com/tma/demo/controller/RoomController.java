@@ -108,13 +108,13 @@ public class RoomController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
     }
     @PutMapping(value = UPDATE_PEOPLE_IN_ROOM)
-    public ResponseEntity<ApiResponse<PeopleResponse>> updatePeopleInRoom(@RequestBody PeopleRequest PeopleRequest) {
-        PeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(PeopleRequest);
+    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest PeopleRequest) {
+        UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(PeopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
     @DeleteMapping(value = DELETE_PEOPLE)
-    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@RequestBody DeletePeopleRequest removePeopleRequest) {
-        roomService.removePeopleFromRoom(removePeopleRequest);
+    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable("roomUserId") String roomUserId ) {
+        roomService.removePeopleFromRoom(roomUserId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
     }
     @GetMapping(value = ROOM_DETAIL)

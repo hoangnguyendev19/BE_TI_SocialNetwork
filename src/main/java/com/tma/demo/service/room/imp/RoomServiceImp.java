@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -202,41 +203,34 @@ public class RoomServiceImp implements RoomService {
     public PeopleResponse addPeopleToRoom(PeopleRequest request) {
         Room room = getRoomById(request.getRoomId());
         List<UserReponseRoom> userResponses = new ArrayList<>();
-
         for (PeopleRequestRoom person : request.getPeople()) {
-            User user = checkUserByEmail(person.getEmail());
-            boolean isAlreadyInRoom = roomUserRepository.existsByRoomAndUser(room, user);
-            if (isAlreadyInRoom) {
-                throw new BaseException(ErrorCode.USER_ALREADY_IN_ROOM);
-            }
             RoomUser roomUser = new RoomUser();
+            roomUser.setFullName(person.getFullName());
+            roomUser.setPhoneNumber(person.getPhoneNumber());
             roomUser.setRoom(room);
-            roomUser.setUser(user);
             roomUserRepository.save(roomUser);
-            userResponses.add(new UserReponseRoom(user.getFirstName()+ " " + user.getLastName(), user.getEmail(),roomUser.getRoom().isDelete()));
+            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber(),roomUser.getRoom().isDelete()));
         }
         return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
 
     @Override
-    public PeopleResponse updatePeopleInRoom(PeopleRequest request) {
-        Room room = getRoomById(request.getRoomId());
-        List<UserReponseRoom> userResponses = new ArrayList<>();
-        for (PeopleRequestRoom person : request.getPeople()) {
-            User user = checkUserByEmail(person.getEmail());
-            RoomUser roomUser = checkRoomUser(room, user);
-            user.setPhoneNumber(person.getName());
-            userRepository.save(user);
-            userResponses.add(new UserReponseRoom(user.getFirstName()+ " " + user.getLastName(), user.getEmail(), roomUser.getRoom().isDelete()));
-        }
-        return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
+    public UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest) {
+        RoomUser roomUser = checkRoomUserById(updatePeopleRequest.getRoomUserId());
+        roomUser.setFullName(updatePeopleRequest.getFullName());
+        roomUser.setPhoneNumber(updatePeopleRequest.getPhoneNumber());
+        roomUserRepository.save(roomUser);
+        return new UpdatePeopleResponse(
+                roomUser.getId(),
+                roomUser.getFullName(),
+                roomUser.getPhoneNumber(),
+                roomUser.isDelete()
+        );
     }
 
     @Override
-    public void removePeopleFromRoom(DeletePeopleRequest request) {
-        Room room = getRoomById(request.getRoomId());
-            User user = checkUserByEmail(request.getEmail());
-            RoomUser roomUser = checkRoomUser(room, user);
+    public void removePeopleFromRoom(String roomUserId) {
+        RoomUser roomUser = checkRoomUserById(roomUserId);
             roomUser.setDelete(true);
             roomUserRepository.save(roomUser);
     }
@@ -244,21 +238,18 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
-        List<HistoryRoom> historyRooms = historyRoomRepository.findTop2ByRoom_IdOrderByCreatedAtDesc(room.getId());
-        HistoryRoomResponse historyRoomResponse = null;
-        if (historyRooms.size() > 1) {
-            HistoryRoom secondLatestHistoryRoom = historyRooms.get(1);
-            historyRoomResponse = new HistoryRoomResponse(
-                    secondLatestHistoryRoom.getElectricMeterNumber(),
-                    secondLatestHistoryRoom.getWaterMeterNumber(),
-                    secondLatestHistoryRoom.getCreatedAt()
-            );
-        }
+        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))
+                .stream()
+                .skip(1)
+                .findFirst()
+                .orElse(null);
+
         List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
                 .stream()
                 .map(roomUser -> new UserReponseRoom(
-                        roomUser.getUser().getFirstName() + " " + roomUser.getUser().getLastName(),
-                        roomUser.getUser().getEmail(),
+                        roomUser.getId(),
+                        roomUser.getFullName(),
+                        roomUser.getPhoneNumber(),
                         roomUser.isDelete()
                 ))
                 .collect(Collectors.toList());
@@ -266,22 +257,18 @@ public class RoomServiceImp implements RoomService {
         return new RoomDetailResponse(
                 room.getRoomName(),
                 room.getRoomRate(),
+                secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getElectricMeterNumber() : null,
+                secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getWaterMeterNumber() : null,
                 room.getElectricMeterOldNumber(),
                 room.getWaterMeterOldNumber(),
-                historyRoomResponse != null ? List.of(historyRoomResponse) : List.of(),
-                room.getRoomStatus(),
                 room.isDelete(),
                 userResponses
         );
     }
 
-    private User checkUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+    private RoomUser checkRoomUserById(String id) {
+        return roomUserRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 
-    private RoomUser checkRoomUser(Room room, User user) {
-        return roomUserRepository.findByRoomAndUser(room, user)
-                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-    }
 }

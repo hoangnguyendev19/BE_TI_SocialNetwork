@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoryRoomResponse {
-    private Integer electricMeterNumber;
-    private Integer waterMeterNumber;
+    private Integer electricMeterOldNumber;
+    private Integer waterMeterOldNumber;
     private LocalDateTime createdAt;
 }

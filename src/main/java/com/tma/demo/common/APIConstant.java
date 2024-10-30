@@ -56,7 +56,7 @@ public class APIConstant {
     //people
     public static final String ADD_PEOPLE_IN_ROOM = "/add-people";
     public static final String UPDATE_PEOPLE_IN_ROOM = "/update-people";
-    public static final String DELETE_PEOPLE = "/delete-people";
+    public static final String DELETE_PEOPLE = "/delete-people/{roomUserId}";
     public static final String ROOM_DETAIL = "/detail/{roomId}";
 
 }

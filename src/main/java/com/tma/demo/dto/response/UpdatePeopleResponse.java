@@ -11,13 +11,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdatePeopleResponse {
-    private UUID roomId;
-    private List<PeopleResponse> people;
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PeopleResponse {
-        private String email;
-        private String phoneNumber;
-    }
+    private UUID roomUserid;
+    private String fullName;
+    private String phoneNumber;
+    private boolean isDelete;
+
 }

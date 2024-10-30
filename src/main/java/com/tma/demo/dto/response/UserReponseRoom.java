@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserReponseRoom {
-    private String name;
-    private String email;
+    private UUID roomUserId;
+    private String fullName;
+    private String phoneNumber;
     private boolean isDelete;
 }

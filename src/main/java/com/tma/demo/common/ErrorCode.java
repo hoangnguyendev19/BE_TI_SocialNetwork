@@ -47,6 +47,7 @@ public enum ErrorCode {
     ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-not-found"),
     USER_ALREADY_IN_ROOM(HttpStatus.BAD_REQUEST.value(), "user-already-in-room"),
     PAYMENT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "payment-not-found"),
+    PHONE_NUMBER(HttpStatus.BAD_REQUEST.value(), "phone-number-already-exists."),
 
     ROOM_SETTING_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-setting-not-found"),
     ;

@@ -9,7 +9,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeletePeopleRequest {
+public class UpdatePeopleRequest {
     private String roomUserId;
-    private String name;
+    private String phoneNumber;
+    private String fullName;
 }
