@@ -181,8 +181,8 @@ public class RoomServiceImp implements RoomService {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Room> pageRoom = roomRepository.getAllRooms(pageable,
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : pagingRequest.getFilter().getPaymentStatus().toUpperCase(),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : pagingRequest.getFilter().getRoomStatus().toUpperCase(),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase()),
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : RoomStatus.valueOf(pagingRequest.getFilter().getRoomStatus().toUpperCase()),
                 ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? null : pagingRequest.getFilter().getDate());
         List<RoomResponse> roomResponses = pageRoom.stream()
                 .map(room -> roomMapper.from(room, getPaymentResponse(room.getId().toString()))).toList();
