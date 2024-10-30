@@ -13,12 +13,5 @@ import java.util.List;
 public class AddPeopleRequest {
     private String roomId;
     private List<PeopleRequest> people;
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    public static class PeopleRequest {
-        private String email;
-        private String phoneNumber;
-    }
 }
 
