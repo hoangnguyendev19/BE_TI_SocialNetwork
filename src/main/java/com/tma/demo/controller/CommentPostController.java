@@ -31,13 +31,13 @@ public class CommentPostController {
     }
 //Update
     @PutMapping(value = UPDATE_COMMENT_POST)
-    public ResponseEntity<ApiResponse<?>> updateComment(@RequestBody UpdateCommentRequest request) {
+    public ResponseEntity<ApiResponse<String>> updateComment(@RequestBody UpdateCommentRequest request) {
         String updateresponse = commentPostService.updateComment(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
 }
 //Delete
     @DeleteMapping(value = COMMENT_ID)
-    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("commentId") String commentId) {
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable String commentId) {
         String response = commentPostService.deleteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
@@ -49,7 +49,7 @@ public class CommentPostController {
     }
 //Hidden
     @PutMapping(value = HIDDEN_LIST_COMMENT_POST)
-    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable("commentId")String commentId){
+    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable String commentId){
         commentPostService.hideComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), null));
     }

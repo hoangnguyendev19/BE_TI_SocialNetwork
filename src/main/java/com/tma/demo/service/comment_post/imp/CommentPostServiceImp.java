@@ -54,7 +54,7 @@ public class CommentPostServiceImp implements CommentPostService {
         comment.setCreatedAt(LocalDateTime.now());
         comment.setLastModified(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
-        String parentCommentString = parentComment != null
+        String parentCommentString =  parentComment != null //object
                 ? parentComment.getId().toString()
                 : null;
         return new CreateCommentResponse(

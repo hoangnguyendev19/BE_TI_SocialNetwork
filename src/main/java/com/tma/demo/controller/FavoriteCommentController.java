@@ -16,13 +16,13 @@ import static com.tma.demo.common.APIConstant.*;
 @RestController
 public class FavoriteCommentController {
     private final FavoriteCommentService favoriteCommentService;
-    @PostMapping(COMMENT_ID)
-    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@PathVariable("commentId") String commentId) {
+    @PostMapping(value = COMMENT_ID)
+    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@PathVariable String commentId) {
         CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
-    @DeleteMapping(LIKE_COMMENT_ID)
-    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable("likeCommentId") String likeCommentId) {
+    @DeleteMapping(value = LIKE_COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable String likeCommentId) {
         String response = favoriteCommentService.deleteFavoriteComment(likeCommentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response, null));
     }
