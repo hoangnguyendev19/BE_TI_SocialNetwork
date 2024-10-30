@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class DeletePeopleRequest {
     private String roomId;
-    private List<String> email;
+    private String email;
 }

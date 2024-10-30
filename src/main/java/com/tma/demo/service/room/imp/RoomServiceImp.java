@@ -213,7 +213,7 @@ public class RoomServiceImp implements RoomService {
             roomUser.setRoom(room);
             roomUser.setUser(user);
             roomUserRepository.save(roomUser);
-            userResponses.add(new UserReponseRoom(user.getPhoneNumber(), user.getEmail(),roomUser.getRoom().isDelete()));
+            userResponses.add(new UserReponseRoom(user.getFirstName()+ " " + user.getLastName(), user.getEmail(),roomUser.getRoom().isDelete()));
         }
         return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
@@ -225,9 +225,9 @@ public class RoomServiceImp implements RoomService {
         for (PeopleRequestRoom person : request.getPeople()) {
             User user = checkUserByEmail(person.getEmail());
             RoomUser roomUser = checkRoomUser(room, user);
-            user.setPhoneNumber(person.getPhoneNumber());
+            user.setPhoneNumber(person.getName());
             userRepository.save(user);
-            userResponses.add(new UserReponseRoom(user.getPhoneNumber(), user.getEmail(), roomUser.getRoom().isDelete()));
+            userResponses.add(new UserReponseRoom(user.getFirstName()+ " " + user.getLastName(), user.getEmail(), roomUser.getRoom().isDelete()));
         }
         return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
@@ -235,12 +235,10 @@ public class RoomServiceImp implements RoomService {
     @Override
     public void removePeopleFromRoom(DeletePeopleRequest request) {
         Room room = getRoomById(request.getRoomId());
-        for (String email : request.getEmail()) {
-            User user = checkUserByEmail(email);
+            User user = checkUserByEmail(request.getEmail());
             RoomUser roomUser = checkRoomUser(room, user);
             roomUser.setDelete(true);
             roomUserRepository.save(roomUser);
-        }
     }
 
     @Override
@@ -257,7 +255,7 @@ public class RoomServiceImp implements RoomService {
         List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
                 .stream()
                 .map(roomUser -> new UserReponseRoom(
-                        roomUser.getUser().getPhoneNumber(),
+                        roomUser.getUser().getFirstName() + " " + roomUser.getUser().getLastName(),
                         roomUser.getUser().getEmail(),
                         roomUser.isDelete()
                 ))

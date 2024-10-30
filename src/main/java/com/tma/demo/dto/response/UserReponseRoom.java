@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserReponseRoom {
-    private String phoneNumber;
+    private String name;
     private String email;
     private boolean isDelete;
 }
