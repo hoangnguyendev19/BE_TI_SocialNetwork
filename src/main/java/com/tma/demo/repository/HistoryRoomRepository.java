@@ -20,5 +20,5 @@ import java.util.UUID;
  * 22/10/2024        NGUYEN             create
  */
 public interface HistoryRoomRepository extends JpaRepository<HistoryRoom, UUID> {
-    List<HistoryRoom> findByRoom_Id(UUID roomId);
+    List<HistoryRoom> findTop2ByRoom_IdOrderByCreatedAtDesc(UUID roomId);
 }

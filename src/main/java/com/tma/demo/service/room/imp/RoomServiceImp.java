@@ -244,14 +244,16 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
-        List<HistoryRoom> historyRooms = historyRoomRepository.findByRoom_Id(room.getId());
-        List<HistoryRoomResponse> historyRoomResponses = historyRooms.stream()
-                .map(historyRoom -> new HistoryRoomResponse(
-                        historyRoom.getElectricMeterNumber(),
-                        historyRoom.getWaterMeterNumber(),
-                        historyRoom.getCreatedAt()
-                ))
-                .collect(Collectors.toList());
+        List<HistoryRoom> historyRooms = historyRoomRepository.findTop2ByRoom_IdOrderByCreatedAtDesc(room.getId());
+        HistoryRoomResponse historyRoomResponse = null;
+        if (historyRooms.size() > 1) {
+            HistoryRoom secondLatestHistoryRoom = historyRooms.get(1);
+            historyRoomResponse = new HistoryRoomResponse(
+                    secondLatestHistoryRoom.getElectricMeterNumber(),
+                    secondLatestHistoryRoom.getWaterMeterNumber(),
+                    secondLatestHistoryRoom.getCreatedAt()
+            );
+        }
         List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
                 .stream()
                 .map(roomUser -> new UserReponseRoom(
@@ -266,7 +268,7 @@ public class RoomServiceImp implements RoomService {
                 room.getRoomRate(),
                 room.getElectricMeterOldNumber(),
                 room.getWaterMeterOldNumber(),
-                historyRoomResponses,
+                historyRoomResponse != null ? List.of(historyRoomResponse) : List.of(),
                 room.getRoomStatus(),
                 room.isDelete(),
                 userResponses
