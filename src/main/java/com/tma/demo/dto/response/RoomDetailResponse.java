@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,15 +16,9 @@ public class RoomDetailResponse {
     private Integer roomRate;
     private Integer electricMeterOldNumber;
     private Integer waterMeterOldNumber;
+    private List<HistoryRoomResponse> historyRooms;
     private RoomStatus roomStatus;
     private boolean isDelete;
-    private List<UserResponse> users;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserResponse {
-        private String name;
-        private String email;
-    }
+    private List<UserReponseRoom> users;
 }
+

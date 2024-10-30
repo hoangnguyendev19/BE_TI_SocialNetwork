@@ -5,9 +5,7 @@ import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.Room;
 import com.tma.demo.filter.IdFilter;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * RoomService
@@ -38,9 +36,9 @@ public interface RoomService {
 
     Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest);
 
-    AddPeopleResponse addPeopleToRoom(AddPeopleRequest request);
+    PeopleResponse addPeopleToRoom(PeopleRequest request);
 
-    UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest request);
+    PeopleResponse updatePeopleInRoom(PeopleRequest request);
 
     void removePeopleFromRoom(DeletePeopleRequest request);
 

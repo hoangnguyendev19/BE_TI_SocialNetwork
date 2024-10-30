@@ -1,6 +1,5 @@
 package com.tma.demo.dto.response;
 
-import com.tma.demo.dto.request.UpdatePeopleRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

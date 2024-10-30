@@ -197,15 +197,14 @@ public class RoomServiceImp implements RoomService {
                 + (createPaymentRequest.getElectricityMeterNewNumber() - room.getElectricMeterOldNumber()) * roomSetting.getElectricBill()
                 + (createPaymentRequest.getWaterMeterNewNumber() - room.getWaterMeterOldNumber()) * roomSetting.getWaterBill();
     }
-    @Override
-    public AddPeopleResponse addPeopleToRoom(AddPeopleRequest request) {
-        Room room = roomRepository.findById(UUID.fromString(request.getRoomId()))
-                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
-        List<AddPeopleResponse.UserResponse> userResponses = new ArrayList<>();
 
-        for (AddPeopleRequest.PeopleRequest person : request.getPeople()) {
-            User user = userRepository.findByEmail(person.getEmail())
-                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+    @Override
+    public PeopleResponse addPeopleToRoom(PeopleRequest request) {
+        Room room = getRoomById(request.getRoomId());
+        List<UserReponseRoom> userResponses = new ArrayList<>();
+
+        for (PeopleRequestRoom person : request.getPeople()) {
+            User user = checkUserByEmail(person.getEmail());
             boolean isAlreadyInRoom = roomUserRepository.existsByRoomAndUser(room, user);
             if (isAlreadyInRoom) {
                 throw new BaseException(ErrorCode.USER_ALREADY_IN_ROOM);
@@ -214,46 +213,54 @@ public class RoomServiceImp implements RoomService {
             roomUser.setRoom(room);
             roomUser.setUser(user);
             roomUserRepository.save(roomUser);
-            userResponses.add(new AddPeopleResponse.UserResponse(user.getPhoneNumber(), user.getEmail()));
+            userResponses.add(new UserReponseRoom(user.getPhoneNumber(), user.getEmail(),roomUser.getRoom().isDelete()));
         }
-        return new AddPeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
+        return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
+
     @Override
-    public UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest request) {
-        Room room = roomRepository.findById(UUID.fromString(request.getRoomId()))
-                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
-        List<UpdatePeopleResponse.PeopleResponse> userResponses = new ArrayList<>();
-        for (UpdatePeopleRequest.PeopleRequest person : request.getPeople()) {
-            User user = userRepository.findByEmail(person.getEmail())
-                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-            RoomUser roomUser = roomUserRepository.findByRoomAndUser(room, user)
-                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+    public PeopleResponse updatePeopleInRoom(PeopleRequest request) {
+        Room room = getRoomById(request.getRoomId());
+        List<UserReponseRoom> userResponses = new ArrayList<>();
+        for (PeopleRequestRoom person : request.getPeople()) {
+            User user = checkUserByEmail(person.getEmail());
+            RoomUser roomUser = checkRoomUser(room, user);
             user.setPhoneNumber(person.getPhoneNumber());
             userRepository.save(user);
-            userResponses.add(new UpdatePeopleResponse.PeopleResponse(user.getPhoneNumber(), user.getEmail()));
+            userResponses.add(new UserReponseRoom(user.getPhoneNumber(), user.getEmail(), roomUser.getRoom().isDelete()));
         }
-        return new UpdatePeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
+        return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
+
     @Override
     public void removePeopleFromRoom(DeletePeopleRequest request) {
-        Room room = roomRepository.findById(UUID.fromString(request.getRoomId()))
-                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
+        Room room = getRoomById(request.getRoomId());
         for (String email : request.getEmail()) {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-            RoomUser roomUser = roomUserRepository.findByRoomAndUser(room, user)
-                    .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
-            room.setDelete(true);
+            User user = checkUserByEmail(email);
+            RoomUser roomUser = checkRoomUser(room, user);
+            roomUser.setDelete(true);
+            roomUserRepository.save(roomUser);
         }
     }
+
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
-        Room room = roomRepository.findById(UUID.fromString(roomId))
-                .orElseThrow(() -> new BaseException(ErrorCode.ROOM_NOT_FOUND));
-
-        List<RoomDetailResponse.UserResponse> userResponses = roomUserRepository.findByRoom(room)
+        Room room = getRoomById(roomId);
+        List<HistoryRoom> historyRooms = historyRoomRepository.findByRoom_Id(room.getId());
+        List<HistoryRoomResponse> historyRoomResponses = historyRooms.stream()
+                .map(historyRoom -> new HistoryRoomResponse(
+                        historyRoom.getElectricMeterNumber(),
+                        historyRoom.getWaterMeterNumber(),
+                        historyRoom.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+        List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
                 .stream()
-                .map(roomUser -> new RoomDetailResponse.UserResponse(roomUser.getUser().getFirstName() + " " + roomUser.getUser().getLastName(), roomUser.getUser().getEmail()))
+                .map(roomUser -> new UserReponseRoom(
+                        roomUser.getUser().getPhoneNumber(),
+                        roomUser.getUser().getEmail(),
+                        roomUser.isDelete()
+                ))
                 .collect(Collectors.toList());
 
         return new RoomDetailResponse(
@@ -261,9 +268,20 @@ public class RoomServiceImp implements RoomService {
                 room.getRoomRate(),
                 room.getElectricMeterOldNumber(),
                 room.getWaterMeterOldNumber(),
+                historyRoomResponses,
                 room.getRoomStatus(),
                 room.isDelete(),
                 userResponses
         );
+    }
+
+    private User checkUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
+    }
+
+    private RoomUser checkRoomUser(Room room, User user) {
+        return roomUserRepository.findByRoomAndUser(room, user)
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 }
