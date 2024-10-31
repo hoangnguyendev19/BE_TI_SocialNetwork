@@ -50,8 +50,8 @@ public class APIConstant {
     public static final String STATUS = "/status";
 
     //    payment
-    public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
-    public static final String CREATE_PAYMENT = "/create_payment";
+    public static final String UPDATE_PAYMENT_STATUS = "/update-payment-status";
+    public static final String CREATE_PAYMENT = "/create-payment";
 
     //people
     public static final String ADD_PEOPLE_IN_ROOM = "/add-people";
