@@ -1,11 +1,8 @@
 package com.tma.demo.configuration;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

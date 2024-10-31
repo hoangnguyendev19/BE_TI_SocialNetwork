@@ -2,7 +2,6 @@ package com.tma.demo.repository;
 
 import com.tma.demo.entity.Room;
 import com.tma.demo.entity.RoomUser;
-import com.tma.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,10 +22,15 @@ import java.util.UUID;
  */
 public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
     boolean existsByFullName(String fullName);
+
     boolean existsByPhoneNumber(String phoneNumber);
+
     Optional<RoomUser> findByRoomAndFullName(Room room, String fullName);
+
     Optional<RoomUser> findByRoomAndPhoneNumber(Room room, String phoneNumber);
+
     List<RoomUser> findByRoom(Room room);
+
     @Query("SELECT count (r.id) FROM RoomUser r WHERE r.room.id = r.id and r.isDelete != true ")
     int getTotalPeople(@Param("id") UUID id);
 }

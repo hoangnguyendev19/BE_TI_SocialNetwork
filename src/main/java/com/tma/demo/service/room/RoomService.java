@@ -36,7 +36,6 @@ public interface RoomService {
     @Transactional
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);
 
-    Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest);
 
     PeopleResponse addPeopleToRoom(PeopleRequest request);
 
@@ -47,4 +46,5 @@ public interface RoomService {
     RoomDetailResponse getRoomDetail(String roomId);
 
 
+    Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest);
 }

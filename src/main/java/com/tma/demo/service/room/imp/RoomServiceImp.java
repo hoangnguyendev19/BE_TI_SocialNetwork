@@ -185,9 +185,7 @@ public class RoomServiceImp implements RoomService {
     @Override
     public Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-
         Page<Room> pageRoom;
-
         pageRoom = roomRepository.getAllRooms(pageable,
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()),
                 ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase()),
@@ -263,7 +261,7 @@ public class RoomServiceImp implements RoomService {
                         roomUser.getPhoneNumber(),
                         roomUser.isDelete()
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
         return new RoomDetailResponse(
                 room.getRoomName(),
