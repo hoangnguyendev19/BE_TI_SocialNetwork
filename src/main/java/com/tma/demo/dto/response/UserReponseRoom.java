@@ -13,5 +13,4 @@ public class UserReponseRoom {
     private UUID roomUserId;
     private String fullName;
     private String phoneNumber;
-    private boolean isDelete;
 }

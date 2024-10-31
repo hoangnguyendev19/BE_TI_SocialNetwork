@@ -209,7 +209,7 @@ public class RoomServiceImp implements RoomService {
             roomUser.setPhoneNumber(person.getPhoneNumber());
             roomUser.setRoom(room);
             roomUserRepository.save(roomUser);
-            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber(),roomUser.getRoom().isDelete()));
+            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber()));
         }
         return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
@@ -238,19 +238,22 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
+        if (room.isDelete()) {
+            return new RoomDetailResponse();
+        }
         HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))
                 .stream()
                 .skip(1)
                 .findFirst()
                 .orElse(null);
 
-        List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
+        List<UserReponseRoom> userResponses = roomUserRepository.findByRoomAndIsDeleteFalse(room)
                 .stream()
                 .map(roomUser -> new UserReponseRoom(
                         roomUser.getId(),
                         roomUser.getFullName(),
-                        roomUser.getPhoneNumber(),
-                        roomUser.isDelete()
+                        roomUser.getPhoneNumber()
+
                 ))
                 .collect(Collectors.toList());
 
@@ -261,7 +264,6 @@ public class RoomServiceImp implements RoomService {
                 secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getWaterMeterNumber() : null,
                 room.getElectricMeterOldNumber(),
                 room.getWaterMeterOldNumber(),
-                room.isDelete(),
                 userResponses
         );
     }
