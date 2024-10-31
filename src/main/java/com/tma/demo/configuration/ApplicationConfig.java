@@ -31,8 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
     private final UserRepository userRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,8 +56,4 @@ public class ApplicationConfig {
                 .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHENTICATED));
     }
 
-    @Bean
-    public JPAQueryFactory queryFactory(EntityManager entityManager) {
-        return new JPAQueryFactory(entityManager);
-    }
 }

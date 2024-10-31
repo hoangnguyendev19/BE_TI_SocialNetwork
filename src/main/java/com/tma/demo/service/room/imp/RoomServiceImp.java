@@ -187,7 +187,7 @@ public class RoomServiceImp implements RoomService {
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()),
                 ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase()),
                 ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : RoomStatus.valueOf(pagingRequest.getFilter().getRoomStatus().toUpperCase()),
-                ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? "" : pagingRequest.getFilter().getDate()
+                ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? "" : pagingRequest.getFilter().getDate()
         );
 
 
