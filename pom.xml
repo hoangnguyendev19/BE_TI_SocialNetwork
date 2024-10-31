@@ -156,13 +156,18 @@
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
-            <version>4.2.1</version>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>4.2.1</version>
+            <classifier>jakarta</classifier>
+            <version>${querydsl.version}</version>
         </dependency>
+
 
 
     </dependencies>
