@@ -31,6 +31,6 @@ public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
 
     List<RoomUser> findByRoom(Room room);
 
-    @Query("SELECT count (r.id) FROM RoomUser r WHERE r.room.id = r.id and r.isDelete != true ")
+    @Query("SELECT count (r.id) FROM RoomUser r WHERE r.room.id = :id and r.isDelete != true ")
     int getTotalPeople(@Param("id") UUID id);
 }
