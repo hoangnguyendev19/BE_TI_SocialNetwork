@@ -6,7 +6,7 @@ public class APIConstant {
     public static final String POSTS = BASE_API + "/post";
     public static final String USERS = BASE_API + "/user";
     public static final String COMMENTS = BASE_API + "/comment";
-    public static final String LIKE_COMMENTS = BASE_API + "/favourite-comment";
+    public static final String LIKE_COMMENTS = COMMENTS + "/favourite";
     public static final String AUTH = BASE_API + "/auth";
     public static final String SETTING = BASE_API + "/setting";
     public static final String FAVOURITE = BASE_API + "/favourite";
