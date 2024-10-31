@@ -2,6 +2,10 @@ package com.tma.demo.entity;
 
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
+        import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.*;
 
 import java.util.UUID;
@@ -26,7 +30,7 @@ import java.util.UUID;
 public class RoomUser extends BaseTimeEntity {
     @ManyToOne
     private Room room;
-    @ManyToOne
-    private User user;
+    private String fullName;
+    private String phoneNumber;
     private boolean isDelete;
 }

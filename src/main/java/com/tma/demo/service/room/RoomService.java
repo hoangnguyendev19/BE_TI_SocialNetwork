@@ -1,8 +1,7 @@
 package com.tma.demo.service.room;
 
 import com.tma.demo.dto.request.*;
-import com.tma.demo.dto.response.PaymentResponse;
-import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.Room;
 import com.tma.demo.filter.IdFilter;
 import com.tma.demo.filter.RoomFilter;
@@ -37,5 +36,15 @@ public interface RoomService {
     @Transactional
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);
 
-    Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest);
+    Page<RoomResponse> getListRooms(PagingRequest<IdFilter> pagingRequest);
+
+    PeopleResponse addPeopleToRoom(PeopleRequest request);
+
+    UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest);
+
+    void removePeopleFromRoom(String roomUserId);
+
+    RoomDetailResponse getRoomDetail(String roomId);
+
+
 }

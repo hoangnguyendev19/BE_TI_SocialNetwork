@@ -3,8 +3,8 @@ package com.tma.demo.controller;
 import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
-import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.dto.request.*;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.filter.IdFilter;
@@ -102,6 +102,26 @@ public class RoomController {
                 .message(SuccessMessage.GET_LIST_BOARDING_HOUSES_SUCCESS.getMessage())
                 .data(roomService.getListRooms(pagingRequest))
                 .build());
+    }
+    @PostMapping(value = ADD_PEOPLE_IN_ROOM)
+    public ResponseEntity<ApiResponse<PeopleResponse>> addPeopleInRoom(@RequestBody PeopleRequest peopleRequest) {
+        PeopleResponse peopleResponse = roomService.addPeopleToRoom(peopleRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
+    }
+    @PutMapping(value = UPDATE_PEOPLE_IN_ROOM)
+    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest PeopleRequest) {
+        UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(PeopleRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
+    }
+    @DeleteMapping(value = DELETE_PEOPLE)
+    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable("roomUserId") String roomUserId ) {
+        roomService.removePeopleFromRoom(roomUserId);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
+    }
+    @GetMapping(value = ROOM_DETAIL)
+    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable("roomId") String roomId) {
+        RoomDetailResponse roomDetailResponse = roomService.getRoomDetail(roomId);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.GET_ROOM_DETAIL_SUCCESS.getMessage(), roomDetailResponse));
     }
 
 }
