@@ -1,5 +1,6 @@
 package com.tma.demo.dto.request;
 
+import com.tma.demo.common.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

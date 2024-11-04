@@ -4,6 +4,7 @@ import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.dto.SettingBoardingHouseDto;
 import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.entity.BoardingHouse;
+import com.tma.demo.entity.Room;
 import com.tma.demo.entity.RoomSetting;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public interface BoardingHouseService {
     BoardingHouse getBoardingHouse(String boardingHouseId);
 
     RoomSetting getSetting(String boardingHouseId);
+    SettingBoardingHouseDto getSetting();
 
     BoardingHouseDto getBoardingHouses();
 }

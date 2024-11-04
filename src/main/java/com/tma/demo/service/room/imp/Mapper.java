@@ -2,16 +2,14 @@ package com.tma.demo.service.room.imp;
 
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.entity.Payment;
 import com.tma.demo.entity.Room;
-import com.tma.demo.entity.RoomUser;
 import com.tma.demo.repository.RoomUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 /**
- * RoomMapper
+ * Mapper
  * Version 1.0
  * Date: 21/10/2024
  * Copyright
@@ -22,11 +20,11 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class RoomMapper {
+public class Mapper {
     private final RoomUserRepository roomUserRepository;
-    RoomResponse from(Room room, PaymentResponse paymentResponse){
-        int totalPeople = roomUserRepository.getTotalPeople(room.getId());
 
+    RoomResponse from(Room room, PaymentResponse paymentResponse) {
+        int totalPeople = roomUserRepository.getTotalPeople(room.getId());
         return RoomResponse.builder()
                 .id(room.getId().toString())
                 .boardingHouseId(room.getBoardingHouse().getId().toString())
@@ -39,5 +37,9 @@ public class RoomMapper {
                 .electricityMeterOldNumber(room.getElectricMeterOldNumber())
                 .createdAt(room.getCreatedAt())
                 .build();
+    }
+
+    PaymentResponse from(Payment payment) {
+        return new PaymentResponse(payment.getId().toString(), payment.getPaymentStatus(), payment.getElectricityMeterNewNumber(), payment.getWaterMeterNewNumber(), payment.getTotalAmount());
     }
 }

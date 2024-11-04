@@ -70,11 +70,16 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
         return boardingHouseRepository.findByUser(user.getId()).isPresent();
     }
 
-    private void approveBoardingHouseAsync(BoardingHouse boardingHouse) {
+    @Transactional
+    void approveBoardingHouseAsync(BoardingHouse boardingHouse) {
         CompletableFuture.runAsync(() -> {
             try {
                 Thread.sleep(Integer.parseInt(settingService.getValue(SettingKey.APPROVE_TIME)));  // Simulate delay
-                boardingHouseRepository.saveAndFlush(boardingHouse);
+                BoardingHouse temp = boardingHouseRepository.saveAndFlush(boardingHouse);
+                SettingBoardingHouseDto settingBoardingHouseDto = new SettingBoardingHouseDto(
+                        temp.getId().toString(), 0, 0
+                );
+                saveSetting(settingBoardingHouseDto);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -114,6 +119,14 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     public RoomSetting getSetting(String boardingHouseId) {
         return roomSettingRepository.findByBoardingHouseId(UUID.fromString(boardingHouseId))
                 .orElse(null);
+    }
+
+    @Override
+    public SettingBoardingHouseDto getSetting() {
+        User user = userService.getUserDetails();
+        BoardingHouse boardingHouse = boardingHouseRepository.findByUser(user.getId()).orElseThrow(() -> new BaseException(ErrorCode.ROOM_SETTING_NOT_FOUND));
+        RoomSetting setting = getSetting(boardingHouse.getId().toString());
+        return new SettingBoardingHouseDto(setting.getBoardingHouse().getId().toString(), setting.getWaterBill(), setting.getElectricBill());
     }
 
     @Override

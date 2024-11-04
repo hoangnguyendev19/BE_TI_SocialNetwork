@@ -3,8 +3,8 @@ CREATE TABLE "setting"
     "id"            uuid PRIMARY KEY,
     "key"           varchar,
     "value"         varchar,
-    "created_at"          timestamp,
-    "last_modified"       timestamp
+    "created_at"    timestamp,
+    "last_modified" timestamp
 );
 CREATE TABLE "users"
 (
@@ -89,12 +89,14 @@ CREATE TABLE "history_room"
 
 CREATE TABLE "payment"
 (
-    "id"             uuid PRIMARY KEY,
-    "room_id"        uuid,
-    "total_amount"   int,
-    "payment_status" varchar,
-    "created_at"     timestamp,
-    "last_modified"  timestamp
+    "id"                           uuid PRIMARY KEY,
+    "room_id"                      uuid,
+    "electricity_meter_new_number" int,
+    "water_meter_new_number"       int,
+    "total_amount"                 int,
+    "payment_status"               varchar,
+    "created_at"                   timestamp,
+    "last_modified"                timestamp
 );
 
 CREATE TABLE "post"
@@ -140,20 +142,20 @@ CREATE TABLE "media"
 
 CREATE TABLE "like"
 (
-    "id"         uuid PRIMARY KEY,
-    "user_id"    uuid,
-    "post_id"    uuid,
+    "id"            uuid PRIMARY KEY,
+    "user_id"       uuid,
+    "post_id"       uuid,
     "last_modified" timestamp,
-    "created_at" timestamp
+    "created_at"    timestamp
 );
 
 CREATE TABLE "like_comment"
 (
-    "id"         uuid PRIMARY KEY,
-    "user_id"    uuid,
-    "comment_id" uuid,
+    "id"            uuid PRIMARY KEY,
+    "user_id"       uuid,
+    "comment_id"    uuid,
     "last_modified" timestamp,
-    "created_at" timestamp
+    "created_at"    timestamp
 );
 
 CREATE TABLE "comment"
@@ -180,9 +182,9 @@ CREATE TABLE "token"
 );
 CREATE TABLE "otp"
 (
-    "id"                 uuid PRIMARY KEY,
-    "user_id"            uuid,
-    "otp"                varchar,
+    "id"            uuid PRIMARY KEY,
+    "user_id"       uuid,
+    "otp"           varchar,
     "created_at"    timestamp,
     "last_modified" timestamp
 );

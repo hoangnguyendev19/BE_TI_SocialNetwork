@@ -27,6 +27,8 @@ import java.util.UUID;
 public class Payment extends BaseTimeEntity {
     @ManyToOne
     private Room room;
+    private Integer electricityMeterNewNumber;
+    private Integer waterMeterNewNumber;
     private int totalAmount;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;

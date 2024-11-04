@@ -47,7 +47,7 @@ public class APIConstant {
 
     //    boarding house
     public static final String UPDATE_SETTING = "/update-setting";
-
+    public static final String GET_SETTING = "/get-setting";
     //    room
     public static final String RESET_ROOM = "/reset-room";
     public static final String STATUS = "/status";

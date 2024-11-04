@@ -1,5 +1,6 @@
 package com.tma.demo.service.room;
 
+import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
@@ -32,7 +33,7 @@ public interface RoomService {
     void deleteRoom(String id);
 
     @Transactional
-    PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest);
+    PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest, PaymentStatus paymentStatus);
 
     @Transactional
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);

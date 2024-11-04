@@ -1,6 +1,7 @@
 package com.tma.demo.controller;
 
 import com.tma.demo.common.APIConstant;
+import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.BoardingHouseDto;
@@ -90,7 +91,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .message(SuccessMessage.CREATED_SUCCESS.getMessage())
-                .data(roomService.createPayment(request))
+                .data(roomService.createPayment(request, PaymentStatus.UNPAID))
                 .build());
     }
 

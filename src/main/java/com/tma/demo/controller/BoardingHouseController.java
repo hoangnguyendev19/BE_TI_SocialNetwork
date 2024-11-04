@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.tma.demo.common.APIConstant.GET_SETTING;
+
 /**
  * BoardingHouseController
  * Version 1.0
@@ -52,6 +54,15 @@ public class BoardingHouseController {
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.UPDATE_SETTING_SUCCESS.getMessage())
                 .data(boardingHouseService.saveSetting(settingBoardingHouseDto))
+                .build());
+    }
+
+    @GetMapping(value = GET_SETTING)
+    public ResponseEntity<ApiResponse<SettingBoardingHouseDto>> getSetting() {
+        return ResponseEntity.ok(ApiResponse.<SettingBoardingHouseDto>builder()
+                .code(HttpStatus.OK.value())
+                .message(SuccessMessage.GET_DATA_SUCCESS.getMessage())
+                .data(boardingHouseService.getSetting())
                 .build());
     }
 
