@@ -2,7 +2,10 @@ package com.tma.demo.dto;
 
 import com.tma.demo.entity.User;
 import com.tma.demo.repository.RoomSettingRepository;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * BoardingHouseDto
@@ -15,10 +18,14 @@ import lombok.Data;
  * 18/10/2024        NGUYEN             create
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardingHouseDto {
     private String id;
     private String boardingHouseName;
     private String presentAddress;
     private String ward;
     private String city;
+    SettingBoardingHouseDto setting;
 }

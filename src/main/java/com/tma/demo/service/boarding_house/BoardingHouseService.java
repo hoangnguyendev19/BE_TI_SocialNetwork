@@ -19,7 +19,6 @@ public interface BoardingHouseService {
     BoardingHouse getBoardingHouse(String boardingHouseId);
 
     RoomSetting getSetting(String boardingHouseId);
-    SettingBoardingHouseDto getSetting();
 
     BoardingHouseDto getBoardingHouses();
 }

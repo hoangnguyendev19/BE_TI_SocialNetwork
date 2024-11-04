@@ -139,7 +139,7 @@ public class RoomServiceImp implements RoomService {
                 .totalAmount(totalAmount)
                 .build();
         payment = paymentRepository.saveAndFlush(payment);
-        room.setRoomRate(room.getRoomRate());
+        room.setRoomRate(createPaymentRequest.getRoomRate());
         roomRepository.save(room);
         return mapper.from(payment);
     }

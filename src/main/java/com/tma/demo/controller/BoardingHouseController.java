@@ -57,13 +57,4 @@ public class BoardingHouseController {
                 .build());
     }
 
-    @GetMapping(value = GET_SETTING)
-    public ResponseEntity<ApiResponse<SettingBoardingHouseDto>> getSetting() {
-        return ResponseEntity.ok(ApiResponse.<SettingBoardingHouseDto>builder()
-                .code(HttpStatus.OK.value())
-                .message(SuccessMessage.GET_DATA_SUCCESS.getMessage())
-                .data(boardingHouseService.getSetting())
-                .build());
-    }
-
 }

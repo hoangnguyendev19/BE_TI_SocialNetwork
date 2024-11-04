@@ -121,7 +121,6 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
                 .orElse(null);
     }
 
-    @Override
     public SettingBoardingHouseDto getSetting() {
         User user = userService.getUserDetails();
         BoardingHouse boardingHouse = boardingHouseRepository.findByUser(user.getId()).orElseThrow(() -> new BaseException(ErrorCode.ROOM_SETTING_NOT_FOUND));
@@ -133,8 +132,16 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
     public BoardingHouseDto getBoardingHouses() {
         User user = userService.getUserDetails();
         Optional<BoardingHouse> boardingHouse = boardingHouseRepository.findByUser(user.getId());
+        SettingBoardingHouseDto setting = getSetting();
         if (boardingHouse.isPresent()) {
-            return modelMapper.map(boardingHouse, BoardingHouseDto.class);
+            BoardingHouseDto boardingHouseDto = BoardingHouseDto.builder()
+                    .id(boardingHouse.get().getId().toString())
+                    .ward(boardingHouse.get().getWard())
+                    .boardingHouseName(boardingHouse.get().getBoardingHouseName())
+                    .city(boardingHouse.get().getCity())
+                    .presentAddress(boardingHouse.get().getPresentAddress())
+                    .setting(setting)
+                    .build();
         }
         return null;
     }
