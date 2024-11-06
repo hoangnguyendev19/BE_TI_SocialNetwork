@@ -185,7 +185,7 @@ public class RoomServiceImp implements RoomService {
     public Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
         Page<Room> pageRoom;
-        PaymentStatus status = ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase());
+        PaymentStatus status = ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase());
         RoomStatus roomStatus = ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : RoomStatus.valueOf(pagingRequest.getFilter().getRoomStatus().toUpperCase());
         String date = ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? "" : pagingRequest.getFilter().getDate();
         pageRoom = roomRepository.getAllRooms(pageable,
