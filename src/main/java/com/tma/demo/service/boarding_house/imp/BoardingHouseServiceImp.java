@@ -133,16 +133,13 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
         User user = userService.getUserDetails();
         Optional<BoardingHouse> boardingHouse = boardingHouseRepository.findByUser(user.getId());
         SettingBoardingHouseDto setting = getSetting();
-        if (boardingHouse.isPresent()) {
-            BoardingHouseDto boardingHouseDto = BoardingHouseDto.builder()
-                    .id(boardingHouse.get().getId().toString())
-                    .ward(boardingHouse.get().getWard())
-                    .boardingHouseName(boardingHouse.get().getBoardingHouseName())
-                    .city(boardingHouse.get().getCity())
-                    .presentAddress(boardingHouse.get().getPresentAddress())
-                    .setting(setting)
-                    .build();
-        }
-        return null;
+        return boardingHouse.map(house -> BoardingHouseDto.builder()
+                .id(house.getId().toString())
+                .ward(house.getWard())
+                .boardingHouseName(house.getBoardingHouseName())
+                .city(house.getCity())
+                .presentAddress(house.getPresentAddress())
+                .setting(setting)
+                .build()).orElse(null);
     }
 }
