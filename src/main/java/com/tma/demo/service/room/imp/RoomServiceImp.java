@@ -80,7 +80,9 @@ public class RoomServiceImp implements RoomService {
         Payment payment = Payment.builder()
                 .totalAmount(0)
                 .room(room)
-                .paymentStatus(PaymentStatus.UNPAID)
+                .waterMeterNewNumber(0)
+                .electricityMeterNewNumber(0)
+                .paymentStatus(PaymentStatus.PAID)
                 .build();
         payment = paymentRepository.saveAndFlush(payment);
         PaymentResponse paymentResponse = mapper.from(payment);
