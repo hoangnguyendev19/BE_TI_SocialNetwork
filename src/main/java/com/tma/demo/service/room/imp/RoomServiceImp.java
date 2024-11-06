@@ -80,6 +80,8 @@ public class RoomServiceImp implements RoomService {
         checkAth(room.getBoardingHouse().getUser().getId().toString());
         room.setRoomRate(0);
         room.setRoomStatus(RoomStatus.ROOM_AVAILABLE);
+        List<RoomUser> listRoomUser = getRoomUser(room.getId());
+        roomUserRepository.deleteAll(listRoomUser);
         Payment payment = Payment.builder()
                 .totalAmount(0)
                 .room(room)
@@ -127,6 +129,10 @@ public class RoomServiceImp implements RoomService {
         if (!userId.equals(userService.getUserDetails().getId().toString())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
+    }
+
+    private List<RoomUser> getRoomUser(UUID roomId){
+        return roomUserRepository.findByRoomId(roomId);
     }
 
     //PAYMENT
