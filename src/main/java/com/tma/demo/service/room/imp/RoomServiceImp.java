@@ -75,13 +75,11 @@ public class RoomServiceImp implements RoomService {
         checkAth(room.getBoardingHouse().getUser().getId().toString());
         room.setRoomRate(0);
         room.setRoomStatus(RoomStatus.ROOM_AVAILABLE);
-        room.setElectricMeterOldNumber(0);
-        room.setWaterMeterOldNumber(0);
         Payment payment = Payment.builder()
                 .totalAmount(0)
                 .room(room)
-                .waterMeterNewNumber(0)
-                .electricityMeterNewNumber(0)
+                .waterMeterNewNumber(room.getWaterMeterOldNumber())
+                .electricityMeterNewNumber(room.getElectricMeterOldNumber())
                 .paymentStatus(PaymentStatus.PAID)
                 .build();
         payment = paymentRepository.saveAndFlush(payment);
