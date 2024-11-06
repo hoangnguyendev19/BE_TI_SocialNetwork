@@ -4,10 +4,10 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.dto.request.*;
-import com.tma.demo.dto.response.PaymentResponse;
-import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.*;
 import com.tma.demo.filter.RoomFilter;
 import com.tma.demo.repository.HistoryRoomRepository;
 import com.tma.demo.repository.PaymentRepository;
@@ -20,13 +20,16 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * RoomServiceImp
@@ -47,6 +50,8 @@ public class RoomServiceImp implements RoomService {
     private final UserService userService;
     private final PaymentRepository paymentRepository;
     private final HistoryRoomRepository historyRoomRepository;
+    private final UserRepository userRepository;
+    private final RoomUserRepository roomUserRepository;
 
     @Override
     @Transactional
@@ -200,6 +205,78 @@ public class RoomServiceImp implements RoomService {
         return createPaymentRequest.getRoomRate()
                 + (createPaymentRequest.getElectricityMeterNewNumber() - room.getElectricMeterOldNumber()) * roomSetting.getElectricBill()
                 + (createPaymentRequest.getWaterMeterNewNumber() - room.getWaterMeterOldNumber()) * roomSetting.getWaterBill();
+    }
+
+    @Override
+    public PeopleResponse addPeopleToRoom(PeopleRequest request) {
+        Room room = getRoomById(request.getRoomId());
+        List<UserReponseRoom> userResponses = new ArrayList<>();
+        for (PeopleRequestRoom person : request.getPeople()) {
+            RoomUser roomUser = new RoomUser();
+            roomUser.setFullName(person.getFullName());
+            roomUser.setPhoneNumber(person.getPhoneNumber());
+            roomUser.setRoom(room);
+            roomUserRepository.save(roomUser);
+            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber(),roomUser.getRoom().isDelete()));
+        }
+        return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
+    }
+
+    @Override
+    public UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest) {
+        RoomUser roomUser = checkRoomUserById(updatePeopleRequest.getRoomUserId());
+        roomUser.setFullName(updatePeopleRequest.getFullName());
+        roomUser.setPhoneNumber(updatePeopleRequest.getPhoneNumber());
+        roomUserRepository.save(roomUser);
+        return new UpdatePeopleResponse(
+                roomUser.getId(),
+                roomUser.getFullName(),
+                roomUser.getPhoneNumber(),
+                roomUser.isDelete()
+        );
+    }
+
+    @Override
+    public void removePeopleFromRoom(String roomUserId) {
+        RoomUser roomUser = checkRoomUserById(roomUserId);
+            roomUser.setDelete(true);
+            roomUserRepository.save(roomUser);
+    }
+
+    @Override
+    public RoomDetailResponse getRoomDetail(String roomId) {
+        Room room = getRoomById(roomId);
+        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))
+                .stream()
+                .skip(1)
+                .findFirst()
+                .orElse(null);
+
+        List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
+                .stream()
+                .map(roomUser -> new UserReponseRoom(
+                        roomUser.getId(),
+                        roomUser.getFullName(),
+                        roomUser.getPhoneNumber(),
+                        roomUser.isDelete()
+                ))
+                .collect(Collectors.toList());
+
+        return new RoomDetailResponse(
+                room.getRoomName(),
+                room.getRoomRate(),
+                secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getElectricMeterNumber() : null,
+                secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getWaterMeterNumber() : null,
+                room.getElectricMeterOldNumber(),
+                room.getWaterMeterOldNumber(),
+                room.isDelete(),
+                userResponses
+        );
+    }
+
+    private RoomUser checkRoomUserById(String id) {
+        return roomUserRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 
 }

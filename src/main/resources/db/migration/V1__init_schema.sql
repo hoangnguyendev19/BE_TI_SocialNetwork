@@ -70,7 +70,8 @@ CREATE TABLE "room_user"
 (
     "id"            uuid PRIMARY KEY,
     "room_id"       uuid,
-    "user_id"       uuid,
+    "full_name"     varchar(255),
+    "phone_number"  varchar(255),
     "is_delete"     bool,
     "created_at"    timestamp,
     "last_modified" timestamp
@@ -225,9 +226,6 @@ ALTER TABLE "like_comment"
 
 ALTER TABLE "like_comment"
     ADD FOREIGN KEY ("comment_id") REFERENCES "comment" ("id");
-
-ALTER TABLE "room_user"
-    ADD FOREIGN KEY ("room_id") REFERENCES "users" ("id");
 
 ALTER TABLE "room_user"
     ADD FOREIGN KEY ("room_id") REFERENCES "room" ("id");

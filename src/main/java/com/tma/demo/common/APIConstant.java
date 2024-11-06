@@ -6,7 +6,7 @@ public class APIConstant {
     public static final String POSTS = BASE_API + "/post";
     public static final String USERS = BASE_API + "/user";
     public static final String COMMENTS = BASE_API + "/comment";
-    public static final String LIKE_COMMENTS = BASE_API + "/like-comment";
+    public static final String LIKE_COMMENTS = BASE_API + "/favourite-comment";
     public static final String AUTH = BASE_API + "/auth";
     public static final String SETTING = BASE_API + "/setting";
     public static final String FAVOURITE = BASE_API + "/favourite";
@@ -33,17 +33,14 @@ public class APIConstant {
     public static final String REPORT_POST = "/report";
 
     // Comment Post Endpoints
-    public static final String CREATE_COMMENT_POST = "/create";
     public static final String UPDATE_COMMENT_POST = "/update";
-    public static final String DELETE_COMMENT_POST = "/delete";
+    public static final String COMMENT_ID = "/{commentId}";
     public static final String VIEW_LIST_COMMENT_POST = "/view-list";
-    public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
+    public static final String HIDDEN_LIST_COMMENT_POST = "/hidden/{commentId}";
     public static final String SHARE = "/share";
 
     // Like Comment Post Endpoints
-    public static final String CREATE_LIKE_COMMENTS = "/create";
-    public static final String VIEW_LIST_LIKE_COMMENTS = "/view-list";
-    public static final String DELETE_LIKE_COMMENTS = "/delete";
+    public static final String LIKE_COMMENT_ID = "/{likeCommentId}";
 
     //    boarding house
     public static final String UPDATE_SETTING = "/update-setting";
@@ -52,7 +49,13 @@ public class APIConstant {
     public static final String STATUS = "/status";
 
     //    payment
-    public static final String UPDATE_PAYMENT_STATUS = "/update-payment-status";
-    public static final String CREATE_PAYMENT = "/create-payment";
+    public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
+    public static final String CREATE_PAYMENT = "/create_payment";
+
+    //people
+    public static final String ADD_PEOPLE_IN_ROOM = "/add-people";
+    public static final String UPDATE_PEOPLE_IN_ROOM = "/update-people";
+    public static final String DELETE_PEOPLE = "/delete-people/{roomUserId}";
+    public static final String ROOM_DETAIL = "/detail/{roomId}";
 
 }
