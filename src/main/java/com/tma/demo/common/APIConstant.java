@@ -17,6 +17,7 @@ public class APIConstant {
     public static final String STATUS = "/status";
     public static final String PEOPLE = "/people";
     public static final String DETAIL = "/detail";
+    public static final String PAYMENT = "/payment";
 
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
@@ -25,7 +26,6 @@ public class APIConstant {
     public static final String AUTH_FORGOT_PASSWORD = "/forgot-password";
     public static final String AUTH_SET_PASSWORD = "/set-password";
     public static final String AUTH_REFRESH_TOKEN = "/refresh-token";
-
     // User Endpoints
     public static final String USER_AVATAR = "/avatar";
     public static final String USER_PASSWORD = "/password";
@@ -33,16 +33,12 @@ public class APIConstant {
     // Post Endpoints
     public static final String GET_POST_NEWS = "/news";
     public static final String REPORT_POST = "/report";
-
     // Comment Post Endpoints
     public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
     public static final String SHARE = "/share";
-
     //    boarding house
     public static final String UPDATE_SETTING = "/update-setting";
     //    room
     public static final String RESET_ROOM = "/reset-room";
-    //    payment
-    public static final String PAYMENT = "/payment";
 
 }
