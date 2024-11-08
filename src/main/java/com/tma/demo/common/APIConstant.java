@@ -14,6 +14,9 @@ public class APIConstant {
     public static final String ROOM = BASE_API + "/room";
     public static final String ID = "/{id}";
     public static final String VIEW_LIST = "/view-list";
+    public static final String STATUS = "/status";
+    public static final String PEOPLE = "/people";
+    public static final String DETAIL = "/detail";
 
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
@@ -28,35 +31,18 @@ public class APIConstant {
     public static final String USER_PASSWORD = "/password";
     public static final String USER_COVER_PICTURE = "/cover-picture";
     // Post Endpoints
-    public static final String POST_ID = "/{postId}";
     public static final String GET_POST_NEWS = "/news";
     public static final String REPORT_POST = "/report";
 
     // Comment Post Endpoints
-    public static final String UPDATE_COMMENT_POST = "/update";
-    public static final String COMMENT_ID = "/{commentId}";
-    public static final String VIEW_LIST_COMMENT_POST = "/view-list";
-    public static final String HIDDEN_LIST_COMMENT_POST = "/hidden/{commentId}";
+    public static final String HIDDEN_LIST_COMMENT_POST = "/hidden";
     public static final String SHARE = "/share";
-
-    // Like Comment Post Endpoints
-    public static final String LIKE_COMMENT_ID = "/{likeCommentId}";
 
     //    boarding house
     public static final String UPDATE_SETTING = "/update-setting";
-
     //    room
     public static final String RESET_ROOM = "/reset-room";
-    public static final String STATUS = "/status";
-
     //    payment
-    public static final String UPDATE_PAYMENT_STATUS = "/update_payment_status";
-    public static final String CREATE_PAYMENT = "/create_payment";
-
-    //people
-    public static final String ADD_PEOPLE_IN_ROOM = "/add-people";
-    public static final String UPDATE_PEOPLE_IN_ROOM = "/update-people";
-    public static final String DELETE_PEOPLE = "/delete-people/{roomUserId}";
-    public static final String ROOM_DETAIL = "/detail/{roomId}";
+    public static final String PAYMENT = "/payment";
 
 }

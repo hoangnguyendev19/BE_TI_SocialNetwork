@@ -238,9 +238,6 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
-        if (room.isDelete()) {
-            return new RoomDetailResponse();
-        }
         HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))
                 .stream()
                 .skip(1)

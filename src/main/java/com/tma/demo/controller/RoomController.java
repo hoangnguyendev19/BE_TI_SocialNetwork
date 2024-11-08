@@ -75,7 +75,7 @@ public class RoomController {
         );
     }
 
-    @PutMapping(value = UPDATE_PAYMENT_STATUS)
+    @PutMapping(value = PAYMENT + STATUS)
     public ResponseEntity<ApiResponse<PaymentResponse>> updatePaymentStatus(@RequestBody UpdatePaymentStatusRequest request) {
         return ResponseEntity.ok(ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.OK.value())
@@ -84,7 +84,7 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping(value = CREATE_PAYMENT)
+    @PostMapping(value = PAYMENT)
     public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(@RequestBody CreatePaymentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.CREATED.value())
@@ -93,7 +93,7 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping(value = APIConstant.VIEW_LIST)
+    @PostMapping(value = VIEW_LIST)
     public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest<IdFilter> pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<RoomResponse>>builder()
@@ -102,22 +102,22 @@ public class RoomController {
                 .data(roomService.getListRooms(pagingRequest))
                 .build());
     }
-    @PostMapping(value = ADD_PEOPLE_IN_ROOM)
+    @PostMapping(value = PEOPLE)
     public ResponseEntity<ApiResponse<PeopleResponse>> addPeopleInRoom(@RequestBody PeopleRequest peopleRequest) {
         PeopleResponse peopleResponse = roomService.addPeopleToRoom(peopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
     }
-    @PutMapping(value = UPDATE_PEOPLE_IN_ROOM)
+    @PutMapping(value = PEOPLE)
     public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest PeopleRequest) {
         UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(PeopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
-    @DeleteMapping(value = DELETE_PEOPLE)
+    @DeleteMapping(value = PEOPLE + ID)
     public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable String roomUserId ) {
         roomService.removePeopleFromRoom(roomUserId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
     }
-    @GetMapping(value = ROOM_DETAIL)
+    @GetMapping(value = DETAIL)
     public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable String roomId) {
         RoomDetailResponse roomDetailResponse = roomService.getRoomDetail(roomId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.GET_ROOM_DETAIL_SUCCESS.getMessage(), roomDetailResponse));

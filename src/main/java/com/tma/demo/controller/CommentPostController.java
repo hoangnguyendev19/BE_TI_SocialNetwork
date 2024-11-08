@@ -30,25 +30,25 @@ public class CommentPostController {
                 SuccessMessage.CREATED_COMMENT_SUCCESS.getMessage(), commentResponse));
     }
 //Update
-    @PutMapping(value = UPDATE_COMMENT_POST)
+    @PutMapping()
     public ResponseEntity<ApiResponse<String>> updateComment(@RequestBody UpdateCommentRequest request) {
         String updateresponse = commentPostService.updateComment(request);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
 }
 //Delete
-    @DeleteMapping(value = COMMENT_ID)
+    @DeleteMapping(value = ID)
     public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable String commentId) {
         String response = commentPostService.deleteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
 //View
-    @PostMapping(value = VIEW_LIST_COMMENT_POST)
+    @PostMapping(value = VIEW_LIST)
     public ResponseEntity<ApiResponse<Page<ViewListCommentResponse>>> getAllComments(@RequestBody PagingRequest<CommentFilter> pagingRequest) {
         Page<ViewListCommentResponse> comments = this.commentPostService.fetchAllCommentsByPostId(pagingRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_COMMENT_SUCCESS.getMessage(), comments));
     }
 //Hidden
-    @PutMapping(value = HIDDEN_LIST_COMMENT_POST)
+    @PutMapping(value = HIDDEN_LIST_COMMENT_POST+ID)
     public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable String commentId){
         commentPostService.hideComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), null));
