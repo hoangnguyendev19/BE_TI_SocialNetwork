@@ -11,18 +11,19 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.tma.demo.common.EndPointConstant.*;
 
+
 @AllArgsConstructor
 @RequestMapping(value = LIKE_COMMENTS)
 @RestController
-public class FavoriteCommentController {
+public class LikeCommentController {
     private final FavoriteCommentService favoriteCommentService;
-    @PostMapping(ID)
-    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@PathVariable("commentId") String commentId) {
+    @PostMapping(COMMENT_ID)
+    public ResponseEntity<ApiResponse<CreateFavoriteCommentResponse>> createFavoriteComment (@PathVariable String commentId) {
         CreateFavoriteCommentResponse createFavoriteCommentResponse = favoriteCommentService.createFavoriteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.CREATE_FAVOURITE_COMMENT.getMessage(),createFavoriteCommentResponse));
     }
-    @DeleteMapping(ID)
-    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable("likeCommentId") String likeCommentId) {
+    @DeleteMapping(LIKE_COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> deleteFavoriteComment(@PathVariable String likeCommentId) {
         String response = favoriteCommentService.deleteFavoriteComment(likeCommentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response, null));
     }

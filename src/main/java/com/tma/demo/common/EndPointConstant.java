@@ -18,7 +18,11 @@ public class EndPointConstant {
     public static final String PEOPLE = "/people";
     public static final String DETAIL = "/detail";
     public static final String PAYMENT = "/payment";
-
+    //
+    public static final String COMMENT_ID = "/{commentId}";
+    public static final String LIKE_COMMENT_ID = "/{likeCommentId}";
+    public static final String ROOM_USER_ID = "/{roomUserId}";
+    public static final String ROOM_ID = "/{roomId}";
     // Auth Endpoints
     public static final String AUTH_LOGIN = "/login";
     public static final String AUTH_REGISTER = "/register";

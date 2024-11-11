@@ -111,13 +111,13 @@ public class RoomController {
         UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(peopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
-    @DeleteMapping(PEOPLE + ID)
-    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable("roomUserId") String roomUserId ) {
+    @DeleteMapping(PEOPLE + ROOM_USER_ID)
+    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable String roomUserId ) {
         roomService.removePeopleFromRoom(roomUserId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
     }
-    @GetMapping(DETAIL)
-    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable("roomId") String roomId) {
+    @GetMapping(DETAIL+ROOM_ID)
+    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable String roomId) {
         RoomDetailResponse roomDetailResponse = roomService.getRoomDetail(roomId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.GET_ROOM_DETAIL_SUCCESS.getMessage(), roomDetailResponse));
     }
