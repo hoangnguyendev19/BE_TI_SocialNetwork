@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tma.demo.common.APIConstant.*;
+import static com.tma.demo.common.EndPointConstant.*;
 
 @RestController
 @RequestMapping(value = COMMENTS)
@@ -33,20 +33,20 @@ public class CommentPostController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
 }
 //Delete
-    @DeleteMapping(value = ID)
-    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable String commentId) {
+    @DeleteMapping(ID)
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("id") String commentId) {
         String response = commentPostService.deleteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
 //View
-    @PostMapping(value = VIEW_LIST)
+    @PostMapping(VIEW_LIST)
     public ResponseEntity<ApiResponse<Page<CommentDto>>> getAllComments(@RequestBody PagingRequest<IdFilter> pagingRequest) {
         Page<CommentDto> comments = this.commentPostService.fetchAllCommentsByPostId(pagingRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_COMMENT_SUCCESS.getMessage(), comments));
     }
 //Hidden
-    @PutMapping(value = HIDDEN_LIST_COMMENT_POST+ID)
-    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable String commentId){
+    @PutMapping(HIDDEN_LIST_COMMENT_POST+ID)
+    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable("id") String commentId){
         commentPostService.hideComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), null));
     }

@@ -20,6 +20,8 @@ public class CommentDto {
     private LocalDateTime createdAt;
     private LocalDateTime lastModified;
     private boolean liked;
+    private boolean isHidden;
+    private boolean isDelete;
     private boolean ownedPost;
     private boolean ownedComment;
     private String firstName;

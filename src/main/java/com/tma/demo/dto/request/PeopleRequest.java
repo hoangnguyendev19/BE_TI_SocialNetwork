@@ -13,6 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PeopleRequest {
     private String roomId;
+    private String roomUserId;
     private List<ListPeopleRequest> people;
 }
 

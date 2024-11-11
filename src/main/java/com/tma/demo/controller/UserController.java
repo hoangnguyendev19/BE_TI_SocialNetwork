@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.tma.demo.common.APIConstant.*;
+import static com.tma.demo.common.EndPointConstant.*;
 
 /**
  * UserController

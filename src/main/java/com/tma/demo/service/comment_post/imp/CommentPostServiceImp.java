@@ -76,7 +76,8 @@ public class CommentPostServiceImp implements CommentPostService {
         if (!comment.getUser().getId().equals(user.getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
-        commentRepository.delete(comment);
+        comment.setDelete(true);
+        commentRepository.save(comment);
         return SuccessMessage.DELETE_COMMENT_SUCCESS.getMessage();
     }
 

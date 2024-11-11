@@ -32,6 +32,8 @@ public class CommentMapper {
         } else {
             commentDTO.setParentCommentId(null);
         }
+        commentDTO.setHidden(comment.isHidden());
+        commentDTO.setDelete(comment.isDelete());
         commentDTO.setCommentText(comment.getCommentText());
         commentDTO.setCreatedAt(comment.getCreatedAt());
         commentDTO.setLastModified(comment.getLastModified());

@@ -1,6 +1,6 @@
 package com.tma.demo.common;
 
-public class APIConstant {
+public class EndPointConstant {
     public static final String BASE_API = "/api/v1";
 
     public static final String POSTS = BASE_API + "/post";

@@ -215,10 +215,10 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest) {
-        RoomUser roomUser = checkRoomUserById(updatePeopleRequest.getRoomUserId());
-        roomUser.setFullName(updatePeopleRequest.getFullName());
-        roomUser.setPhoneNumber(updatePeopleRequest.getPhoneNumber());
+    public UpdatePeopleResponse updatePeopleInRoom(PeopleRequest peopleRequest) {
+        RoomUser roomUser = checkRoomUserById(peopleRequest.getRoomUserId());
+        roomUser.setFullName(peopleRequest.getPeople().getLast().getFullName());
+        roomUser.setPhoneNumber(peopleRequest.getPeople().getLast().getPhoneNumber());
         roomUserRepository.save(roomUser);
         return new UpdatePeopleResponse(
                 roomUser.getId(),

@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tma.demo.common.APIConstant.*;
+import static com.tma.demo.common.EndPointConstant.*;
 
 /**
  * RoomController
@@ -101,23 +101,23 @@ public class RoomController {
                 .data(roomService.getListRooms(pagingRequest))
                 .build());
     }
-    @PostMapping(value = PEOPLE)
+    @PostMapping(PEOPLE)
     public ResponseEntity<ApiResponse<PeopleResponse>> addPeopleInRoom(@RequestBody PeopleRequest peopleRequest) {
         PeopleResponse peopleResponse = roomService.addPeopleToRoom(peopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
     }
-    @PutMapping(value = PEOPLE)
-    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest peopleRequest) {
+    @PutMapping(PEOPLE)
+    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody PeopleRequest peopleRequest) {
         UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(peopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
-    @DeleteMapping(value = PEOPLE + ID)
-    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable String roomUserId ) {
+    @DeleteMapping(PEOPLE + ID)
+    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable("roomUserId") String roomUserId ) {
         roomService.removePeopleFromRoom(roomUserId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
     }
-    @GetMapping(value = DETAIL)
-    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable String roomId) {
+    @GetMapping(DETAIL)
+    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable("roomId") String roomId) {
         RoomDetailResponse roomDetailResponse = roomService.getRoomDetail(roomId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.GET_ROOM_DETAIL_SUCCESS.getMessage(), roomDetailResponse));
     }
