@@ -1,6 +1,5 @@
 package com.tma.demo.controller;
 
-import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.*;
@@ -108,8 +107,8 @@ public class RoomController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
     }
     @PutMapping(value = PEOPLE)
-    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest PeopleRequest) {
-        UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(PeopleRequest);
+    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest peopleRequest) {
+        UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(peopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
     }
     @DeleteMapping(value = PEOPLE + ID)

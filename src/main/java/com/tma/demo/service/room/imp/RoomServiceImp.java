@@ -203,7 +203,7 @@ public class RoomServiceImp implements RoomService {
     public PeopleResponse addPeopleToRoom(PeopleRequest request) {
         Room room = getRoomById(request.getRoomId());
         List<UserReponseRoom> userResponses = new ArrayList<>();
-        for (PeopleRequestRoom person : request.getPeople()) {
+        for (ListPeopleRequest person : request.getPeople()) {
             RoomUser roomUser = new RoomUser();
             roomUser.setFullName(person.getFullName());
             roomUser.setPhoneNumber(person.getPhoneNumber());
