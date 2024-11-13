@@ -17,7 +17,7 @@ import static com.tma.demo.common.EndPointConstant.*;
 @RestController
 @RequestMapping(value = COMMENTS)
 @RequiredArgsConstructor
-public class CommentPostController {
+public class CommentController {
     private final CommentPostService commentPostService;
 //Create
     @PostMapping()
@@ -29,12 +29,12 @@ public class CommentPostController {
 //Update
     @PutMapping()
     public ResponseEntity<ApiResponse<String>> updateComment(@RequestBody CommentRequest request) {
-        String updateresponse = commentPostService.updateComment(request);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), updateresponse));
+        String response = commentPostService.updateComment(request);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), response));
 }
 //Delete
-    @DeleteMapping(ID)
-    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("id") String commentId) {
+    @DeleteMapping(COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable String commentId) {
         String response = commentPostService.deleteComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), response,null));
     }
@@ -45,8 +45,8 @@ public class CommentPostController {
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.VIEW_COMMENT_SUCCESS.getMessage(), comments));
     }
 //Hidden
-    @PutMapping(HIDDEN_LIST_COMMENT_POST+ID)
-    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable("id") String commentId){
+    @PutMapping(HIDDEN_LIST_COMMENT_POST+COMMENT_ID)
+    public ResponseEntity<ApiResponse<String>> hideComment(@PathVariable String commentId){
         commentPostService.hideComment(commentId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.HIDDEN_COMMENT_SUCCESS.getMessage(), null));
     }

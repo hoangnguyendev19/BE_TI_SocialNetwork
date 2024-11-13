@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentRequest {
     private String postId;
+    private String commentId;
     private String parentCommentId;
     private String commentText;
 }

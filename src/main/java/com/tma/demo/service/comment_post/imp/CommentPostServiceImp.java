@@ -57,15 +57,15 @@ public class CommentPostServiceImp implements CommentPostService {
     @Override
     //Update Comment
     public String updateComment(CommentRequest commentRequest) {
-        Comment comment = findCommentById(commentRequest.getPostId());
+        Comment comment = findCommentById(commentRequest.getCommentId());
         User user = userService.getUserDetails();
         if (!comment.getUser().getId().equals(user.getId())) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         comment.setCommentText(commentRequest.getCommentText());
         comment.setLastModified(LocalDateTime.now());
-        Comment saveComment = commentRepository.save(comment);
-        return saveComment.getCommentText();
+        commentRepository.save(comment);
+        return SuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class CommentPostServiceImp implements CommentPostService {
         User user = userService.getUserDetails();
         Post post = findPostById(pagingRequest.getFilter().getId());
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        Page<Comment> comments = commentRepository.findByPostIdAndParentCommentIsNull(post.getId(), pageable);
+        Page<Comment> comments = commentRepository.findVisibleCommentsByPostId(post.getId(), pageable);
 
         List<CommentDto> responseList = comments
                 .stream()

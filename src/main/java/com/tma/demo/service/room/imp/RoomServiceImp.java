@@ -215,17 +215,16 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public UpdatePeopleResponse updatePeopleInRoom(PeopleRequest peopleRequest) {
+    public PeopleResponse updatePeopleInRoom(PeopleRequest peopleRequest) {
         RoomUser roomUser = checkRoomUserById(peopleRequest.getRoomUserId());
-        roomUser.setFullName(peopleRequest.getPeople().getLast().getFullName());
-        roomUser.setPhoneNumber(peopleRequest.getPeople().getLast().getPhoneNumber());
-        roomUserRepository.save(roomUser);
-        return new UpdatePeopleResponse(
-                roomUser.getId(),
-                roomUser.getFullName(),
-                roomUser.getPhoneNumber(),
-                roomUser.isDelete()
-        );
+        List<UserReponseRoom> userResponses = new ArrayList<>();
+        for (ListPeopleRequest person : peopleRequest.getPeople()) {
+            roomUser.setFullName(person.getFullName());
+            roomUser.setPhoneNumber(person.getPhoneNumber());
+            roomUserRepository.save(roomUser);
+            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber()));
+        }
+        return new PeopleResponse(null,userResponses);
     }
 
     @Override
@@ -238,7 +237,7 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
-        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))
+        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))//get 2 record
                 .stream()
                 .skip(1)
                 .findFirst()

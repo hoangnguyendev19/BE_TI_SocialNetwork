@@ -23,6 +23,7 @@ public class CommentMapper {
     private final CommentRepository commentRepository;
 
     public CommentDto toDTO(Comment comment, User user) {
+
         CommentDto commentDTO = new CommentDto();
         commentDTO.setCommentId(comment.getId().toString());
         commentDTO.setPostId(comment.getPost().getId().toString());
@@ -45,11 +46,14 @@ public class CommentMapper {
         commentDTO.setProfilePictureUrl(comment.getUser().getProfilePictureUrl());
         commentDTO.setTotalLikes(likeCommentRepository.countDistinctLikesByCommentId(comment.getId()));
 
-        List<CommentDto> childComments = (comment.getChildComments() == null
-                ? new ArrayList<>() //true
-                : comment.getChildComments()).stream() //false
-                .map(childComment -> toDTO((Comment) childComment, user))
+        List<CommentDto> childComments = (comment.getChildComments() == null)
+                ? new ArrayList<>()
+                : comment.getChildComments().stream()
+                .filter(childComment -> childComment instanceof Comment)
+                .filter(childComment -> !childComment.isHidden() && !childComment.isDelete())
+                .map(childComment -> toDTO(childComment, user))
                 .collect(Collectors.toList());
+
         commentDTO.setChildComments(childComments);
 
         return commentDTO;
