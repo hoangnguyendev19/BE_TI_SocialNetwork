@@ -10,6 +10,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * RoomUserRepository
+ * Version 1.0
+ * Date: 29/10/2024
+ * Copyright
+ * Modification Logs
+ * DATE          AUTHOR          DESCRIPTION
+ * ------------------------------------------------
+ * 29/10/2024        NGUYEN             create
+ */
 public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
     boolean existsByFullName(String fullName);
 
@@ -19,4 +29,9 @@ public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
     List<RoomUser> findByRoom(Room room);
     List<RoomUser> findByRoomAndIsDeleteFalse(Room room);
 
+    @Query("SELECT count (r.id) FROM RoomUser r WHERE r.room.id = r.id and r.isDelete != true ")
+    int getTotalPeople(@Param("id") UUID id);
+
+    @Query("SELECT r FROM RoomUser r WHERE r.room.id = :id and r.isDelete != true ")
+    List<RoomUser> findByRoomId(@Param("id") UUID id);
 }
