@@ -50,7 +50,7 @@ public enum ErrorCode {
     PHONE_NUMBER(HttpStatus.BAD_REQUEST.value(), "phone-number-already-exists."),
 
     ROOM_SETTING_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "room-setting-not-found"),
-    ;
+    USER_REGISTERED(HttpStatus.BAD_REQUEST.value(), "user-registered"),;
     private final int code;
     private final String message;
 

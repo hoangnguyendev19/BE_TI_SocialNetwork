@@ -1,10 +1,7 @@
 package com.tma.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -20,6 +17,7 @@ import static com.tma.demo.constant.TableName.BOARDING_HOUSE;
  * ------------------------------------------------
  * 07/10/2024        NGUYEN             create
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

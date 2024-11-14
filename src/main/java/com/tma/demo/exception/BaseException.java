@@ -16,6 +16,7 @@ import java.io.Serial;
  * ------------------------------------------------
  * 04/10/2024 NGUYEN create
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor

@@ -3,10 +3,7 @@ package com.tma.demo.entity;
 import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -20,6 +17,7 @@ import java.util.UUID;
  * ------------------------------------------------
  * 07/10/2024        NGUYEN             create
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +27,10 @@ import java.util.UUID;
 public class Payment extends BaseTimeEntity {
     @ManyToOne
     private Room room;
+    private Integer electricityMeterNewNumber;
+    private Integer waterMeterNewNumber;
     private int totalAmount;
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
 }

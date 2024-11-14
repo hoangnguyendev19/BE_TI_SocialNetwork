@@ -1,6 +1,6 @@
 package com.tma.demo.controller;
 
-import com.tma.demo.common.EndPointConstant;
+import com.tma.demo.common.APIConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.BoardingHouseDto;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 /**
  * BoardingHouseController
@@ -38,13 +39,13 @@ public class BoardingHouseController {
                 .build());
     }
 
-    @PostMapping(value = EndPointConstant.VIEW_LIST)
-    public ResponseEntity<ApiResponse<Page<BoardingHouseDto>>> getListBoardingHouse(@RequestBody PagingRequest pagingRequest) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<BoardingHouseDto>> getBoardingHouse() {
 
-        return ResponseEntity.ok(ApiResponse.<Page<BoardingHouseDto>>builder()
+        return ResponseEntity.ok(ApiResponse.<BoardingHouseDto>builder()
                 .code(HttpStatus.OK.value())
-                .message(SuccessMessage.GET_LIST_BOARDING_HOUSES_SUCCESS.getMessage())
-                .data(boardingHouseService.getListBoardingHouses(pagingRequest))
+                .message(SuccessMessage.GET_DATA_SUCCESS.getMessage())
+                .data(boardingHouseService.getBoardingHouses())
                 .build());
     }
 

@@ -7,6 +7,7 @@ import com.tma.demo.dto.response.*;
 import com.tma.demo.dto.response.PaymentResponse;
 import com.tma.demo.dto.response.RoomResponse;
 import com.tma.demo.filter.IdFilter;
+import com.tma.demo.filter.RoomFilter;
 import com.tma.demo.service.room.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -88,7 +89,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.CREATED.value())
                 .message(SuccessMessage.CREATED_SUCCESS.getMessage())
-                .data(roomService.createPayment(request))
+                .data(roomService.createPayment(request, PaymentStatus.UNPAID))
                 .build());
     }
 

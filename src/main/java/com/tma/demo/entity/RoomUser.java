@@ -2,6 +2,7 @@ package com.tma.demo.entity;
 
 import com.tma.demo.constant.TableName;
 import jakarta.persistence.*;
+import lombok.*;
         import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.util.UUID;
  * ------------------------------------------------
  * 07/10/2024        NGUYEN             create
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
