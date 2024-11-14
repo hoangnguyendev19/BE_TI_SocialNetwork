@@ -1,14 +1,11 @@
 package com.tma.demo.service.report.imp;
 
-import com.tma.demo.common.ErrorCode;
-import com.tma.demo.common.SettingKey;
 import com.tma.demo.dto.request.ReportPostRequest;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.PostReport;
 import com.tma.demo.entity.User;
-import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.IPostReportRepository;
 import com.tma.demo.repository.PostReportRepository;
-import com.tma.demo.repository.SettingRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
 import com.tma.demo.service.setting.SettingService;
@@ -33,6 +30,7 @@ import java.util.Optional;
 public class ReportServiceImp implements ReportService {
     private final UserService userService;
     private final PostService postService;
+    private final IPostReportRepository iPostReportRepository;
     private final PostReportRepository postReportRepository;
     private final SettingService settingService;
 
@@ -42,7 +40,7 @@ public class ReportServiceImp implements ReportService {
         Optional<PostReport> postReport = postReportRepository.findByUser(user);
         if (postReport.isPresent()) {
             postReport.get().setReason(reportPostRequest.getReason());
-            postReportRepository.save(postReport.get());
+            iPostReportRepository.save(postReport.get());
         } else {
             Post post = postService.getPost(reportPostRequest.getPostId());
             saveReport(reportPostRequest, post, user);
@@ -65,7 +63,7 @@ public class ReportServiceImp implements ReportService {
                 .user(user)
                 .reason(reportPostRequest.getReason())
                 .build();
-        postReportRepository.save(report);
+        iPostReportRepository.save(report);
     }
 
 

@@ -1,37 +1,76 @@
 package com.tma.demo.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.Room;
 import com.tma.demo.entity.RoomUser;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.tma.demo.entity.QRoomUser.roomUser;
+
 /**
  * RoomUserRepository
  * Version 1.0
- * Date: 29/10/2024
+ * Date: 14/11/2024
  * Copyright
  * Modification Logs
  * DATE          AUTHOR          DESCRIPTION
  * ------------------------------------------------
- * 29/10/2024        NGUYEN             create
+ * 14/11/2024        NGUYEN             create
  */
-public interface RoomUserRepository extends JpaRepository<RoomUser, UUID> {
-    boolean existsByFullName(String fullName);
+@Repository
+@RequiredArgsConstructor
+public class RoomUserRepository {
+    private final JPAQueryFactory query;
 
-    boolean existsByPhoneNumber(String phoneNumber);
-    Optional<RoomUser> findByRoomAndFullName(Room room, String fullName);
-    Optional<RoomUser> findByRoomAndPhoneNumber(Room room, String phoneNumber);
-    List<RoomUser> findByRoom(Room room);
-    List<RoomUser> findByRoomAndIsDeleteFalse(Room room);
+    boolean existsByFullName(String fullName) {
+        return query.selectFrom(roomUser).where(roomUser.fullName.eq(fullName))
+                .stream().findAny().isPresent();
+    }
 
-    @Query("SELECT count (r.id) FROM RoomUser r WHERE r.room.id = r.id and r.isDelete != true ")
-    int getTotalPeople(@Param("id") UUID id);
+    boolean existsByPhoneNumber(String phoneNumber) {
+        return query.selectFrom(roomUser).where(roomUser.phoneNumber.eq(phoneNumber))
+                .stream().findAny().isPresent();
+    }
 
-    @Query("SELECT r FROM RoomUser r WHERE r.room.id = :id and r.isDelete != true ")
-    List<RoomUser> findByRoomId(@Param("id") UUID id);
+    Optional<RoomUser> findByRoomAndFullName(Room room, String fullName) {
+        return query.selectFrom(roomUser)
+                .where(roomUser.room.eq(room).and(roomUser.fullName.eq(fullName)))
+                .stream().findFirst();
+    }
+
+    Optional<RoomUser> findByRoomAndPhoneNumber(Room room, String phoneNumber) {
+        return query.selectFrom(roomUser)
+                .where(roomUser.room.eq(room).and(roomUser.phoneNumber.eq(phoneNumber)))
+                .stream().findFirst();
+    }
+
+    List<RoomUser> findByRoom(Room room) {
+        return query.selectFrom(roomUser)
+                .where(roomUser.room.eq(room))
+                .stream().toList();
+    }
+
+    public List<RoomUser> findByRoomAndIsDeleteFalse(Room room) {
+        return query.selectFrom(roomUser)
+                .where(roomUser.room.eq(room).and(roomUser.isDelete.isFalse()))
+                .stream().toList();
+    }
+
+    public int getTotalPeople(UUID id) {
+        return (int) query.selectFrom(roomUser)
+                .where(roomUser.room.id.eq(id).and(roomUser.isDelete.isFalse()))
+                .stream().count();
+    }
+
+
+    public List<RoomUser> findByRoomId(UUID id) {
+        return query.selectFrom(roomUser)
+                .where(roomUser.room.id.eq(id).and(roomUser.isDelete).isFalse())
+                .stream().toList();
+    }
 }

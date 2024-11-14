@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.request.VerifyOTPRequest;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.IUserRepository;
 import com.tma.demo.service.auth.ForgotPassServices;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,6 @@ import com.tma.demo.dto.response.VerifyOtpResponse;
 import com.tma.demo.entity.Otp;
 import com.tma.demo.entity.User;
 import com.tma.demo.repository.OtpRepository;
-import com.tma.demo.repository.UserRepository;
 import com.tma.demo.util.EmailUtil;
 import com.tma.demo.util.OtpUtil;
 import jakarta.mail.MessagingException;
@@ -27,12 +27,12 @@ public class ForgotPassServiceImp implements ForgotPassServices {
     private final OtpRepository otpRepository;
     private final OtpUtil otpUtil;
     private final EmailUtil emailUtil;
-    private final UserRepository userRepository;
+    private final IUserRepository iUserRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
     public String generateOtp(String email) {
         // Find User
-        User user = userRepository.findByEmail(email)
+        User user = iUserRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         // Generate OTP
         String otp = otpUtil.generateOtp();
@@ -54,7 +54,7 @@ public class ForgotPassServiceImp implements ForgotPassServices {
     }
     @Override
     public VerifyOtpResponse verifyAccount(VerifyOTPRequest verifyOTPRequest) {
-        User user = userRepository.findByEmail(verifyOTPRequest.getEmail())
+        User user = iUserRepository.findByEmail(verifyOTPRequest.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         Otp geotp = otpRepository.findByUserAndOtp(user, verifyOTPRequest.getOtp())
                 .orElseThrow(() -> new BaseException(ErrorCode.OTP_DOES_NOT_EXIST));
@@ -79,12 +79,12 @@ public class ForgotPassServiceImp implements ForgotPassServices {
             throw new BaseException(ErrorCode.MATCH_PASSWORD);
         }
         // Find User By Email
-        User user = userRepository.findByEmail(setPasswordRequest.getEmail())
+        User user = iUserRepository.findByEmail(setPasswordRequest.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         // HashPassWord And Save User into DB
         String hashedPassword = passwordEncoder.encode(password);
         user.setPassword(hashedPassword);
-        userRepository.save(user);
+        iUserRepository.save(user);
         return SuccessMessage.UPDATE_PASSWORD_SUCCESS.getMessage();
     }
 }

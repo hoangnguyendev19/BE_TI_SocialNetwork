@@ -9,6 +9,8 @@ import com.tma.demo.dto.request.UpdateProfileRequest;
 import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.ITokenRepository;
+import com.tma.demo.repository.IUserRepository;
 import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
@@ -41,7 +43,8 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class    UserServiceImp implements UserService {
+public class UserServiceImp implements UserService {
+    private final IUserRepository iUserRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
@@ -60,7 +63,7 @@ public class    UserServiceImp implements UserService {
         }
         if (passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
-            userRepository.save(user);
+            iUserRepository.save(user);
             revokeAllTokens(user.getId());
         } else throw new BaseException(ErrorCode.WRONG_PASSWORD);
     }
@@ -81,7 +84,7 @@ public class    UserServiceImp implements UserService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setCity(request.getCity());
         user.setCountry(request.getCountry());
-        user = userRepository.saveAndFlush(user);
+        user = iUserRepository.saveAndFlush(user);
         return mapper.map(user, UserDto.class);
     }
 
@@ -103,7 +106,7 @@ public class    UserServiceImp implements UserService {
             user.setCoverPictureUrl(data.get(AttributeConstant.CLOUDINARY_URL).toString());
             url = user.getCoverPictureUrl();
         }
-        user = userRepository.saveAndFlush(user);
+        user = iUserRepository.saveAndFlush(user);
         return url;
     }
 

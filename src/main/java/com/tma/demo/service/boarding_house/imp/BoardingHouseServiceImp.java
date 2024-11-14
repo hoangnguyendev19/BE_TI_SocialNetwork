@@ -9,8 +9,8 @@ import com.tma.demo.entity.RoomSetting;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.BoardingHouseRepository;
-import com.tma.demo.repository.RoomSettingRepository;
-import com.tma.demo.repository.SettingRepository;
+import com.tma.demo.repository.ISettingRepository;
+import com.tma.demo.repository.IRoomSettingRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.setting.SettingService;
 import com.tma.demo.service.user.UserService;
@@ -38,11 +38,11 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class BoardingHouseServiceImp implements BoardingHouseService {
     private final BoardingHouseRepository boardingHouseRepository;
-    private final RoomSettingRepository roomSettingRepository;
+    private final IRoomSettingRepository roomSettingRepository;
     private final SettingService settingService;
     private final UserService userService;
     private final ModelMapper modelMapper;
-    private final SettingRepository settingRepository;
+    private final ISettingRepository iSettingRepository;
 
     @Override
     @Transactional

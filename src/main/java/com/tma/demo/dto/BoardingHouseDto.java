@@ -1,7 +1,5 @@
 package com.tma.demo.dto;
 
-import com.tma.demo.entity.User;
-import com.tma.demo.repository.RoomSettingRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

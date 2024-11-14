@@ -8,8 +8,8 @@ import com.tma.demo.entity.LikeComment;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.CommentRepository;
+import com.tma.demo.repository.IUserRepository;
 import com.tma.demo.repository.LikeCommentRepository;
-import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.comment_post.CommentPostService;
 import com.tma.demo.service.comment_post.FavoriteCommentService;
 import com.tma.demo.service.user.UserService;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class FavoriteCommentServiceImp implements FavoriteCommentService {
-    private final UserRepository userRepository;
+    private final IUserRepository iUserRepository;
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final UserService userService;

@@ -1,56 +1,94 @@
 package com.tma.demo.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.RoomStatus;
 import com.tma.demo.entity.Room;
+import com.tma.demo.util.BuilderRoomPredicate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.tma.demo.entity.QRoom.room;
 
 /**
  * RoomRepository
  * Version 1.0
- * Date: 21/10/2024
+ * Date: 14/11/2024
  * Copyright
  * Modification Logs
  * DATE          AUTHOR          DESCRIPTION
  * ------------------------------------------------
- * 21/10/2024        NGUYEN             create
+ * 14/11/2024        NGUYEN             create
  */
-public interface RoomRepository extends JpaRepository<Room, UUID> {
-    @Query("SELECT count (r.id)  FROM Room r WHERE r.roomName = :roomName AND r.boardingHouse.id = :id AND r.isDelete != true ")
-    int isRoomNameExist(@Param("roomName") String roomName, @Param("id") UUID id);
+@Repository
+@RequiredArgsConstructor
+public class RoomRepository {
+    private final JPAQueryFactory query;
 
-    @Query("SELECT r FROM Room r WHERE r.id = :id AND r.isDelete != true")
-    Optional<Room> findRoomById(@Param("id") UUID uuid);
+    public int isRoomNameExist(String roomName, UUID id) {
+        return (int) query.selectFrom(room)
+                .where(room.roomName.eq(roomName).and(room.boardingHouse.id.eq(id)))
+                .stream().count();
+    }
 
+    public Optional<Room> findRoomById(UUID id) {
+        return query.selectFrom(room)
+                .where(room.id.eq(id).and(room.isDelete.isFalse()))
+                .stream().findFirst();
+    }
 
-    @Query(""" 
-            SELECT r
-            FROM Room r LEFT JOIN (
-                     SELECT p.room.id as rid, p.paymentStatus as status
-                     FROM Payment p
-                     WHERE p.createdAt = (
-                         SELECT MAX(p2.createdAt)
-                         FROM Payment p2
-                         WHERE p2.room.id = p.room.id
-                     )
-                 ) latest_payment ON latest_payment.rid = r.id
-                 WHERE r.boardingHouse.id = :boardingHouseId
-                 AND (r.roomStatus = :roomStatus or :roomStatus is null)
-                 AND (latest_payment.status = :paymentStatus or :paymentStatus is null)
-                 AND (Date(r.createdAt) = Date(:createdAt) or :createdAt = '')
-            """)
-    Page<Room> getAllRooms(Pageable pageable,
-                           @Param("boardingHouseId") UUID boardingHouseId,
-                           @Param("paymentStatus") PaymentStatus paymentStatus,
-                           @Param("roomStatus") RoomStatus roomStatus,
-                           @Param("createdAt") String createdAt
-    );
+    public Page<Room> getAllRooms(Pageable pageable,
+                                  UUID boardingHouseId,
+                                  PaymentStatus paymentStatus,
+                                  RoomStatus roomStatus,
+                                  String createdAt
+    ) {
+        Predicate predicate = BuilderRoomPredicate.buildRoomPredicate(boardingHouseId, paymentStatus, roomStatus, createdAt);
+        OrderSpecifier<?> orderSpecifier = getSortOrder(pageable);
+        List<Room> results = query
+                .selectFrom(room)
+                .where(predicate)
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        long total = query
+                .selectFrom(room)
+                .where(predicate)
+                .stream().count();
+        return new PageImpl<>(results, pageable, total);
+    }
+
+    private OrderSpecifier<?> getSortOrder(Pageable pageable) {
+        if (pageable.getSort().isUnsorted()) {
+            return null;
+        }
+        return pageable.getSort().stream()
+                .map(order -> {
+                    return switch (order.getProperty()) {
+                        case "createdAt" -> order.isAscending() ? room.createdAt.asc() : room.createdAt.desc();
+                        case "roomName" -> order.isAscending() ? room.roomName.asc() : room.roomName.desc();
+                        case "electricMeterOldNumber" -> order.isAscending() ?
+                                room.electricMeterOldNumber.asc() : room.electricMeterOldNumber.desc();
+                        case "waterMeterOldNumber" -> order.isAscending() ?
+                                room.waterMeterOldNumber.asc() : room.waterMeterOldNumber.desc();
+                        case "roomStatus" -> order.isAscending() ? room.roomStatus.asc() : room.roomStatus.desc();
+                        case "isDelete" -> order.isAscending() ? room.isDelete.asc() : room.isDelete.desc();
+                        default -> null;
+                    };
+                })
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
 }

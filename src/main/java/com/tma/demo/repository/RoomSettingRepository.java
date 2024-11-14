@@ -1,24 +1,33 @@
 package com.tma.demo.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.RoomSetting;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.tma.demo.entity.QRoomSetting.roomSetting;
+
 /**
  * RoomSettingRepository
  * Version 1.0
- * Date: 21/10/2024
+ * Date: 14/11/2024
  * Copyright
  * Modification Logs
  * DATE          AUTHOR          DESCRIPTION
  * ------------------------------------------------
- * 21/10/2024        NGUYEN             create
+ * 14/11/2024        NGUYEN             create
  */
-public interface RoomSettingRepository extends JpaRepository<RoomSetting, UUID> {
-    @Query("select r from RoomSetting r WHERE  r.boardingHouse.id = :id")
-    Optional<RoomSetting> findByBoardingHouseId(@Param("id") UUID id);
+@Repository
+@RequiredArgsConstructor
+public class RoomSettingRepository {
+    private final JPAQueryFactory query;
+
+    Optional<RoomSetting> findByBoardingHouseId(UUID id) {
+        return query.selectFrom(roomSetting)
+                .where(roomSetting.boardingHouse.id.eq(id))
+                .stream().findFirst();
+    }
 }
