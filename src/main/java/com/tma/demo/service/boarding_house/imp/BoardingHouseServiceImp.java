@@ -70,11 +70,16 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
         return boardingHouseRepository.findByUser(user.getId()).isPresent();
     }
 
-    private void approveBoardingHouseAsync(BoardingHouse boardingHouse) {
+    @Transactional
+    void approveBoardingHouseAsync(BoardingHouse boardingHouse) {
         CompletableFuture.runAsync(() -> {
             try {
                 Thread.sleep(Integer.parseInt(settingService.getValue(SettingKey.APPROVE_TIME)));  // Simulate delay
-                boardingHouseRepository.saveAndFlush(boardingHouse);
+                BoardingHouse temp = boardingHouseRepository.saveAndFlush(boardingHouse);
+                SettingBoardingHouseDto settingBoardingHouseDto = new SettingBoardingHouseDto(
+                        temp.getId().toString(), 0, 0
+                );
+                saveSetting(settingBoardingHouseDto);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -116,13 +121,25 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
                 .orElse(null);
     }
 
+    public SettingBoardingHouseDto getSetting() {
+        User user = userService.getUserDetails();
+        BoardingHouse boardingHouse = boardingHouseRepository.findByUser(user.getId()).orElseThrow(() -> new BaseException(ErrorCode.ROOM_SETTING_NOT_FOUND));
+        RoomSetting setting = getSetting(boardingHouse.getId().toString());
+        return new SettingBoardingHouseDto(setting.getBoardingHouse().getId().toString(), setting.getWaterBill(), setting.getElectricBill());
+    }
+
     @Override
     public BoardingHouseDto getBoardingHouses() {
         User user = userService.getUserDetails();
         Optional<BoardingHouse> boardingHouse = boardingHouseRepository.findByUser(user.getId());
-        if (boardingHouse.isPresent()) {
-            return modelMapper.map(boardingHouse, BoardingHouseDto.class);
-        }
-        return null;
+        SettingBoardingHouseDto setting = getSetting();
+        return boardingHouse.map(house -> BoardingHouseDto.builder()
+                .id(house.getId().toString())
+                .ward(house.getWard())
+                .boardingHouseName(house.getBoardingHouseName())
+                .city(house.getCity())
+                .presentAddress(house.getPresentAddress())
+                .setting(setting)
+                .build()).orElse(null);
     }
 }

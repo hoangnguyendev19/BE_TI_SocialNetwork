@@ -1,13 +1,12 @@
 package com.tma.demo.service.room;
 
+import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.dto.request.*;
-import com.tma.demo.dto.response.PaymentResponse;
-import com.tma.demo.dto.response.RoomResponse;
+import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.Room;
 import com.tma.demo.filter.IdFilter;
 import com.tma.demo.filter.RoomFilter;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -32,10 +31,20 @@ public interface RoomService {
     void deleteRoom(String id);
 
     @Transactional
-    PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest);
+    PaymentResponse createPayment(CreatePaymentRequest createPaymentRequest, PaymentStatus paymentStatus);
 
     @Transactional
     PaymentResponse updatePaymentStatus(UpdatePaymentStatusRequest updatePaymentStatusRequest);
 
     Page<RoomResponse> getListRooms(PagingRequest<RoomFilter> pagingRequest);
+
+    PeopleResponse addPeopleToRoom(PeopleRequest request);
+
+    PeopleResponse updatePeopleInRoom(PeopleRequest PeopleRequest);
+
+    void removePeopleFromRoom(String roomUserId);
+
+    RoomDetailResponse getRoomDetail(String roomId);
+
+
 }

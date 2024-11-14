@@ -18,4 +18,5 @@ public interface BoardingHouseRepository extends JpaRepository<BoardingHouse, UU
     int isBoardingHouseNameExists(@Param("name") String name);
     @Query("SELECT b FROM BoardingHouse b WHERE b.user.id = :id AND b.isDelete != true ")
     Optional<BoardingHouse> findByUser(@Param("id") UUID id);
+
 }

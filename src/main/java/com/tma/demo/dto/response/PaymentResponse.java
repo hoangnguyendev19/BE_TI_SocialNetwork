@@ -21,5 +21,7 @@ import lombok.NoArgsConstructor;
 public class PaymentResponse {
     private String id;
     private PaymentStatus status;
+    private Integer electricityMeterNewNumber;
+    private Integer waterMeterNewNumber;
     private Integer totalAmount;
 }

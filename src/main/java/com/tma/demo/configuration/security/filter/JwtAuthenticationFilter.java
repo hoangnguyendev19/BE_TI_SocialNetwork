@@ -1,6 +1,6 @@
 package com.tma.demo.configuration.security.filter;
 
-import com.tma.demo.common.APIConstant;
+import com.tma.demo.common.EndPointConstant;
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.CommonConstant;
@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().contains(APIConstant.AUTH)) {
+        if (request.getServletPath().contains(EndPointConstant.AUTH)) {
             filterChain.doFilter(request, response);
             return;
         }
