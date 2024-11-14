@@ -17,7 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
  * 14/11/2024        NGUYEN             create
  */
 @Configuration
-@EnableJpaAuditing
 public class JpaConfiguration {
     private EntityManager entityManager;
 
