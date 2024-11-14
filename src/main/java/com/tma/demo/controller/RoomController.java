@@ -1,5 +1,6 @@
 package com.tma.demo.controller;
 
+import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.*;
@@ -94,7 +95,7 @@ public class RoomController {
     }
 
     @PostMapping(value = VIEW_LIST)
-    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest<IdFilter> pagingRequest) {
+    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest<RoomFilter> pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<RoomResponse>>builder()
                 .code(HttpStatus.OK.value())
