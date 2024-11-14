@@ -1,9 +1,9 @@
 package com.tma.demo.service.comment_post;
 
-import com.tma.demo.dto.response.CreateFavoriteCommentResponse;
+import com.tma.demo.dto.response.LikeCommentResponse;
 
 
 public interface FavoriteCommentService {
-    CreateFavoriteCommentResponse createFavoriteComment(String commentId);
+    LikeCommentResponse createFavoriteComment(String commentId);
     String deleteFavoriteComment(String likeCommentId);
 }

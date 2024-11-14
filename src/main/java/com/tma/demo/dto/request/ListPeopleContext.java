@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ListPeopleRequest {
+public class ListPeopleContext {
     private String phoneNumber;
     private String fullName;
 }

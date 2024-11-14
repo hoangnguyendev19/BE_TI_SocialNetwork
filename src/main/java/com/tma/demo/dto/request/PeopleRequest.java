@@ -14,6 +14,6 @@ import java.util.List;
 public class PeopleRequest {
     private String roomId;
     private String roomUserId;
-    private List<ListPeopleRequest> people;
+    private List<ListPeopleContext> people;
 }
 

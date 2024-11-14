@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CreateFavoriteCommentResponse {
+public class LikeCommentResponse {
     private String id;
     private String userId;
     private String commentId;
