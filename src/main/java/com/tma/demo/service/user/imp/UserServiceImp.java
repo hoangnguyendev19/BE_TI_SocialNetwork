@@ -41,7 +41,7 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImp implements UserService {
+public class    UserServiceImp implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;

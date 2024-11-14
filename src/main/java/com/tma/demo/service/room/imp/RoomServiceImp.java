@@ -217,29 +217,28 @@ public class RoomServiceImp implements RoomService {
     public PeopleResponse addPeopleToRoom(PeopleRequest request) {
         Room room = getRoomById(request.getRoomId());
         List<UserReponseRoom> userResponses = new ArrayList<>();
-        for (PeopleRequestRoom person : request.getPeople()) {
+        for (ListPeopleContext person : request.getPeople()) {
             RoomUser roomUser = new RoomUser();
             roomUser.setFullName(person.getFullName());
             roomUser.setPhoneNumber(person.getPhoneNumber());
             roomUser.setRoom(room);
             roomUserRepository.save(roomUser);
-            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber(),roomUser.getRoom().isDelete()));
+            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber()));
         }
         return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
 
     @Override
-    public UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest) {
-        RoomUser roomUser = checkRoomUserById(updatePeopleRequest.getRoomUserId());
-        roomUser.setFullName(updatePeopleRequest.getFullName());
-        roomUser.setPhoneNumber(updatePeopleRequest.getPhoneNumber());
-        roomUserRepository.save(roomUser);
-        return new UpdatePeopleResponse(
-                roomUser.getId(),
-                roomUser.getFullName(),
-                roomUser.getPhoneNumber(),
-                roomUser.isDelete()
-        );
+    public PeopleResponse updatePeopleInRoom(PeopleRequest peopleRequest) {
+        RoomUser roomUser = checkRoomUserById(peopleRequest.getRoomUserId());
+        List<UserReponseRoom> userResponses = new ArrayList<>();
+        for (ListPeopleContext person : peopleRequest.getPeople()) {
+            roomUser.setFullName(person.getFullName());
+            roomUser.setPhoneNumber(person.getPhoneNumber());
+            roomUserRepository.save(roomUser);
+            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber()));
+        }
+        return new PeopleResponse(null,userResponses);
     }
 
     @Override
@@ -252,19 +251,19 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
-        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))
+        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))//get 2 record
                 .stream()
                 .skip(1)
                 .findFirst()
                 .orElse(null);
 
-        List<UserReponseRoom> userResponses = roomUserRepository.findByRoom(room)
+        List<UserReponseRoom> userResponses = roomUserRepository.findByRoomAndIsDeleteFalse(room)
                 .stream()
                 .map(roomUser -> new UserReponseRoom(
                         roomUser.getId(),
                         roomUser.getFullName(),
-                        roomUser.getPhoneNumber(),
-                        roomUser.isDelete()
+                        roomUser.getPhoneNumber()
+
                 ))
                 .collect(Collectors.toList());
 
@@ -275,7 +274,6 @@ public class RoomServiceImp implements RoomService {
                 secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getWaterMeterNumber() : null,
                 room.getElectricMeterOldNumber(),
                 room.getWaterMeterOldNumber(),
-                room.isDelete(),
                 userResponses
         );
     }

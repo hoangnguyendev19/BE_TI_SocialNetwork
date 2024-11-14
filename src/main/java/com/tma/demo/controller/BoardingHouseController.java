@@ -5,8 +5,10 @@ import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.BoardingHouseDto;
 import com.tma.demo.dto.SettingBoardingHouseDto;
+import com.tma.demo.dto.request.PagingRequest;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * 18/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = APIConstant.BOARDING_HOUSE)
+@RequestMapping(value = EndPointConstant.BOARDING_HOUSE)
 @RequiredArgsConstructor
 public class BoardingHouseController {
     private final BoardingHouseService boardingHouseService;
@@ -47,7 +49,7 @@ public class BoardingHouseController {
                 .build());
     }
 
-    @PutMapping(value = APIConstant.UPDATE_SETTING)
+    @PutMapping(value = EndPointConstant.UPDATE_SETTING)
     public ResponseEntity<ApiResponse<SettingBoardingHouseDto>> saveSetting(@RequestBody SettingBoardingHouseDto settingBoardingHouseDto) {
         return ResponseEntity.ok(ApiResponse.<SettingBoardingHouseDto>builder()
                 .code(HttpStatus.OK.value())

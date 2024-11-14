@@ -40,7 +40,7 @@ public interface RoomService {
 
     PeopleResponse addPeopleToRoom(PeopleRequest request);
 
-    UpdatePeopleResponse updatePeopleInRoom(UpdatePeopleRequest updatePeopleRequest);
+    PeopleResponse updatePeopleInRoom(PeopleRequest PeopleRequest);
 
     void removePeopleFromRoom(String roomUserId);
 

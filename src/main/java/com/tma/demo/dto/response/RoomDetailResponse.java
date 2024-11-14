@@ -18,7 +18,6 @@ public class RoomDetailResponse {
     private Integer waterMeterOldNumber;
     private Integer electricMeterNewNumber;
     private Integer waterMeterNewNumber;
-    private boolean isDelete;
     private List<UserReponseRoom> users;
 }
 

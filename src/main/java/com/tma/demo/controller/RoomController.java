@@ -1,7 +1,5 @@
 package com.tma.demo.controller;
 
-import com.tma.demo.common.APIConstant;
-import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.*;
@@ -17,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tma.demo.common.APIConstant.*;
+import static com.tma.demo.common.EndPointConstant.*;
 
 /**
  * RoomController
@@ -77,7 +75,7 @@ public class RoomController {
         );
     }
 
-    @PutMapping(value = UPDATE_PAYMENT_STATUS)
+    @PutMapping(value = PAYMENT + STATUS)
     public ResponseEntity<ApiResponse<PaymentResponse>> updatePaymentStatus(@RequestBody UpdatePaymentStatusRequest request) {
         return ResponseEntity.ok(ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.OK.value())
@@ -86,7 +84,7 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping(value = CREATE_PAYMENT)
+    @PostMapping(value = PAYMENT)
     public ResponseEntity<ApiResponse<PaymentResponse>> createPayment(@RequestBody CreatePaymentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<PaymentResponse>builder()
                 .code(HttpStatus.CREATED.value())
@@ -95,8 +93,8 @@ public class RoomController {
                 .build());
     }
 
-    @PostMapping(value = APIConstant.VIEW_LIST)
-    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest<RoomFilter> pagingRequest) {
+    @PostMapping(value = VIEW_LIST)
+    public ResponseEntity<ApiResponse<Page<RoomResponse>>> getListBoardingHouse(@RequestBody PagingRequest<IdFilter> pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<RoomResponse>>builder()
                 .code(HttpStatus.OK.value())
@@ -104,23 +102,23 @@ public class RoomController {
                 .data(roomService.getListRooms(pagingRequest))
                 .build());
     }
-    @PostMapping(value = ADD_PEOPLE_IN_ROOM)
+    @PostMapping(PEOPLE)
     public ResponseEntity<ApiResponse<PeopleResponse>> addPeopleInRoom(@RequestBody PeopleRequest peopleRequest) {
         PeopleResponse peopleResponse = roomService.addPeopleToRoom(peopleRequest);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.ADD_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
     }
-    @PutMapping(value = UPDATE_PEOPLE_IN_ROOM)
-    public ResponseEntity<ApiResponse<UpdatePeopleResponse>> updatePeopleInRoom(@RequestBody UpdatePeopleRequest PeopleRequest) {
-        UpdatePeopleResponse updatePeopleResponse = roomService.updatePeopleInRoom(PeopleRequest);
-        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), updatePeopleResponse));
+    @PutMapping(PEOPLE)
+    public ResponseEntity<ApiResponse<PeopleResponse>> updatePeopleInRoom(@RequestBody PeopleRequest peopleRequest) {
+        PeopleResponse peopleResponse = roomService.updatePeopleInRoom(peopleRequest);
+        return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.UPDATE_PEOPLE_ROOM_SUCCESS.getMessage(), peopleResponse));
     }
-    @DeleteMapping(value = DELETE_PEOPLE)
-    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable("roomUserId") String roomUserId ) {
+    @DeleteMapping(PEOPLE + ROOM_USER_ID)
+    public ResponseEntity<ApiResponse<Void>> removePeopleFromRoom(@PathVariable String roomUserId ) {
         roomService.removePeopleFromRoom(roomUserId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.DELETE_SUCCESS.getMessage(), null));
     }
-    @GetMapping(value = ROOM_DETAIL)
-    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable("roomId") String roomId) {
+    @GetMapping(DETAIL+ROOM_ID)
+    public ResponseEntity<ApiResponse<RoomDetailResponse>> getRoomDetail(@PathVariable String roomId) {
         RoomDetailResponse roomDetailResponse = roomService.getRoomDetail(roomId);
         return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), SuccessMessage.GET_ROOM_DETAIL_SUCCESS.getMessage(), roomDetailResponse));
     }

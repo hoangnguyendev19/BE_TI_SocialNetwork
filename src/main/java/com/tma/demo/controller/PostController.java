@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tma.demo.common.APIConstant.*;
+import static com.tma.demo.common.EndPointConstant.*;
 
 /**
  * PostController
@@ -58,8 +58,8 @@ public class PostController {
                 .build());
     }
 
-    @DeleteMapping(value = POST_ID)
-    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("postId") String postId) {
+    @DeleteMapping(value = ID)
+    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("id") String postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .code(HttpStatus.OK.value())
@@ -68,8 +68,8 @@ public class PostController {
                 .build());
     }
 
-    @GetMapping(value = POST_ID)
-    public ResponseEntity<ApiResponse<PostDto>> getPost(@PathVariable("postId") String postId) {
+    @GetMapping(value = ID)
+    public ResponseEntity<ApiResponse<PostDto>> getPost(@PathVariable("id") String postId) {
         return ResponseEntity.ok(ApiResponse.<PostDto>builder()
                 .code(HttpStatus.OK.value())
                 .message(SuccessMessage.GET_POST_SUCCESS.getMessage())
