@@ -1,6 +1,6 @@
 package com.tma.demo.controller;
 
-import com.tma.demo.common.APIConstant;
+import com.tma.demo.common.EndPointConstant;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.BoardingHouseDto;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * 18/10/2024        NGUYEN             create
  */
 @RestController
-@RequestMapping(value = APIConstant.BOARDING_HOUSE)
+@RequestMapping(value = EndPointConstant.BOARDING_HOUSE)
 @RequiredArgsConstructor
 public class BoardingHouseController {
     private final BoardingHouseService boardingHouseService;
@@ -38,7 +38,7 @@ public class BoardingHouseController {
                 .build());
     }
 
-    @PostMapping(value = APIConstant.VIEW_LIST)
+    @PostMapping(value = EndPointConstant.VIEW_LIST)
     public ResponseEntity<ApiResponse<Page<BoardingHouseDto>>> getListBoardingHouse(@RequestBody PagingRequest pagingRequest) {
 
         return ResponseEntity.ok(ApiResponse.<Page<BoardingHouseDto>>builder()
@@ -48,7 +48,7 @@ public class BoardingHouseController {
                 .build());
     }
 
-    @PutMapping(value = APIConstant.UPDATE_SETTING)
+    @PutMapping(value = EndPointConstant.UPDATE_SETTING)
     public ResponseEntity<ApiResponse<SettingBoardingHouseDto>> saveSetting(@RequestBody SettingBoardingHouseDto settingBoardingHouseDto) {
         return ResponseEntity.ok(ApiResponse.<SettingBoardingHouseDto>builder()
                 .code(HttpStatus.OK.value())

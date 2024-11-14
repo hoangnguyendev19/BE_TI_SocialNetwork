@@ -2,7 +2,6 @@ package com.tma.demo.controller;
 
 
 import com.tma.demo.common.SuccessMessage;
-import com.tma.demo.constant.CommonConstant;
 import com.tma.demo.dto.ApiResponse;
 import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.RegisterResponse;
@@ -11,11 +10,8 @@ import com.tma.demo.dto.response.VerifyOtpResponse;
 import com.tma.demo.service.auth.AuthService;
 import com.tma.demo.service.auth.ForgotPassServices;
 import com.tma.demo.service.auth.RegisterService;
-import com.tma.demo.service.auth.imp.ForgotPassServiceImp;
-import com.tma.demo.service.auth.imp.RegisterServiceImp;
 import com.tma.demo.service.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import static com.tma.demo.common.APIConstant.*;
+import static com.tma.demo.common.EndPointConstant.*;
 
 /**
  * AuthenticationController
