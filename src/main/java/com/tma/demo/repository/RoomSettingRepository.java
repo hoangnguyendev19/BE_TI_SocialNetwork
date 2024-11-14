@@ -25,9 +25,9 @@ import static com.tma.demo.entity.QRoomSetting.roomSetting;
 public class RoomSettingRepository {
     private final JPAQueryFactory query;
 
-    Optional<RoomSetting> findByBoardingHouseId(UUID id) {
-        return query.selectFrom(roomSetting)
+    public Optional<RoomSetting> findByBoardingHouseId(UUID id) {
+        return Optional.ofNullable(query.selectFrom(roomSetting)
                 .where(roomSetting.boardingHouse.id.eq(id))
-                .stream().findFirst();
+                .fetchOne());
     }
 }

@@ -28,8 +28,10 @@ public class RoomUserRepository {
     private final JPAQueryFactory query;
 
     boolean existsByFullName(String fullName) {
-        return query.selectFrom(roomUser).where(roomUser.fullName.eq(fullName))
-                .stream().findAny().isPresent();
+        return query.select(roomUser.id.count())
+                .from(roomUser)
+                .where(roomUser.fullName.eq(fullName))
+                .fetchOne() > 0;
     }
 
     boolean existsByPhoneNumber(String phoneNumber) {
@@ -61,16 +63,17 @@ public class RoomUserRepository {
                 .stream().toList();
     }
 
-    public int getTotalPeople(UUID id) {
-        return (int) query.selectFrom(roomUser)
+    public long getTotalPeople(UUID id) {
+        return query.select(roomUser.id.count())
+                .from(roomUser)
                 .where(roomUser.room.id.eq(id).and(roomUser.isDelete.isFalse()))
-                .stream().count();
+                .fetchOne();
     }
 
 
     public List<RoomUser> findByRoomId(UUID id) {
         return query.selectFrom(roomUser)
                 .where(roomUser.room.id.eq(id).and(roomUser.isDelete).isFalse())
-                .stream().toList();
+                .fetch();
     }
 }

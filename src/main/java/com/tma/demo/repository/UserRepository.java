@@ -6,9 +6,12 @@ import com.tma.demo.entity.QUser;
 import com.tma.demo.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.tma.demo.entity.QUser.user;
 
 
 /**
@@ -23,16 +26,18 @@ import java.util.UUID;
  */
 @Repository
 @RequiredArgsConstructor
-public class UserRepository {
-    private final JPAQueryFactory query;
-    private final QUser user = new QUser(TableName.USER);
 
+public class UserRepository {
+
+    private final JPAQueryFactory query;
+
+    @Transactional
     public Optional<User> findByEmail(String email) {
-        return query.selectFrom(user).where(user.email.eq(email).and(user.isDelete.isFalse())).stream().findFirst();
+        return Optional.ofNullable(query.selectFrom(user).where(user.email.eq(email).and(user.isDelete.isFalse())).fetchOne());
     }
 
     public Optional<User> findById(UUID id) {
-        return query.selectFrom(user).where(user.id.eq(id).and(user.isDelete.isFalse())).stream().findFirst();
+        return Optional.ofNullable(query.selectFrom(user).where(user.id.eq(id).and(user.isDelete.isFalse())).fetchOne());
     }
 
     public boolean existsByEmail(String email) {

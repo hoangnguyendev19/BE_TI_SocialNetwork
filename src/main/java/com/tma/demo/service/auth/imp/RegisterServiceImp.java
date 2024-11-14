@@ -1,21 +1,24 @@
 package com.tma.demo.service.auth.imp;
 
+import com.tma.demo.common.ErrorCode;
+import com.tma.demo.dto.request.RegisterRequest;
+import com.tma.demo.dto.response.RegisterResponse;
+import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.IUserRepository;
+import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.auth.RegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.tma.demo.dto.request.RegisterRequest;
-import com.tma.demo.dto.response.RegisterResponse;
-import com.tma.demo.entity.User;
-import com.tma.demo.repository.IUserRepository;
-import com.tma.demo.common.ErrorCode;
 @Service
 @RequiredArgsConstructor
 public class RegisterServiceImp implements RegisterService {
     private final IUserRepository iUserRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public User registerDTOtoUser(RegisterRequest registerRequest) {
         // Check if email already exists
@@ -35,6 +38,7 @@ public class RegisterServiceImp implements RegisterService {
         user.setPassword(registerRequest.getPassword());
         return user;
     }
+
     @Override
     public RegisterResponse saveUser(RegisterRequest registerRequest) {
         User user = registerDTOtoUser(registerRequest);
@@ -48,8 +52,9 @@ public class RegisterServiceImp implements RegisterService {
                 savedUser.getEmail(),
                 savedUser.getPhoneNumber());
     }
+
     @Override
     public boolean isEmailExist(String email) {
-        return this.iUserRepository.existsByEmail(email);
+        return this.userRepository.existsByEmail(email);
     }
 }

@@ -2,7 +2,7 @@ package com.tma.demo.configuration;
 
 import com.tma.demo.common.ErrorCode;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.IUserRepository;
+import com.tma.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final IUserRepository iUserRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -49,7 +49,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> iUserRepository.findByEmail(username)
+        return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new BaseException(ErrorCode.UNAUTHENTICATED));
     }
 

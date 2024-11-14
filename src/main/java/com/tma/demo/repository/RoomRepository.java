@@ -35,10 +35,11 @@ import static com.tma.demo.entity.QRoom.room;
 public class RoomRepository {
     private final JPAQueryFactory query;
 
-    public int isRoomNameExist(String roomName, UUID id) {
-        return (int) query.selectFrom(room)
+    public long isRoomNameExist(String roomName, UUID id) {
+        return  query.select(room.id.count())
+                .from(room)
                 .where(room.roomName.eq(roomName).and(room.boardingHouse.id.eq(id)))
-                .stream().count();
+                .fetchOne();
     }
 
     public Optional<Room> findRoomById(UUID id) {

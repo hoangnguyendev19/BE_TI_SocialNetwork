@@ -7,6 +7,7 @@ import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.request.VerifyOTPRequest;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.IUserRepository;
+import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.auth.ForgotPassServices;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,12 @@ public class ForgotPassServiceImp implements ForgotPassServices {
     private final OtpUtil otpUtil;
     private final EmailUtil emailUtil;
     private final IUserRepository iUserRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
     public String generateOtp(String email) {
         // Find User
-        User user = iUserRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         // Generate OTP
         String otp = otpUtil.generateOtp();
@@ -54,7 +56,7 @@ public class ForgotPassServiceImp implements ForgotPassServices {
     }
     @Override
     public VerifyOtpResponse verifyAccount(VerifyOTPRequest verifyOTPRequest) {
-        User user = iUserRepository.findByEmail(verifyOTPRequest.getEmail())
+        User user = userRepository.findByEmail(verifyOTPRequest.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         Otp geotp = otpRepository.findByUserAndOtp(user, verifyOTPRequest.getOtp())
                 .orElseThrow(() -> new BaseException(ErrorCode.OTP_DOES_NOT_EXIST));
@@ -79,7 +81,7 @@ public class ForgotPassServiceImp implements ForgotPassServices {
             throw new BaseException(ErrorCode.MATCH_PASSWORD);
         }
         // Find User By Email
-        User user = iUserRepository.findByEmail(setPasswordRequest.getEmail())
+        User user = userRepository.findByEmail(setPasswordRequest.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         // HashPassWord And Save User into DB
         String hashedPassword = passwordEncoder.encode(password);

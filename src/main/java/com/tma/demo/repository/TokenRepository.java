@@ -26,16 +26,19 @@ public class TokenRepository {
     private final JPAQueryFactory query;
 
     public Optional<Token> findByRefreshToken(String refreshToken) {
-        return query.selectFrom(token).where(token.refreshToken.eq(refreshToken).and(token.isRevoked.isFalse()))
-                .stream().findFirst();
+        return Optional.ofNullable(query.selectFrom(token).where(token.refreshToken.eq(refreshToken).and(token.isRevoked.isFalse()))
+                .fetchOne());
     }
 
     public Optional<Token> findByAccessToken(String accessToken) {
-        return query.selectFrom(token).where(token.refreshToken.eq(accessToken).and(token.isRevoked.isFalse()))
-                .stream().findFirst();
+        return Optional.ofNullable(query.selectFrom(token)
+                .where(token.accessToken
+                        .eq(accessToken)
+                        .and(token.isRevoked.isFalse()))
+                .fetchOne());
     }
 
     public void deleteAllByUserId(UUID id) {
-        query.delete(token).where(token.user.id.eq(id));
+        query.delete(token).where(token.user.id.eq(id)).execute();
     }
 }

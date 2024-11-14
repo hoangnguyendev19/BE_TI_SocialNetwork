@@ -12,11 +12,11 @@ import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.ITokenRepository;
 import com.tma.demo.repository.IUserRepository;
 import com.tma.demo.repository.TokenRepository;
+import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.auth.AuthService;
 import com.tma.demo.service.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,15 +38,15 @@ import java.time.LocalDateTime;
 public class AuthServiceImp implements AuthService {
     private final JwtService jwtService;
     private final IUserRepository iUserRepository;
+    private final UserRepository userRepository;
     private final ITokenRepository iTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
-    private final ModelMapper modelMapper;
 
     @Override
     @Transactional
     public TokenDto authenticate(LoginRequest request) {
-        User user = iUserRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BaseException(ErrorCode.WRONG_PASSWORD);
@@ -62,7 +62,6 @@ public class AuthServiceImp implements AuthService {
     public TokenDto refreshToken(HttpServletRequest request) {
         String authHeader = request.getHeader(AttributeConstant.HEADER_AUTHORIZATION);
         String refreshToken;
-        String userEmail = null;
         if (authHeader == null || !authHeader.startsWith(CommonConstant.PREFIX_TOKEN)) {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }

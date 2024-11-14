@@ -26,6 +26,6 @@ public class SettingRepository {
     private final JPAQueryFactory query;
 
     public Optional<Setting> findByKey(SettingKey key) {
-        return query.selectFrom(setting).where(setting.key.eq(key)).stream().findFirst();
+        return Optional.ofNullable(query.selectFrom(setting).where(setting.key.eq(key)).fetchOne());
     }
 }

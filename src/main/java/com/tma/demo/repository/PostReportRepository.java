@@ -29,8 +29,8 @@ public class PostReportRepository {
     private final JPAQueryFactory query;
 
     public Optional<PostReport> findByUser(User user){
-        return query.selectFrom(postReport).where(postReport.user.eq(user))
-                .stream().findFirst();
+        return Optional.ofNullable(query.selectFrom(postReport).where(postReport.user.eq(user))
+                .fetchOne());
     }
 
     public int findTotalReport(UUID postId){

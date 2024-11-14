@@ -1,6 +1,7 @@
 package com.tma.demo.repository;
 
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -37,9 +37,9 @@ public class PostRepository {
 
 
     public Optional<Post> findPostById(UUID id) {
-        return query.selectFrom(post)
+        return Optional.ofNullable(query.selectFrom(post)
                 .where(post.id.eq(id).and(post.isDelete.isFalse()))
-                .stream().findFirst();
+                .fetchOne());
     }
 
     public Page<Post> getNews(Pageable pageable) {
@@ -51,17 +51,22 @@ public class PostRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        long total = query
-                .selectFrom(room)
-                .where(post.isDelete.isFalse())
-                .stream().count();
+        long total = getTotal();
         return new PageImpl<>(results, pageable, total);
     }
 
-    public long getTotalShares(@Param("id") UUID id) {
-        return query.selectFrom(post)
+    private long getTotal() {
+        long total = query.select(post.id.count())
+                .from(post)
+                .where(post.isDelete.isFalse())
+                .fetchOne();
+        return total;
+    }
+
+    public long getTotalShares( UUID id) {
+        return query.select(post.id.count())
                 .where(post.parentPost.id.eq(id).and(post.isDelete.isFalse()))
-                .stream().count();
+                .fetchOne();
     }
 
     public Page<User> getUsersSharedByPost(Pageable pageable, UUID id) {
@@ -74,10 +79,7 @@ public class PostRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        long total = query
-                .selectFrom(room)
-                .where(post.isDelete.isFalse())
-                .stream().count();
+        long total = getTotal();
         return new PageImpl<>(results, pageable, total);
     }
 

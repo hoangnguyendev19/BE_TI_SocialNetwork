@@ -11,6 +11,7 @@ import com.tma.demo.exception.BaseException;
 import com.tma.demo.repository.BoardingHouseRepository;
 import com.tma.demo.repository.ISettingRepository;
 import com.tma.demo.repository.IRoomSettingRepository;
+import com.tma.demo.repository.RoomSettingRepository;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.setting.SettingService;
 import com.tma.demo.service.user.UserService;
@@ -38,11 +39,13 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class BoardingHouseServiceImp implements BoardingHouseService {
     private final BoardingHouseRepository boardingHouseRepository;
-    private final IRoomSettingRepository roomSettingRepository;
+    private final RoomSettingRepository roomSettingRepository;
+    private final IRoomSettingRepository iRoomSettingRepository;
     private final SettingService settingService;
     private final UserService userService;
     private final ModelMapper modelMapper;
     private final ISettingRepository iSettingRepository;
+
 
     @Override
     @Transactional
@@ -102,7 +105,7 @@ public class BoardingHouseServiceImp implements BoardingHouseService {
             roomSetting.setWaterBill(settingBoardingHouseDto.getWaterBill());
             roomSetting.setElectricBill(settingBoardingHouseDto.getElectricityBill());
         }
-        roomSettingRepository.save(roomSetting);
+        iRoomSettingRepository.save(roomSetting);
         return settingBoardingHouseDto;
     }
 
