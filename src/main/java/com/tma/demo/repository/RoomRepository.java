@@ -2,19 +2,16 @@ package com.tma.demo.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.common.PaymentStatus;
 import com.tma.demo.common.RoomStatus;
-import com.tma.demo.constant.FieldConstant;
 import com.tma.demo.entity.Room;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
@@ -47,10 +44,7 @@ public class RoomRepository {
                 .from(room)
                 .where(room.roomName.eq(roomName).and(room.boardingHouse.id.eq(id)))
                 .fetchOne();
-        if(ObjectUtils.isEmpty(total)){
-            return 0;
-        }
-        return total;
+        return ObjectUtils.isEmpty(total) ? 0 : total;
     }
 
     public Optional<Room> findRoomById(UUID id) {
@@ -65,8 +59,24 @@ public class RoomRepository {
                                   RoomStatus roomStatus,
                                   LocalDate createdAt
     ) {
-
         OrderSpecifier<?> orderSpecifier = getSortOrder(pageable);
+        BooleanBuilder predicate = getBooleanBuilder(boardingHouseId, paymentStatus, roomStatus, createdAt);
+        List<Room> results = query
+                .selectFrom(room)
+                .where(predicate)
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        Long total = query
+                .select(room.id.count())
+                .from(room)
+                .where(predicate)
+                .fetchOne();
+        return new PageImpl<>(results, pageable, ObjectUtils.isEmpty(total) ? 0 : total);
+    }
+
+    private BooleanBuilder getBooleanBuilder(UUID boardingHouseId, PaymentStatus paymentStatus, RoomStatus roomStatus, LocalDate createdAt) {
         BooleanBuilder predicate = new BooleanBuilder();
         predicate.and(room.boardingHouse.id.eq(boardingHouseId));
 
@@ -82,28 +92,12 @@ public class RoomRepository {
                     .limit(1)
                     .eq(paymentStatus));
         }
-
         if (!ObjectUtils.isEmpty(createdAt)) {
             predicate.and(room.createdAt.year().eq(createdAt.getYear())
                     .and(room.createdAt.month().eq(createdAt.getMonthValue()))
                     .and(room.createdAt.dayOfMonth().eq(createdAt.getDayOfMonth())));
         }
-        List<Room> results = query
-                .selectFrom(room)
-                .where(predicate)
-                .orderBy(orderSpecifier)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-        Long total = query
-                .select(room.id.count())
-                .from(room)
-                .where(predicate)
-                .fetchOne();
-        if(ObjectUtils.isEmpty(total)){
-            total = 0L;
-        }
-        return new PageImpl<>(results, pageable, total);
+        return predicate;
     }
 
     private OrderSpecifier<?> getSortOrder(Pageable pageable) {
@@ -121,7 +115,7 @@ public class RoomRepository {
                                 room.waterMeterOldNumber.asc() : room.waterMeterOldNumber.desc();
                         case ROOM_STATUS -> order.isAscending() ? room.roomStatus.asc() : room.roomStatus.desc();
                         case IS_DELETE -> order.isAscending() ? room.isDelete.asc() : room.isDelete.desc();
-                        default -> null;
+                        default -> room.lastModified.desc();
                     };
                 })
                 .filter(Objects::nonNull)

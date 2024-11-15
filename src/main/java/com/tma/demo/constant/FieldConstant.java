@@ -22,4 +22,5 @@ public class FieldConstant {
     public static final String WATER_METER_OLD_NUMBER = "waterMetaOldNumber";
     public static final String ELECTRIC_METER_OLD_NUMBER = "electricMeterOldNumber";
     public static final String ROOM_STATUS = "roomStatus";
+    public static final String LAST_MODIFIED = "lastModified";
 }

@@ -100,7 +100,7 @@ public class PostRepository {
                     return switch (order.getProperty()) {
                         case FieldConstant.CREATED_AT -> order.isAscending() ? post.createdAt.asc() : post.createdAt.desc();
                         case FieldConstant.IS_DELETE -> order.isAscending() ? room.isDelete.asc() : room.isDelete.desc();
-                        default -> null;
+                        default -> post.lastModified.desc();
                     };
                 })
                 .filter(Objects::nonNull)
