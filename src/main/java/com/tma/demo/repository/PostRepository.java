@@ -65,6 +65,7 @@ public class PostRepository {
 
     public long getTotalShares( UUID id) {
         return query.select(post.id.count())
+                .from(post)
                 .where(post.parentPost.id.eq(id).and(post.isDelete.isFalse()))
                 .fetchOne();
     }
