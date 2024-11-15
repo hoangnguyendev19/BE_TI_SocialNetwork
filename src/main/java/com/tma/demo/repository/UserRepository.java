@@ -33,14 +33,22 @@ public class UserRepository {
 
     @Transactional
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(query.selectFrom(user).where(user.email.eq(email).and(user.isDelete.isFalse())).fetchOne());
+        return Optional.ofNullable(query.selectFrom(user)
+                .where(user.email.eq(email).and(user.isDelete.isFalse()))
+                .fetchOne());
     }
 
     public Optional<User> findById(UUID id) {
-        return Optional.ofNullable(query.selectFrom(user).where(user.id.eq(id).and(user.isDelete.isFalse())).fetchOne());
+        return Optional.ofNullable(query.selectFrom(user)
+                .where(user.id.eq(id).and(user.isDelete.isFalse()))
+                .fetchOne());
     }
 
     public boolean existsByEmail(String email) {
-        return query.selectFrom(user).where(user.email.eq(email).and(user.isDelete.isFalse())).stream().findAny().isPresent();
+        return query.select(user.id.count())
+                .from(user)
+                .where(user.email.eq(email).and(user.isDelete.isFalse()))
+                .fetchOne() > 0;
+
     }
 }

@@ -35,32 +35,34 @@ public class RoomUserRepository {
     }
 
     boolean existsByPhoneNumber(String phoneNumber) {
-        return query.selectFrom(roomUser).where(roomUser.phoneNumber.eq(phoneNumber))
-                .stream().findAny().isPresent();
+        return query.select(roomUser.id.count())
+                .from(roomUser)
+                .where(roomUser.phoneNumber.eq(phoneNumber))
+                .fetchOne() > 0;
     }
 
     Optional<RoomUser> findByRoomAndFullName(Room room, String fullName) {
-        return query.selectFrom(roomUser)
+        return Optional.ofNullable(query.selectFrom(roomUser)
                 .where(roomUser.room.eq(room).and(roomUser.fullName.eq(fullName)))
-                .stream().findFirst();
+                .fetchOne());
     }
 
     Optional<RoomUser> findByRoomAndPhoneNumber(Room room, String phoneNumber) {
-        return query.selectFrom(roomUser)
+        return Optional.ofNullable(query.selectFrom(roomUser)
                 .where(roomUser.room.eq(room).and(roomUser.phoneNumber.eq(phoneNumber)))
-                .stream().findFirst();
+                .fetchOne());
     }
 
     List<RoomUser> findByRoom(Room room) {
         return query.selectFrom(roomUser)
                 .where(roomUser.room.eq(room))
-                .stream().toList();
+                .fetch();
     }
 
     public List<RoomUser> findByRoomAndIsDeleteFalse(Room room) {
         return query.selectFrom(roomUser)
                 .where(roomUser.room.eq(room).and(roomUser.isDelete.isFalse()))
-                .stream().toList();
+                .fetch();
     }
 
     public long getTotalPeople(UUID id) {

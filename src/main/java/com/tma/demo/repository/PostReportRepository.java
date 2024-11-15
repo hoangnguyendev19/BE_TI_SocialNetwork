@@ -4,8 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.PostReport;
 import com.tma.demo.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -28,13 +26,15 @@ import static com.tma.demo.entity.QPostReport.postReport;
 public class PostReportRepository {
     private final JPAQueryFactory query;
 
-    public Optional<PostReport> findByUser(User user){
+    public Optional<PostReport> findByUser(User user) {
         return Optional.ofNullable(query.selectFrom(postReport).where(postReport.user.eq(user))
                 .fetchOne());
     }
 
-    public int findTotalReport(UUID postId){
-        return (int) query.selectFrom(postReport).where(postReport.id.eq(postId))
-                .stream().count();
+    public Long findTotalReport(UUID postId) {
+        return query.select(postReport.id.count())
+                .from(postReport)
+                .where(postReport.id.eq(postId))
+                .fetchOne();
     }
 }

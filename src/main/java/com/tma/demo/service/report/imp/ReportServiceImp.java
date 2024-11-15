@@ -50,7 +50,7 @@ public class ReportServiceImp implements ReportService {
     }
 
     private void handleMaxReport(Post post) {
-        int totalReport = postReportRepository.findTotalReport(post.getId());
+        long totalReport = postReportRepository.findTotalReport(post.getId());
         int maxReport = settingService.getMaxReport();
         if (totalReport >= maxReport) {
             postService.deletePost(post.getId().toString());

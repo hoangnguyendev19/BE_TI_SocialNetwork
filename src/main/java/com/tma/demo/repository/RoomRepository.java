@@ -43,9 +43,9 @@ public class RoomRepository {
     }
 
     public Optional<Room> findRoomById(UUID id) {
-        return query.selectFrom(room)
+        return Optional.ofNullable(query.selectFrom(room)
                 .where(room.id.eq(id).and(room.isDelete.isFalse()))
-                .stream().findFirst();
+                .fetchOne());
     }
 
     public Page<Room> getAllRooms(Pageable pageable,
@@ -64,9 +64,10 @@ public class RoomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
         long total = query
-                .selectFrom(room)
+                .select(room.id.count())
+                .from(room)
                 .where(predicate)
-                .stream().count();
+                .fetchOne();
         return new PageImpl<>(results, pageable, total);
     }
 
