@@ -1,13 +1,15 @@
 package com.tma.demo.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.Room;
 import com.tma.demo.entity.RoomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.tma.demo.entity.QRoomUser.roomUser;
@@ -27,55 +29,33 @@ import static com.tma.demo.entity.QRoomUser.roomUser;
 public class RoomUserRepository {
     private final JPAQueryFactory query;
 
-    boolean existsByFullName(String fullName) {
-        return query.select(roomUser.id.count())
-                .from(roomUser)
-                .where(roomUser.fullName.eq(fullName))
-                .fetchOne() > 0;
-    }
-
-    boolean existsByPhoneNumber(String phoneNumber) {
-        return query.select(roomUser.id.count())
-                .from(roomUser)
-                .where(roomUser.phoneNumber.eq(phoneNumber))
-                .fetchOne() > 0;
-    }
-
-    Optional<RoomUser> findByRoomAndFullName(Room room, String fullName) {
-        return Optional.ofNullable(query.selectFrom(roomUser)
-                .where(roomUser.room.eq(room).and(roomUser.fullName.eq(fullName)))
-                .fetchOne());
-    }
-
-    Optional<RoomUser> findByRoomAndPhoneNumber(Room room, String phoneNumber) {
-        return Optional.ofNullable(query.selectFrom(roomUser)
-                .where(roomUser.room.eq(room).and(roomUser.phoneNumber.eq(phoneNumber)))
-                .fetchOne());
-    }
-
-    List<RoomUser> findByRoom(Room room) {
-        return query.selectFrom(roomUser)
-                .where(roomUser.room.eq(room))
-                .fetch();
-    }
-
     public List<RoomUser> findByRoomAndIsDeleteFalse(Room room) {
         return query.selectFrom(roomUser)
-                .where(roomUser.room.eq(room).and(roomUser.isDelete.isFalse()))
+                .where(roomUser.room.eq(room), isDeletePredicate())
                 .fetch();
     }
 
     public long getTotalPeople(UUID id) {
-        return query.select(roomUser.id.count())
+        Long total = query.select(roomUser.id.count())
                 .from(roomUser)
-                .where(roomUser.room.id.eq(id).and(roomUser.isDelete.isFalse()))
+                .where(roomUser.room.id.eq(id), isDeletePredicate())
                 .fetchOne();
+        if (ObjectUtils.isEmpty(total)) {
+            return 0;
+        }
+        return total;
     }
-
 
     public List<RoomUser> findByRoomId(UUID id) {
         return query.selectFrom(roomUser)
-                .where(roomUser.room.id.eq(id).and(roomUser.isDelete).isFalse())
+                .where(roomUser.room.id.eq(id), isDeletePredicate())
                 .fetch();
     }
+
+    private Predicate isDeletePredicate() {
+        BooleanBuilder predicate = new BooleanBuilder();
+        predicate.and(roomUser.isDelete.isFalse());
+        return predicate;
+    }
+
 }

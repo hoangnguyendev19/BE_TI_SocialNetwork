@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -194,7 +195,7 @@ public class RoomServiceImp implements RoomService {
         Page<Room> pageRoom;
         PaymentStatus status = ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase());
         RoomStatus roomStatus = ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : RoomStatus.valueOf(pagingRequest.getFilter().getRoomStatus().toUpperCase());
-        String date = ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? "" : pagingRequest.getFilter().getDate();
+        LocalDate date = ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? null : pagingRequest.getFilter().getDate();
         pageRoom = roomRepository.getAllRooms(pageable,
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()), status, roomStatus, date);
         List<RoomResponse> roomResponses = pageRoom.stream()

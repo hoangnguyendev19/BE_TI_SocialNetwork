@@ -16,4 +16,5 @@ import java.util.UUID;
  * 29/10/2024        NGUYEN             create
  */
 public interface IRoomUserRepository extends JpaRepository<RoomUser, UUID> {
+
 }

@@ -16,4 +16,10 @@ import lombok.Setter;
 public class FieldConstant {
     public static final String EMAIL = "email";
     public static final String ID = "id";
+    public static final String ROOM_NAME = "roomName";
+    public static final String CREATED_AT = "createdAt";
+    public static final String IS_DELETE = "isDelete";
+    public static final String WATER_METER_OLD_NUMBER = "waterMetaOldNumber";
+    public static final String ELECTRIC_METER_OLD_NUMBER = "electricMeterOldNumber";
+    public static final String ROOM_STATUS = "roomStatus";
 }

@@ -1,15 +1,15 @@
 package com.tma.demo.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.tma.demo.constant.TableName;
-import com.tma.demo.entity.QUser;
 import com.tma.demo.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.tma.demo.entity.QUser.user;
 
@@ -34,21 +34,21 @@ public class UserRepository {
     @Transactional
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(query.selectFrom(user)
-                .where(user.email.eq(email).and(user.isDelete.isFalse()))
-                .fetchOne());
-    }
-
-    public Optional<User> findById(UUID id) {
-        return Optional.ofNullable(query.selectFrom(user)
-                .where(user.id.eq(id).and(user.isDelete.isFalse()))
+                .where(user.email.eq(email).and(isDeletePredicate()))
                 .fetchOne());
     }
 
     public boolean existsByEmail(String email) {
-        return query.select(user.id.count())
+        Long total = query.select(user.id.count())
                 .from(user)
-                .where(user.email.eq(email).and(user.isDelete.isFalse()))
-                .fetchOne() > 0;
+                .where(user.email.eq(email).and(isDeletePredicate()))
+                .fetchOne();
+        return !ObjectUtils.isEmpty(total);
+    }
 
+    private Predicate isDeletePredicate() {
+        BooleanBuilder predicate = new BooleanBuilder();
+        predicate.and(user.isDelete.isFalse());
+        return predicate;
     }
 }

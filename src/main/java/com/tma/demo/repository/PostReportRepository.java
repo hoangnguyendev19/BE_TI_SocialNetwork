@@ -5,6 +5,7 @@ import com.tma.demo.entity.PostReport;
 import com.tma.demo.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -31,10 +32,11 @@ public class PostReportRepository {
                 .fetchOne());
     }
 
-    public Long findTotalReport(UUID postId) {
-        return query.select(postReport.id.count())
+    public long findTotalReport(UUID postId) {
+        Long total = query.select(postReport.id.count())
                 .from(postReport)
                 .where(postReport.id.eq(postId))
                 .fetchOne();
+        return ObjectUtils.isEmpty(total) ? 0 : total;
     }
 }
