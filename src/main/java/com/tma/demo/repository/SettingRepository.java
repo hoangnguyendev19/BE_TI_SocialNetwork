@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.common.SettingKey;
 import com.tma.demo.entity.Setting;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ import static com.tma.demo.entity.QSetting.setting;
  * ------------------------------------------------
  * 14/11/2024        NGUYEN             create
  */
-@Repository
+@Component
 @RequiredArgsConstructor
 public class SettingRepository {
     private final JPAQueryFactory query;

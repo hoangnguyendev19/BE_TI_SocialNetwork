@@ -3,6 +3,7 @@ package com.tma.demo.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.Token;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ import static com.tma.demo.entity.QToken.token;
  * ------------------------------------------------
  * 14/11/2024        NGUYEN             create
  */
-@Repository
+@Component
 @RequiredArgsConstructor
 public class TokenRepository {
     private final JPAQueryFactory query;

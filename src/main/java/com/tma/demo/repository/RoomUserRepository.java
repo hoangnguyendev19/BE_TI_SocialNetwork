@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.Room;
 import com.tma.demo.entity.RoomUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
@@ -24,7 +25,7 @@ import static com.tma.demo.entity.QRoomUser.roomUser;
  * ------------------------------------------------
  * 14/11/2024        NGUYEN             create
  */
-@Repository
+@Component
 @RequiredArgsConstructor
 public class RoomUserRepository {
     private final JPAQueryFactory query;

@@ -5,6 +5,7 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.tma.demo.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -24,9 +25,8 @@ import static com.tma.demo.entity.QUser.user;
  * ------------------------------------------------
  * 14/11/2024        NGUYEN             create
  */
-@Repository
+@Component
 @RequiredArgsConstructor
-
 public class UserRepository {
 
     private final JPAQueryFactory query;

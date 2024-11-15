@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
@@ -36,7 +37,7 @@ import static com.tma.demo.entity.QRoom.room;
  * ------------------------------------------------
  * 14/11/2024        NGUYEN             create
  */
-@Repository
+@Component
 @RequiredArgsConstructor
 public class RoomRepository {
     private final JPAQueryFactory query;
