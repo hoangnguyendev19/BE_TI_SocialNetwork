@@ -21,6 +21,4 @@ import java.util.UUID;
  * 22/10/2024        NGUYEN             create
  */
 public interface HistoryRoomRepository extends JpaRepository<HistoryRoom, UUID> {
-    @Query(value = "SELECT hr FROM HistoryRoom hr WHERE hr.room.id = :roomId ORDER BY hr.createdAt DESC")
-    List<HistoryRoom> findTop2ByRoom_Id(@Param("roomId") UUID roomId, Pageable pageable);
 }
