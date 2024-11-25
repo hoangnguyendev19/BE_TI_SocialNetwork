@@ -9,7 +9,7 @@ import com.tma.demo.dto.request.UpdatePostRequest;
 import com.tma.demo.dto.response.UserResponse;
 import com.tma.demo.dto.response.PostDto;
 import com.tma.demo.filter.IdFilter;
-import com.tma.demo.repository.PostRepository;
+import com.tma.demo.repository.IPostRepository;
 import com.tma.demo.service.post.PostService;
 import com.tma.demo.service.report.ReportService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ import static com.tma.demo.common.EndPointConstant.*;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private final PostRepository postRepository;
+    private final IPostRepository postRepository;
     private final ReportService reportService;
 
     @PostMapping

@@ -7,11 +7,8 @@ import com.tma.demo.dto.request.*;
 import com.tma.demo.dto.response.*;
 import com.tma.demo.entity.*;
 import com.tma.demo.exception.BaseException;
-import com.tma.demo.repository.*;
 import com.tma.demo.filter.RoomFilter;
-import com.tma.demo.repository.HistoryRoomRepository;
-import com.tma.demo.repository.PaymentRepository;
-import com.tma.demo.repository.RoomRepository;
+import com.tma.demo.repository.*;
 import com.tma.demo.service.boarding_house.BoardingHouseService;
 import com.tma.demo.service.room.RoomService;
 import com.tma.demo.service.user.UserService;
@@ -25,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,12 +43,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoomServiceImp implements RoomService {
     private final BoardingHouseService boardingHouseService;
+    private final IRoomRepository iRoomRepository;
     private final RoomRepository roomRepository;
     private final Mapper mapper;
     private final UserService userService;
     private final PaymentRepository paymentRepository;
     private final HistoryRoomRepository historyRoomRepository;
-    private final UserRepository userRepository;
+    private final IRoomUserRepository iRoomUserRepository;
     private final RoomUserRepository roomUserRepository;
 
     @Override
@@ -68,7 +67,7 @@ public class RoomServiceImp implements RoomService {
                 .waterMeterOldNumber(request.getWaterMeterOldNumber())
                 .isDelete(false)
                 .build();
-        room = roomRepository.saveAndFlush(room);
+        room = iRoomRepository.saveAndFlush(room);
         PaymentResponse paymentResponse = createPayment(new CreatePaymentRequest(room.getId().toString(), room.getRoomRate(), room.getElectricMeterOldNumber(), room.getWaterMeterOldNumber()), PaymentStatus.PAID);
         return mapper.from(room, paymentResponse);
     }
@@ -81,7 +80,7 @@ public class RoomServiceImp implements RoomService {
         room.setRoomRate(0);
         room.setRoomStatus(RoomStatus.ROOM_AVAILABLE);
         List<RoomUser> listRoomUser = getRoomUser(room.getId());
-        roomUserRepository.deleteAll(listRoomUser);
+        iRoomUserRepository.deleteAll(listRoomUser);
         Payment payment = Payment.builder()
                 .totalAmount(0)
                 .room(room)
@@ -91,14 +90,14 @@ public class RoomServiceImp implements RoomService {
                 .build();
         payment = paymentRepository.saveAndFlush(payment);
         PaymentResponse paymentResponse = mapper.from(payment);
-        return mapper.from(roomRepository.saveAndFlush(room), paymentResponse);
+        return mapper.from(iRoomRepository.saveAndFlush(room), paymentResponse);
     }
 
     @Override
     public RoomResponse updateRoomStatus(UpdateRoomStatusRequest request) {
         Room room = getRoomById(request.getId());
         room.setRoomStatus(RoomStatus.valueOf(request.getStatus().toUpperCase()));
-        room = roomRepository.saveAndFlush(room);
+        room = iRoomRepository.saveAndFlush(room);
         return mapper.from(room, getPaymentResponse(request.getId()));
     }
 
@@ -106,7 +105,7 @@ public class RoomServiceImp implements RoomService {
     public void deleteRoom(String id) {
         Room room = getRoomById(id);
         room.setDelete(true);
-        roomRepository.save(room);
+        iRoomRepository.save(room);
     }
 
     @Override
@@ -131,7 +130,7 @@ public class RoomServiceImp implements RoomService {
         }
     }
 
-    private List<RoomUser> getRoomUser(UUID roomId){
+    private List<RoomUser> getRoomUser(UUID roomId) {
         return roomUserRepository.findByRoomId(roomId);
     }
 
@@ -151,7 +150,7 @@ public class RoomServiceImp implements RoomService {
                 .build();
         payment = paymentRepository.saveAndFlush(payment);
         room.setRoomRate(createPaymentRequest.getRoomRate());
-        roomRepository.save(room);
+        iRoomRepository.save(room);
         return mapper.from(payment);
     }
 
@@ -165,7 +164,7 @@ public class RoomServiceImp implements RoomService {
         Room room = payment.getRoom();
         room.setWaterMeterOldNumber(payment.getWaterMeterNewNumber());
         room.setElectricMeterOldNumber(payment.getElectricityMeterNewNumber());
-        roomRepository.save(room);
+        iRoomRepository.save(room);
     }
 
     private void createHistoryRoom(Room room) {
@@ -196,7 +195,7 @@ public class RoomServiceImp implements RoomService {
         Page<Room> pageRoom;
         PaymentStatus status = ObjectUtils.isEmpty(pagingRequest.getFilter().getPaymentStatus()) ? null : PaymentStatus.valueOf(pagingRequest.getFilter().getPaymentStatus().toUpperCase());
         RoomStatus roomStatus = ObjectUtils.isEmpty(pagingRequest.getFilter().getRoomStatus()) ? null : RoomStatus.valueOf(pagingRequest.getFilter().getRoomStatus().toUpperCase());
-        String date = ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? "" : pagingRequest.getFilter().getDate();
+        LocalDate date = ObjectUtils.isEmpty(pagingRequest.getFilter().getDate()) ? null : pagingRequest.getFilter().getDate();
         pageRoom = roomRepository.getAllRooms(pageable,
                 UUID.fromString(pagingRequest.getFilter().getBoardingHouseId()), status, roomStatus, date);
         List<RoomResponse> roomResponses = pageRoom.stream()
@@ -222,8 +221,8 @@ public class RoomServiceImp implements RoomService {
             roomUser.setFullName(person.getFullName());
             roomUser.setPhoneNumber(person.getPhoneNumber());
             roomUser.setRoom(room);
-            roomUserRepository.save(roomUser);
-            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber()));
+            iRoomUserRepository.save(roomUser);
+            userResponses.add(new UserReponseRoom(roomUser.getId(), roomUser.getFullName(), roomUser.getPhoneNumber()));
         }
         return new PeopleResponse(UUID.fromString(request.getRoomId()), userResponses);
     }
@@ -235,17 +234,17 @@ public class RoomServiceImp implements RoomService {
         for (ListPeopleContext person : peopleRequest.getPeople()) {
             roomUser.setFullName(person.getFullName());
             roomUser.setPhoneNumber(person.getPhoneNumber());
-            roomUserRepository.save(roomUser);
-            userResponses.add(new UserReponseRoom(roomUser.getId(),roomUser.getFullName(),roomUser.getPhoneNumber()));
+            iRoomUserRepository.save(roomUser);
+            userResponses.add(new UserReponseRoom(roomUser.getId(), roomUser.getFullName(), roomUser.getPhoneNumber()));
         }
-        return new PeopleResponse(null,userResponses);
+        return new PeopleResponse(null, userResponses);
     }
 
     @Override
     public void removePeopleFromRoom(String roomUserId) {
         RoomUser roomUser = checkRoomUserById(roomUserId);
-            roomUser.setDelete(true);
-            roomUserRepository.save(roomUser);
+        roomUser.setDelete(true);
+        iRoomUserRepository.save(roomUser);
     }
 
     @Override
@@ -278,7 +277,7 @@ public class RoomServiceImp implements RoomService {
     }
 
     private RoomUser checkRoomUserById(String id) {
-        return roomUserRepository.findById(UUID.fromString(id))
+        return iRoomUserRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_DOES_NOT_EXIST));
     }
 

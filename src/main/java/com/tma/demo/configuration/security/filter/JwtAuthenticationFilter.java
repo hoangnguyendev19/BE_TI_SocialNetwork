@@ -5,6 +5,7 @@ import com.tma.demo.common.ErrorCode;
 import com.tma.demo.constant.AttributeConstant;
 import com.tma.demo.constant.CommonConstant;
 import com.tma.demo.entity.Token;
+import com.tma.demo.repository.ITokenRepository;
 import com.tma.demo.repository.TokenRepository;
 import com.tma.demo.service.jwt.JwtService;
 import jakarta.servlet.FilterChain;
@@ -40,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final TokenRepository tokenRepository;
-    ;
 
     @Override
     protected void doFilterInternal(

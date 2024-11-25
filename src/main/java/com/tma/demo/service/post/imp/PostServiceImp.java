@@ -15,9 +15,10 @@ import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.filter.IdFilter;
+import com.tma.demo.repository.IPostRepository;
+import com.tma.demo.repository.IUserRepository;
 import com.tma.demo.repository.MediaRepository;
 import com.tma.demo.repository.PostRepository;
-import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.cloudinary.CloudinaryService;
 import com.tma.demo.service.post.PostMapper;
 import com.tma.demo.service.post.PostService;
@@ -33,7 +34,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static com.tma.demo.constant.CommonConstant.EMPTY_STRING;
 import static com.tma.demo.constant.CommonConstant.OLIDUS;
@@ -54,7 +58,8 @@ import static com.tma.demo.constant.PrefixConstant.BASE64_PREF;
 @RequiredArgsConstructor
 @Service
 public class PostServiceImp implements PostService {
-    private final UserRepository userRepository;
+    private final IUserRepository iUserRepository;
+    private final IPostRepository iPostRepository;
     private final PostRepository postRepository;
     private final CloudinaryService cloudinaryService;
     private final MediaRepository mediaRepository;
@@ -67,8 +72,8 @@ public class PostServiceImp implements PostService {
     public PostDto createPost(CreatePostRequest createPostRequest) {
         User user = userService.getUserDetails();
         Post parentPost = null;
-        if(!ObjectUtils.isEmpty(createPostRequest.getParentPostId())){
-            parentPost = getParentPost(postRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
+        if (!ObjectUtils.isEmpty(createPostRequest.getParentPostId())) {
+            parentPost = getParentPost(iPostRepository.findById(UUID.fromString(createPostRequest.getParentPostId()))
                     .orElse(null));
         }
 
@@ -78,7 +83,7 @@ public class PostServiceImp implements PostService {
                 .isDelete(false)
                 .parentPost(parentPost)
                 .build();
-        post = postRepository.saveAndFlush(post);
+        post = iPostRepository.saveAndFlush(post);
         saveAllMediaFiles(createPostRequest.getFiles(), post);
         return getPostDto(post.getId().toString());
     }
@@ -94,7 +99,7 @@ public class PostServiceImp implements PostService {
         List<UUID> deletedFileIds = updatePostRequest.getDeleteFileIds().stream().map(UUID::fromString).toList();
         deleteMedia(deletedFileIds, UUID.fromString(updatePostRequest.getPostId()));
         deleteMediaInCloud(updatePostRequest.getDeleteFileIds(), updatePostRequest.getPostId(), FolderNameConstant.POST);
-        post = postRepository.saveAndFlush(post);
+        post = iPostRepository.saveAndFlush(post);
         return getPostDto(post.getId().toString());
     }
 
@@ -121,7 +126,7 @@ public class PostServiceImp implements PostService {
     @Override
     public Page<UserResponse> getSharedList(PagingRequest<IdFilter> pagingRequest) {
         Pageable pageable = PageUtil.getPageRequest(pagingRequest);
-        Page<User> pageUser =postRepository.getUsersSharedByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
+        Page<User> pageUser = postRepository.getUsersSharedByPost(pageable, UUID.fromString(pagingRequest.getFilter().getId()));
         List<UserResponse> userResponses = pageUser.stream().map(user -> new UserResponse(user.getId().toString(), user.getFirstName(), user.getLastName(), user.getProfilePictureUrl()))
                 .toList();
         return new PageImpl<>(userResponses, pageable, pageUser.getTotalElements());
@@ -151,7 +156,7 @@ public class PostServiceImp implements PostService {
             throw new BaseException(ErrorCode.UNAUTHORIZED);
         }
         post.setDelete(true);
-        postRepository.save(post);
+        iPostRepository.save(post);
     }
 
     private void saveAllMediaFiles(List<String> mediaFiles, Post post) {

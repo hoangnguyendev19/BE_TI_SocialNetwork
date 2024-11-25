@@ -5,6 +5,7 @@ import com.tma.demo.common.RoomStatus;
 import lombok.Data;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * RoomFilter
@@ -21,5 +22,5 @@ public class RoomFilter {
     private String boardingHouseId;
     private String roomStatus;
     private String paymentStatus;
-    private String date;
+    private LocalDate date;
 }

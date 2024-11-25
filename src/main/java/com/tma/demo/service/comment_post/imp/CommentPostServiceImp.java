@@ -10,9 +10,7 @@ import com.tma.demo.entity.User;
 import com.tma.demo.exception.BaseException;
 import com.tma.demo.filter.IdFilter;
 import com.tma.demo.repository.CommentRepository;
-import com.tma.demo.repository.LikeCommentRepository;
-import com.tma.demo.repository.PostRepository;
-import com.tma.demo.repository.UserRepository;
+import com.tma.demo.repository.IPostRepository;
 import com.tma.demo.service.comment_post.CommentMapper;
 import com.tma.demo.service.comment_post.CommentPostService;
 import com.tma.demo.service.user.UserService;
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentPostServiceImp implements CommentPostService {
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final IPostRepository postRepository;
     private final UserService userService;
     private final CommentMapper commentMapper;
 
