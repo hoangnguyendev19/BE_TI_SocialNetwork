@@ -42,7 +42,7 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
                          WHERE p2.room.id = p.room.id
                      )
                  ) latest_payment ON latest_payment.rid = r.id
-                 WHERE r.boardingHouse.id = :boardingHouseId
+                 WHERE r.boardingHouse.id = :boardingHouseId and r.isDelete != true
                  AND (r.roomStatus = :roomStatus or :roomStatus is null)
                  AND (latest_payment.status = :paymentStatus or :paymentStatus is null)
                  AND (Date(r.createdAt) = Date(:createdAt) or :createdAt = '')
