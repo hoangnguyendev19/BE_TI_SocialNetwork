@@ -24,13 +24,13 @@ public class Mapper {
     private final RoomUserRepository roomUserRepository;
 
     RoomResponse from(Room room, PaymentResponse paymentResponse) {
-        int totalPeople = roomUserRepository.getTotalPeople(room.getId());
+        long totalPeople = roomUserRepository.getTotalPeople(room.getId());
         return RoomResponse.builder()
                 .id(room.getId().toString())
                 .boardingHouseId(room.getBoardingHouse().getId().toString())
                 .roomName(room.getRoomName())
                 .roomRate(room.getRoomRate())
-                .numberOfPeople(totalPeople)
+                .numberOfPeople((int) totalPeople)
                 .roomStatus(room.getRoomStatus().toString())
                 .payment(paymentResponse)
                 .waterMeterOldNumber(room.getWaterMeterOldNumber())

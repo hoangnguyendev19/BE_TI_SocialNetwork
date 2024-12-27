@@ -2,22 +2,18 @@ package com.tma.demo.service.post;
 
 import com.tma.demo.dto.response.MediaDto;
 import com.tma.demo.dto.response.PostDto;
-import com.tma.demo.dto.response.UserDto;
 import com.tma.demo.entity.Media;
 import com.tma.demo.entity.Post;
 import com.tma.demo.entity.User;
 import com.tma.demo.repository.CommentRepository;
+import com.tma.demo.repository.IPostRepository;
 import com.tma.demo.repository.LikeRepository;
 import com.tma.demo.repository.PostRepository;
-import com.tma.demo.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * PostMapper

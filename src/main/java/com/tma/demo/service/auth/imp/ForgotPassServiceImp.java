@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.tma.demo.common.SuccessMessage;
 import com.tma.demo.dto.request.VerifyOTPRequest;
 import com.tma.demo.exception.BaseException;
+import com.tma.demo.repository.IUserRepository;
+import com.tma.demo.repository.UserRepository;
 import com.tma.demo.service.auth.ForgotPassServices;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,6 @@ import com.tma.demo.dto.response.VerifyOtpResponse;
 import com.tma.demo.entity.Otp;
 import com.tma.demo.entity.User;
 import com.tma.demo.repository.OtpRepository;
-import com.tma.demo.repository.UserRepository;
 import com.tma.demo.util.EmailUtil;
 import com.tma.demo.util.OtpUtil;
 import jakarta.mail.MessagingException;
@@ -27,6 +28,7 @@ public class ForgotPassServiceImp implements ForgotPassServices {
     private final OtpRepository otpRepository;
     private final OtpUtil otpUtil;
     private final EmailUtil emailUtil;
+    private final IUserRepository iUserRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
@@ -84,7 +86,7 @@ public class ForgotPassServiceImp implements ForgotPassServices {
         // HashPassWord And Save User into DB
         String hashedPassword = passwordEncoder.encode(password);
         user.setPassword(hashedPassword);
-        userRepository.save(user);
+        iUserRepository.save(user);
         return SuccessMessage.UPDATE_PASSWORD_SUCCESS.getMessage();
     }
 }
