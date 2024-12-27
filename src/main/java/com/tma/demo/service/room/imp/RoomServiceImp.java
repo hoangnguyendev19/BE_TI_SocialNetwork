@@ -250,12 +250,11 @@ public class RoomServiceImp implements RoomService {
     @Override
     public RoomDetailResponse getRoomDetail(String roomId) {
         Room room = getRoomById(roomId);
-        HistoryRoom secondLatestHistoryRoom = historyRoomRepository.findTop2ByRoom_Id(room.getId(), PageRequest.of(0, 2))//get 2 record
+        Payment getNewPayment = paymentRepository.findByRoomId(room.getId())
                 .stream()
-                .skip(1)
                 .findFirst()
                 .orElse(null);
-
+//        Get Old Payment
         List<UserReponseRoom> userResponses = roomUserRepository.findByRoomAndIsDeleteFalse(room)
                 .stream()
                 .map(roomUser -> new UserReponseRoom(
@@ -269,10 +268,10 @@ public class RoomServiceImp implements RoomService {
         return new RoomDetailResponse(
                 room.getRoomName(),
                 room.getRoomRate(),
-                secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getElectricMeterNumber() : null,
-                secondLatestHistoryRoom != null ? secondLatestHistoryRoom.getWaterMeterNumber() : null,
                 room.getElectricMeterOldNumber(),
                 room.getWaterMeterOldNumber(),
+                getNewPayment != null ? getNewPayment.getElectricityMeterNewNumber() : null,
+                getNewPayment != null ? getNewPayment.getWaterMeterNewNumber() : null,
                 userResponses
         );
     }

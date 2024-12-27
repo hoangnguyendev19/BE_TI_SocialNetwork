@@ -34,6 +34,7 @@ import static com.tma.demo.entity.QRoom.room;
  * ------------------------------------------------
  * 14/11/2024        NGUYEN             create
  */
+
 @Component
 @RequiredArgsConstructor
 public class RoomRepository {
